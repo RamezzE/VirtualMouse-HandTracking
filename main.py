@@ -2,11 +2,16 @@ import cv2
 from hand_detector import Hand_Detector
 from mouse_controller import Mouse_Controller
 import pyautogui
+import threading
 
 HD = Hand_Detector()
 MC = Mouse_Controller(pyautogui.size())
 
 cap = cv2.VideoCapture(0)
+            
+mouseLongPress_thread = threading.Thread(target= MC.handleMousePressThread, args = (HD.isFistClosed))
+mouseLongPress_thread.daemon = True 
+mouseLongPress_thread.start()
 
 while True:
     _, frame = cap.read()
@@ -15,21 +20,24 @@ while True:
         
     frame = HD.findHands(img = frame, drawConnections = True)
     frame = HD.highlightFingers(img = frame, fingers = [HD.THUMB, HD.INDEX, HD.MIDDLE])
-
-    if HD.isFingerOnlyUp(HD.INDEX):
-        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.75)
         
     distance, frame = HD.getDistance(HD.INDEX, HD.THUMB, img = frame, draw = True)
     
-    if distance is not None and distance < 25:
-        MC.clickMouse() 
-
+    if not MC.handleMousePress(HD.isFistClosed()):
+        if distance is not None and distance < 25:
+            MC.clickMouse()
+    
+    if HD.isFingerOnlyUp(HD.INDEX):
+        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.75) 
+    elif HD.isFistClosed():
+        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.25) 
+    
     cv2.imshow('Virtual Mouse', frame)
 
     key = cv2.waitKey(1)
-
+  
     if key == ord('q'):
-        break  
+        break
 
 cap.release()
 cv2.destroyAllWindows()

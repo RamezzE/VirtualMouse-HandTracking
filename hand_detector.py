@@ -72,7 +72,7 @@ class Hand_Detector:
     
     def getFingersUp(self, hand = 0):
         if not self.hands:
-            return [0,0,0,0,0]
+            return None
         
         handType = self.results.multi_handedness[hand].classification[0].label
         lmList = self.getLandmarks(hand)
@@ -108,6 +108,13 @@ class Hand_Detector:
             return False
         
         return sum (fingers) == 1 and fingers[int(finger / 4) -1] == 1
+    
+    def isFistClosed(self, hand = 0):
+        fingers = self.getFingersUp(hand)
+        if not fingers:
+            return None
+        
+        return sum(fingers) == 0
     
     def getDistance(self, f1, f2, img = None, color = (255, 0, 255), scale = 5, draw = True):
         x1, y1 = self.getFingerPosition(f1)[0:2]
