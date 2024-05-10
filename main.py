@@ -13,12 +13,17 @@ while True:
     
     frame = cv2.flip(frame, 1)
         
-    frame = HD.findHands(img = frame, drawConnections = True, drawAll = False)
+    frame = HD.findHands(img = frame, drawConnections = True)
     frame = HD.highlightFingers(img = frame, fingers = [HD.THUMB, HD.INDEX, HD.MIDDLE])
 
     if HD.isFingerOnlyUp(HD.INDEX):
-        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX), sensitivity = 1.5)
+        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.75)
+        
+    distance, frame = HD.getDistance(HD.INDEX, HD.THUMB, img = frame, draw = True)
     
+    if distance is not None and distance < 25:
+        MC.clickMouse() 
+
     cv2.imshow('Virtual Mouse', frame)
 
     key = cv2.waitKey(1)
