@@ -1,15 +1,15 @@
 import cv2
-from hand_detector import Hand_Detector
-from mouse_controller import Mouse_Controller
+from handDetector import HandDetector
+from mouseController import MouseController
 import pyautogui
 import threading
 
-HD = Hand_Detector()
-MC = Mouse_Controller(pyautogui.size())
+HD = HandDetector(pyautogui.size())
+MC = MouseController(pyautogui.size())
 
 cap = cv2.VideoCapture(0)
             
-mouseLongPress_thread = threading.Thread(target= MC.handleMousePressThread, args = (HD.isFistClosed))
+mouseLongPress_thread = threading.Thread(target = MC.handleMousePressThread, args = (HD.isFistClosed))
 mouseLongPress_thread.daemon = True 
 mouseLongPress_thread.start()
 

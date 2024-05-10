@@ -1,11 +1,8 @@
 import mediapipe as mp
 import cv2
-import pyautogui
 import math
 
-class Hand_Detector:
-    screen_width, screen_height = pyautogui.size()
-    
+class HandDetector:
     THUMB = 4
     INDEX = 8
     MIDDLE = 12
@@ -13,15 +10,17 @@ class Hand_Detector:
     PINKY = 20
     
     # Constructor
-    def __init__(self):
+    def __init__(self, screenSize):
         self.mpHands = mp.solutions.hands
         self.mpHandsDetector = self.mpHands.Hands()
         self.mpDraw = mp.solutions.drawing_utils
+        
+        self.screenWidth, self.screenHeight = screenSize
                 
     def findHands(self, img, drawConnections = True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
-        self.img_height, self.img_width, _ = img.shape
+        self.imgHeight, self.imgWidth, _ = img.shape
         self.results = self.mpHandsDetector.process(imgRGB)
         self.hands = self.results.multi_hand_landmarks
         
@@ -46,8 +45,8 @@ class Hand_Detector:
                 if id not in fingers:
                     continue
                 
-                x = int(landmark.x * self.img_width)
-                y = int(landmark.y * self.img_height)
+                x = int(landmark.x * self.imgWidth)
+                y = int(landmark.y * self.imgHeight)
                 cv2.circle(img = img, center = (x, y), radius = 10, color = (255, 0, 0), thickness = cv2.FILLED)
                 
         return img
@@ -56,12 +55,12 @@ class Hand_Detector:
         landmarks = self.getLandmarks(hand)
         if landmarks and fingerId < len(landmarks):
             finger = landmarks[fingerId]
-            finger_x = int(finger.x * self.img_width)
-            finger_y = int(finger.y * self.img_height)
+            fingerX = int(finger.x * self.imgWidth)
+            fingerY = int(finger.y * self.imgHeight)
             
-            screen_x = int(self.screen_width / self.img_width * finger_x)
-            screen_y = int(self.screen_height / self.img_height * finger_y)
-            return finger_x, finger_y, screen_x, screen_y 
+            screenX = int(self.screenWidth / self.imgWidth * fingerX)
+            screenY = int(self.screenHeight / self.imgHeight * fingerY)
+            return fingerX, fingerY, screenX, screenY 
         return None, None, None, None
 
     
@@ -92,13 +91,11 @@ class Hand_Detector:
             else:
                 fingersUp.append(0)
 
-        # 4 Fingers
         for fingerId in [self.INDEX, self.MIDDLE, self.RING, self.PINKY]:
-            # Check if the current finger is up
             if lmList[fingerId].y < lmList[fingerId - 2].y:
-                fingersUp.append(1)  # Finger is up
+                fingersUp.append(1)
             else:
-                fingersUp.append(0)  # Finger is down
+                fingersUp.append(0)
         
         return fingersUp
     
