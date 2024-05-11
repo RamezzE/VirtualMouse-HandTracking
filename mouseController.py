@@ -1,42 +1,42 @@
-import pyautogui
 import time
+import numpy as np
+import mouse
 class MouseController:
-    
-    pyautogui.FAILSAFE = False
-    
     def __init__(self, screenSize):
         self.screenWidth, self.screenHeight = screenSize
-        self.mouse_held = False
+        self.mouseHeld = False
+        self.prevPos = None
         
-    def moveMouse(self, x, y, sensitivity = 1):
-        if not x or not y:
-            return
-        
-        pyautogui.moveTo(x * sensitivity, y * sensitivity)
-        
-    def moveMouse(self, pos, sensitivity = 1):
+    def moveMouse(self, pos, imgShape):
         x, y = pos
         if not x or not y:
             return
+                
+        rangeX = [imgShape[0]*0.2, imgShape[0]*1.1]   
+        rangeY = [imgShape[1]*0.1, imgShape[1]*0.5]
+                
+        x = np.interp(x, (rangeX[0], rangeX[1]), (0, self.screenWidth))
+        y = np.interp(y, (rangeY[0], rangeY[1]), (0, self.screenHeight))
         
-        roundNum = 50
-        pyautogui.moveTo(round((x * sensitivity) / roundNum) * roundNum, round((y * sensitivity) / roundNum) * roundNum) 
+        print(x, y)
+        
+        prevX, prevY = mouse.get_position()   
+        
+        if (abs(x - prevX) > 15 or abs(y - prevY) > 15):
+            mouse.move(x, y) 
+    
         
     def clickMouse(self, button = 'left'):
-        pyautogui.click(button = button)
+        mouse.click(button)
         
-    def clickMouse(self, button='left'):
-        pyautogui.click(button = button)
-        
-    def __pressMouse(self, button='left'):
-        if not self.mouse_held:
-            pyautogui.mouseDown(button = button)
-            self.mouse_held = True
+    def __pressMouse(self, button = 'left'):
+        if not self.mouseHeld:
+            mouse.press(button)
+            self.mouseHeld = True
         
     def __releaseMouse(self, button = 'left'):
-        if self.mouse_held:
-            pyautogui.mouseUp(button = button)
-            self.mouse_held = False
+        mouse.release(button)
+        self.mouseHeld = False
     
     def handleMousePress(self, fistClosed):
         if fistClosed:
@@ -44,12 +44,8 @@ class MouseController:
             return True
         else:
             self.__releaseMouse()
-            return False
-        
+            return False        
     def handleMousePressThread(self, func):
         while True:
             if self.handleMousePress(func()):
                 time.sleep(0.1)
-                
-    def getScreenSize(self):
-        return self.screenWidth, self.screenHeight

@@ -3,6 +3,7 @@ import cv2
 import math
 
 class HandDetector:
+    WRIST = 0
     THUMB = 4
     INDEX = 8
     MIDDLE = 12
@@ -10,13 +11,11 @@ class HandDetector:
     PINKY = 20
     
     # Constructor
-    def __init__(self, screenSize):
+    def __init__(self):
         self.mpHands = mp.solutions.hands
         self.mpHandsDetector = self.mpHands.Hands()
         self.mpDraw = mp.solutions.drawing_utils
-        
-        self.screenWidth, self.screenHeight = screenSize
-                
+                        
     def findHands(self, img, drawConnections = True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
@@ -55,13 +54,11 @@ class HandDetector:
         landmarks = self.getLandmarks(hand)
         if landmarks and fingerId < len(landmarks):
             finger = landmarks[fingerId]
-            fingerX = int(finger.x * self.imgWidth)
-            fingerY = int(finger.y * self.imgHeight)
+            x = int(finger.x * self.imgWidth)
+            y = int(finger.y * self.imgHeight)
             
-            screenX = int(self.screenWidth / self.imgWidth * fingerX)
-            screenY = int(self.screenHeight / self.imgHeight * fingerY)
-            return fingerX, fingerY, screenX, screenY 
-        return None, None, None, None
+            return x, y
+        return None, None
 
     
     def getLandmarks(self, hand = 0):
@@ -114,8 +111,8 @@ class HandDetector:
         return sum(fingers) == 0
     
     def getDistance(self, f1, f2, img = None, color = (255, 0, 255), scale = 5, draw = True):
-        x1, y1 = self.getFingerPosition(f1)[0:2]
-        x2, y2 = self.getFingerPosition(f2)[0:2]
+        x1, y1 = self.getFingerPosition(f1)
+        x2, y2 = self.getFingerPosition(f2)
         
         if x1 is None or x2 is None or y1 is None or y2 is None:
             return None, img

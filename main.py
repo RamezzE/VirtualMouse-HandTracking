@@ -3,9 +3,10 @@ from handDetector import HandDetector
 from mouseController import MouseController
 import pyautogui
 import threading
+screenSize = pyautogui.size()
 
-HD = HandDetector(pyautogui.size())
-MC = MouseController(pyautogui.size())
+HD = HandDetector()
+MC = MouseController(screenSize)
 
 cap = cv2.VideoCapture(0)
             
@@ -19,7 +20,6 @@ while True:
     frame = cv2.flip(frame, 1)
         
     frame = HD.findHands(img = frame, drawConnections = True)
-    frame = HD.highlightFingers(img = frame, fingers = [HD.THUMB, HD.INDEX, HD.MIDDLE])
         
     distance, frame = HD.getDistance(HD.INDEX, HD.THUMB, img = frame, draw = True)
     
@@ -27,10 +27,9 @@ while True:
         if distance is not None and distance < 25:
             MC.clickMouse()
     
-    if HD.isFingerOnlyUp(HD.INDEX):
-        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.75) 
-    elif HD.isFistClosed():
-        MC.moveMouse(pos = HD.getFingerPosition(HD.INDEX)[2:], sensitivity = 1.25) 
+    if HD.isFingerOnlyUp(HD.INDEX) or HD.isFistClosed():
+        MC.moveMouse(HD.getFingerPosition(HD.INDEX), frame.shape) 
+        frame = HD.highlightFingers(img = frame, fingers = [HD.INDEX])
     
     cv2.imshow('Virtual Mouse', frame)
 
