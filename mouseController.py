@@ -17,9 +17,7 @@ class MouseController:
                 
         x = np.interp(x, (rangeX[0], rangeX[1]), (0, self.screenWidth))
         y = np.interp(y, (rangeY[0], rangeY[1]), (0, self.screenHeight))
-        
-        print(x, y)
-        
+                
         prevX, prevY = mouse.get_position()   
         
         if (abs(x - prevX) > 15 or abs(y - prevY) > 15):
@@ -35,8 +33,9 @@ class MouseController:
             self.mouseHeld = True
         
     def __releaseMouse(self, button = 'left'):
-        mouse.release(button)
-        self.mouseHeld = False
+        if self.mouseHeld:
+            mouse.release(button)
+            self.mouseHeld = False
     
     def handleMousePress(self, fistClosed):
         if fistClosed:
