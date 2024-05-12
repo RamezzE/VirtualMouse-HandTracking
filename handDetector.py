@@ -13,7 +13,7 @@ class HandDetector:
     # Constructor
     def __init__(self):
         self.mpHands = mp.solutions.hands
-        self.mpHandsDetector = self.mpHands.Hands()
+        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = 0.75, min_tracking_confidence = 0.5)
         self.mpDraw = mp.solutions.drawing_utils
                         
     def findHands(self, img, drawConnections = True):
@@ -62,9 +62,12 @@ class HandDetector:
 
     
     def getLandmarks(self, hand = 0):
-        if self.hands and hand < len(self.hands):
-            return self.hands[hand].landmark
-        return None
+        try:
+            if self.hands and hand < len(self.hands):
+                return self.hands[hand].landmark
+            return None
+        except:
+            return None
     
     def getFingersUp(self, hand = 0):
         if not self.hands:
@@ -127,4 +130,7 @@ class HandDetector:
 
         return distance, img
 
+    def isDistanceWithin(self, f1, f2, distance = 25):
+        dist, _ = self.getDistance(f1, f2)
+        return dist is not None and dist < distance
     
