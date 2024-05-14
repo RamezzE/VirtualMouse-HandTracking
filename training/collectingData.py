@@ -8,7 +8,14 @@ cap = cv2.VideoCapture(0)
 
 collected_landmarks = []
 labels = []
-labelName = "idle_5"
+labelName = "name_of_gesture"
+
+def preproceess(arr):
+    min_val = min(arr)
+    max_val = max(arr)
+    
+    return [(val - min_val) / (max_val - min_val) for val in arr]
+
 
 while True:
     _, frame = cap.read()
@@ -18,35 +25,34 @@ while True:
     frame = HD.findHands(img = frame, drawConnections = True)
             
     landmarks = HD.getLandmarks()
-    
-    frame_landmarks = []
-    
+        
     if landmarks:
         x_values = []
         y_values = []
+        z_values = []
         
         for landmark in landmarks:
             x_values.append(landmark.x)
             y_values.append(landmark.y)
+            z_values.append(landmark.z)
             
         # if not empty
-        if x_values != [] and y_values != []:
-            min_x = min(x_values)
-            max_x = max(x_values)
+        if x_values != [] and y_values != [] and z_values != []:
+            x_values_normalized = preproceess(x_values)
+            y_values_normalized = preproceess(y_values)
+            z_values_normalized = preproceess(z_values)
             
-            min_y = min(y_values)
-            max_y = max(y_values)
+            # Flip the x and y values
+            x_values_normalized_flipped = [1 - val for val in x_values_normalized]
+            y_values_normalized_flipped = [1 - val for val in y_values_normalized]
 
-            x_values_normalized = [(x - min_x) / (max_x - min_x) for x in x_values]
-            y_values_normalized = [(y - min_y) / (max_y - min_y) for y in y_values]
+            normalized_landmarks = [coord for coords in zip(x_values_normalized, y_values_normalized, z_values_normalized) for coord in coords]
+            H_flipped_landmarks = [coord for coords in zip(x_values_normalized_flipped, y_values_normalized, z_values_normalized) for coord in coords]
+            V_flipped_landmarks = [coord for coords in zip(x_values_normalized, y_values_normalized_flipped, z_values_normalized) for coord in coords]
+            HV_flipped_landmarks = [coord for coords in zip(x_values_normalized_flipped, y_values_normalized_flipped, z_values_normalized) for coord in coords]
             
-            for x, y in zip(x_values_normalized, y_values_normalized):
-                frame_landmarks.append(x)
-                frame_landmarks.append(y)
-                
-            collected_landmarks.append(frame_landmarks)
-            
-            labels.append(labelName)
+            collected_landmarks.extend([normalized_landmarks, H_flipped_landmarks, V_flipped_landmarks, HV_flipped_landmarks])
+            labels.extend([labelName] * 4)
         
         
     cv2.imshow('Collecting Data', frame)
