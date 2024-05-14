@@ -17,39 +17,45 @@ MC = MouseController(screenSize)
 
 cap = cv2.VideoCapture(0)
 
-arr = ['idle', 'left_click', 'right_click', 'move_mouse', 'press_and_hold_left_click', 'scroll']
+arr = ['idle', 'left_click', 'right_click', 'move_mouse', 'press_and_hold_left_click', 'pinch', 'scroll', 'double_click']
 
 IDLE = 0
 LEFT_CLICK = 1
 RIGHT_CLICK = 2
 MOVE_MOUSE = 3
 PRESS_AND_HOLD_LEFT_CLICK = 4
-SCROLL = 5
+PINCH = 5
+SCROLL = 6
+DOUBLE_LEFT_CLICK = 7
 
 tf_model = load_model('model/model2.keras')
+
+def preprocess(arr):
+    min_val = min(arr)
+    max_val = max(arr)
+    
+    return [(val - min_val) / (max_val - min_val) for val in arr]
 
 def prepareLandmarks(landmarks):
     x_values = []
     y_values = []
+    z_values = []
     X = []
     
     for landmark in landmarks:
         x_values.append(landmark.x)
         y_values.append(landmark.y)
+        z_values.append(landmark.z)
         
-    if x_values != [] and y_values != []:
-        min_x = min(x_values)
-        max_x = max(x_values)
+    if x_values != [] and y_values != [] and z_values != []:
+        x_values_normalized = preprocess(x_values)
+        y_values_normalized = preprocess(y_values)
+        z_values_normalized = preprocess(z_values)
         
-        min_y = min(y_values)
-        max_y = max(y_values)
-
-        x_values_normalized = [(x - min_x) / (max_x - min_x) for x in x_values]
-        y_values_normalized = [(y - min_y) / (max_y - min_y) for y in y_values]
-        
-        for x, y in zip(x_values_normalized, y_values_normalized):
+        for x, y, z in zip(x_values_normalized, y_values_normalized, z_values_normalized):
             X.append(x)
             X.append(y)
+            X.append(z)
             
     X = np.array(X)
     X = X.reshape(1, -1)
@@ -57,46 +63,49 @@ def prepareLandmarks(landmarks):
     return X
 
 def handleInput(prediction, frame):
-    # print(arr[prediction])
+    print(arr[prediction])
     
     if prediction == IDLE:
         MC.handleMousePress(False)
         MC.resetClick()
         return frame
     
-    if prediction == LEFT_CLICK or prediction == RIGHT_CLICK:
-        left_click = HD.isDistanceWithin(HD.INDEX, HD.THUMB)
-        right_click = HD.isDistanceWithin(HD.MIDDLE, HD.THUMB)
+    if prediction == LEFT_CLICK:
+        # if (HD.isDistanceWithin(HD.INDEX, HD.MIDDLE, 35)):
+        MC.clickMouse(button = 'left')
+        MC.resetClick(button = 'right')
+        return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE, HD.THUMB])
+    
+    if prediction == RIGHT_CLICK:
+        MC.clickMouse(button = 'right') 
+        MC.resetClick(button = 'left')    
+        return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.THUMB])
+    
+    if prediction == DOUBLE_LEFT_CLICK:
+        MC.doubleClick(button = 'left')
         
-        if left_click == right_click:
-            return frame
-        
-        if left_click:
-            MC.clickMouse(button = 'left')
-            MC.resetClick(button = 'right')
-            return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.THUMB])
-            
-        if right_click:
-            MC.clickMouse(button = 'right') 
-            MC.resetClick(button = 'left')    
-            return HD.highlightFingers(img = frame, fingers = [HD.MIDDLE, HD.THUMB])
+        MC.resetClick(button = 'right')
+        return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE])
             
     if prediction == SCROLL:
-        frame = HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE])
+        frame = HD.highlightFingers(img = frame, fingers = [HD.THUMB])
         MC.handleMousePress(False)
         MC.resetClick()
-        MC.handleScroll()
+        # MC.handleScroll()
         return frame
+    
+    if prediction == PINCH:
+        pass
         
     if prediction == MOVE_MOUSE:
-        # ADD HD Validation
+        # if (HD.isDistanceWithin(HD.INDEX, HD.MIDDLE)):
         MC.handleMousePress(False)
         MC.resetClick()
         frame = HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE])
     
     elif prediction == PRESS_AND_HOLD_LEFT_CLICK:
         MC.handleMousePress(True)
-        MC.resetClick(button = 'left')
+        MC.resetClick()
         frame = HD.highlightFingers(img = frame, fingers = [HD.INDEX])
         
     MC.moveMouse(HD.getFingerPosition(HD.INDEX), frame.shape)
@@ -118,11 +127,11 @@ while True:
         y_pred_index = np.argmax(y_pred_probabilities, axis=1)
         frame = handleInput(y_pred_index[0], frame)
     
-    # cv2.imshow('Virtual Mouse', frame)
+    cv2.imshow('Virtual Mouse', frame)
 
     key = cv2.waitKey(1)
     
-    print('FPS: ', int(1 / (time.time() - start_time)))
+    # print('FPS: ', int(1 / (time.time() - start_time)))
     
     if key == ord('q'):
         break
