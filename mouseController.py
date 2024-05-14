@@ -43,6 +43,17 @@ class MouseController:
             self.justClickedLeft = True
         else: self.justClickedRight = True 
         
+    def doubleClick(self, button = 'left'):
+        if button == 'left':
+            if not self.justClickedLeft:
+                mouse.double_click(button)
+                self.justClickedLeft = True
+                
+        elif button == 'right':
+            if not self.justClickedRight:
+                mouse.double_click(button)
+                self.justClickedRight = True
+        
     def __pressMouse(self, button = 'left'):
         if not self.mouseHeld:
             # print('Mouse Held')
