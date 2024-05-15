@@ -5,6 +5,6 @@ Scripts/
 share/
 pyvenv.cfg
 __pycache__/
-*.keras
+# *.keras
 *.csv
 
