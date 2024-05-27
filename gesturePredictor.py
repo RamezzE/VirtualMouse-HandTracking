@@ -1,13 +1,15 @@
 import numpy as np
 
 class GesturePredictor:
-    def __init__(self, model, buffer_size = 5):
-        self.model = model
+    def __init__(self, tensorflow_model, buffer_size = 5):
+        self.model = tensorflow_model
         self.buffer_size = buffer_size
         self.prediction_buffer = []
 
     def predict(self, landmarks):
-        prediction = (self.model.predict(landmarks))[0]
+        prediction = self.model(landmarks)
+        
+        prediction = np.argmax(prediction)
 
         self.prediction_buffer.append(prediction)
         

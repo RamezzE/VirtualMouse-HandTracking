@@ -1,19 +1,29 @@
 import cv2
 from handDetector import HandDetector
 from mouseController import MouseController
+from gesturePredictor import GesturePredictor
+
+from tensorflow.keras.models import load_model
+
 import pyautogui
 import numpy as np
-from tensorflow.keras.models import load_model
 import time
+import pickle
+import pandas as pd
 
-# get screensize without pyautogui
-# i want to get it automatically from the screen
-# to be able to use it across any screen
+model = load_model('model/model_no_z.keras')
+
+# model = pickle.load(open('model/decision_tree.pkl', 'rb'))
+
+import warnings
+# Suppress warnings
+# warnings.filterwarnings('ignore')
 
 screenSize = pyautogui.size()
 
 HD = HandDetector()
 MC = MouseController(screenSize)
+GP = GesturePredictor(model)
 
 cap = cv2.VideoCapture(0)
 
@@ -28,7 +38,6 @@ PINCH = 5
 SCROLL = 6
 DOUBLE_LEFT_CLICK = 7
 
-tf_model = load_model('model/model2.keras')
 
 def preprocess(arr):
     min_val = min(arr)
@@ -39,31 +48,36 @@ def preprocess(arr):
 def prepareLandmarks(landmarks):
     x_values = []
     y_values = []
-    z_values = []
-    X = []
+    
+    arr = []
     
     for landmark in landmarks:
         x_values.append(landmark.x)
         y_values.append(landmark.y)
-        z_values.append(landmark.z)
         
-    if x_values != [] and y_values != [] and z_values != []:
+    if x_values != [] and y_values != []:
         x_values_normalized = preprocess(x_values)
         y_values_normalized = preprocess(y_values)
-        z_values_normalized = preprocess(z_values)
         
-        for x, y, z in zip(x_values_normalized, y_values_normalized, z_values_normalized):
-            X.append(x)
-            X.append(y)
-            X.append(z)
-            
-    X = np.array(X)
-    X = X.reshape(1, -1)
+    arr = x_values_normalized + y_values_normalized
+
+    arr = np.array(arr)
+    arr = arr.reshape(1, -1)
     
-    return X
+    return arr
+
+last_prediction = None
 
 def handleInput(prediction, frame):
-    print(arr[prediction])
+    global last_prediction
+    
+    if last_prediction is None:
+        last_prediction = prediction
+        print(arr[prediction])
+    
+    if prediction != last_prediction:
+        last_prediction = prediction
+        print(arr[prediction])
     
     if prediction == IDLE:
         MC.handleMousePress(False)
@@ -71,14 +85,13 @@ def handleInput(prediction, frame):
         return frame
     
     if prediction == LEFT_CLICK:
-        # if (HD.isDistanceWithin(HD.INDEX, HD.MIDDLE, 35)):
         MC.clickMouse(button = 'left')
         MC.resetClick(button = 'right')
         return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE, HD.THUMB])
     
     if prediction == RIGHT_CLICK:
         MC.clickMouse(button = 'right') 
-        MC.resetClick(button = 'left')    
+        MC.resetClick(button = 'left')
         return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.THUMB])
     
     if prediction == DOUBLE_LEFT_CLICK:
@@ -123,16 +136,19 @@ while True:
     
     if landmarks:
         landmarks = prepareLandmarks(landmarks)
-        y_pred_probabilities = tf_model(landmarks)
-        y_pred_index = np.argmax(y_pred_probabilities, axis=1)
-        frame = handleInput(y_pred_index[0], frame)
+        y_pred = GP.predict(landmarks)
+        frame = handleInput(y_pred, frame)
     
     cv2.imshow('Virtual Mouse', frame)
 
     key = cv2.waitKey(1)
     
-    # print('FPS: ', int(1 / (time.time() - start_time)))
+    # Show fps on screen
+    fps = 1.0 / (time.time() - start_time)
     
+    frame = cv2.putText(frame, f'FPS: {int(fps)}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    
+        
     if key == ord('q'):
         break
 
