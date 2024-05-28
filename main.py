@@ -2,6 +2,7 @@ import cv2
 from handDetector import HandDetector
 from mouseController import MouseController
 from gesturePredictor import GesturePredictor
+from KalmanFilter import KalmanFilter1D
 
 from tensorflow.keras.models import load_model
 
@@ -24,6 +25,8 @@ screenSize = pyautogui.size()
 HD = HandDetector()
 MC = MouseController(screenSize)
 GP = GesturePredictor(model)
+KF_x = KalmanFilter1D()
+KF_y = KalmanFilter1D()
 
 cap = cv2.VideoCapture(0)
 
@@ -59,8 +62,11 @@ def prepareLandmarks(landmarks):
         x_values_normalized = preprocess(x_values)
         y_values_normalized = preprocess(y_values)
         
-    arr = x_values_normalized + y_values_normalized
-
+    # x_kf = (KF_x.update(x_values_normalized)).flatten()
+    # y_kf = (KF_y.update(y_values_normalized)).flatten()
+    
+    arr = np.concatenate((x_values_normalized, y_values_normalized))
+    
     arr = np.array(arr)
     arr = arr.reshape(1, -1)
     
@@ -77,6 +83,7 @@ def handleInput(prediction, frame):
     
     if prediction != last_prediction:
         last_prediction = prediction
+        
         print(arr[prediction])
     
     if prediction == IDLE:
@@ -121,7 +128,15 @@ def handleInput(prediction, frame):
         MC.resetClick()
         frame = HD.highlightFingers(img = frame, fingers = [HD.INDEX])
         
-    MC.moveMouse(HD.getFingerPosition(HD.INDEX), frame.shape)
+    IndexPos = HD.getFingerPosition(HD.INDEX)
+    
+    if IndexPos is not None:
+        x, y = IndexPos
+        x = KF_x.update(x)
+        y = KF_y.update(y)
+        MC.moveMouse((x, y), frame.shape)
+    
+    # MC.moveMouse(HD.getFingerPosition(HD.INDEX), frame.shape)
     return frame
 
 while True:
