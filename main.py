@@ -29,6 +29,8 @@ KF_x = KalmanFilter1D()
 KF_y = KalmanFilter1D()
 
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
 arr = ['idle', 'left_click', 'right_click', 'move_mouse', 'press_and_hold_left_click', 'pinch', 'scroll', 'double_click']
 
@@ -61,9 +63,6 @@ def prepareLandmarks(landmarks):
     if x_values != [] and y_values != []:
         x_values_normalized = preprocess(x_values)
         y_values_normalized = preprocess(y_values)
-        
-    # x_kf = (KF_x.update(x_values_normalized)).flatten()
-    # y_kf = (KF_y.update(y_values_normalized)).flatten()
     
     arr = np.concatenate((x_values_normalized, y_values_normalized))
     

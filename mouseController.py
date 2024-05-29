@@ -21,8 +21,8 @@ class MouseController:
                 
         prevX, prevY = mouse.get_position()   
         
-        if (abs(x - prevX) > 15 or abs(y - prevY) > 15):
-            mouse.move(x, y) 
+        # if (abs(x - prevX) > 15 or abs(y - prevY) > 15):
+        mouse.move(x, y) 
         
     def clickMouse(self, button = 'left'):
         justClicked = False
