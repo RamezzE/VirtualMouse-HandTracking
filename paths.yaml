@@ -1,0 +1,8 @@
+assets:
+  icons: 
+    settings: "assets/icons/settings_icon.png"
+    pointer: "assets/icons/pointer.png"
+  
+  fonts:
+    main_font: "assets/fonts/AnnieUseYourTelescope-Regular.ttf"
+
