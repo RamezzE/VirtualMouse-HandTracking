@@ -9,28 +9,51 @@ from tensorflow.keras.models import load_model
 import pyautogui
 import numpy as np
 import time
-import pickle
-import pandas as pd
+
+import queue
+import threading
 
 model = load_model('model/model_no_z.keras')
-
-# model = pickle.load(open('model/decision_tree.pkl', 'rb'))
-
-import warnings
-# Suppress warnings
-# warnings.filterwarnings('ignore')
 
 screenSize = pyautogui.size()
 
 HD = HandDetector()
 MC = MouseController(screenSize)
 GP = GesturePredictor(model)
+
+
+MC.toggleRelativeMouse(True)
+
 KF_x = KalmanFilter1D()
 KF_y = KalmanFilter1D()
 
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+
+frame_queue = queue.Queue(maxsize = 3)
+
+def capture_frames(cap):
+    try:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            if frame_queue.full():
+                # Discard the oldest frame (the one at the front of the queue)
+                frame_queue.get_nowait()
+            frame_queue.put(frame)
+            
+    except Exception as e:
+        print(f'Capture thread error: {e}')
+        
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
+        print('Capture thread released the camera')
+
+capture_thread = threading.Thread(target=capture_frames, args=(cap,))
+capture_thread.start()
 
 arr = ['idle', 'left_click', 'right_click', 'move_mouse', 'press_and_hold_left_click', 'pinch', 'scroll', 'double_click']
 
@@ -51,25 +74,16 @@ def preprocess(arr):
     return [(val - min_val) / (max_val - min_val) for val in arr]
 
 def prepareLandmarks(landmarks):
-    x_values = []
-    y_values = []
-    
-    arr = []
-    
-    for landmark in landmarks:
-        x_values.append(landmark.x)
-        y_values.append(landmark.y)
-        
-    if x_values != [] and y_values != []:
-        x_values_normalized = preprocess(x_values)
-        y_values_normalized = preprocess(y_values)
-    
-    arr = np.concatenate((x_values_normalized, y_values_normalized))
-    
-    arr = np.array(arr)
-    arr = arr.reshape(1, -1)
-    
-    return arr
+    x_values = np.array([landmark.x for landmark in landmarks])
+    y_values = np.array([landmark.y for landmark in landmarks])
+
+    if x_values.size > 0 and y_values.size > 0:
+        x_values = (x_values - x_values.min()) / (x_values.max() - x_values.min())
+        y_values = (y_values - y_values.min()) / (y_values.max() - y_values.min())
+
+    arr = np.concatenate((x_values, y_values))
+    return arr.reshape(1, -1)
+
 
 last_prediction = None
 
@@ -82,28 +96,34 @@ def handleInput(prediction, frame):
     
     if prediction != last_prediction:
         last_prediction = prediction
+        KF_x.reset()
+        KF_y.reset()
         
         print(arr[prediction])
     
     if prediction == IDLE:
         MC.handleMousePress(False)
         MC.resetClick()
+        MC.resetMousePos()
         return frame
     
     if prediction == LEFT_CLICK:
         MC.clickMouse(button = 'left')
         MC.resetClick(button = 'right')
+        MC.resetMousePos()
         return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE, HD.THUMB])
     
     if prediction == RIGHT_CLICK:
         MC.clickMouse(button = 'right') 
         MC.resetClick(button = 'left')
+        MC.resetMousePos()
         return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.THUMB])
     
     if prediction == DOUBLE_LEFT_CLICK:
         MC.doubleClick(button = 'left')
         
         MC.resetClick(button = 'right')
+        MC.resetMousePos()
         return HD.highlightFingers(img = frame, fingers = [HD.INDEX, HD.MIDDLE])
             
     if prediction == SCROLL:
@@ -111,10 +131,11 @@ def handleInput(prediction, frame):
         MC.handleMousePress(False)
         MC.resetClick()
         # MC.handleScroll()
+        MC.resetMousePos()
         return frame
     
     if prediction == PINCH:
-        pass
+        return frame
         
     if prediction == MOVE_MOUSE:
         # if (HD.isDistanceWithin(HD.INDEX, HD.MIDDLE)):
@@ -135,36 +156,45 @@ def handleInput(prediction, frame):
         y = KF_y.update(y)
         MC.moveMouse((x, y), frame.shape)
     
-    # MC.moveMouse(HD.getFingerPosition(HD.INDEX), frame.shape)
     return frame
 
-while True:
-    start_time = time.time()
-    _, frame = cap.read()
-    
-    frame = cv2.flip(frame, 1)
+try:
+    while True:
+        start_time = time.time()
         
-    frame = HD.findHands(img = frame, drawConnections = True)
-    
-    landmarks = HD.getLandmarks()
-    
-    if landmarks:
-        landmarks = prepareLandmarks(landmarks)
-        y_pred = GP.predict(landmarks)
-        frame = handleInput(y_pred, frame)
-    
-    cv2.imshow('Virtual Mouse', frame)
-
-    key = cv2.waitKey(1)
-    
-    # Show fps on screen
-    fps = 1.0 / (time.time() - start_time)
-    
-    frame = cv2.putText(frame, f'FPS: {int(fps)}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    
+        frame = frame_queue.get()
+        # _, frame = cap.read()
         
-    if key == ord('q'):
-        break
+        frame = cv2.flip(frame, 1)
+            
+        frame = HD.findHands(img = frame, drawConnections = True)
+        
+        landmarks = HD.getLandmarks()
+        
+        if landmarks:
+            landmarks = prepareLandmarks(landmarks)
+            y_pred = GP.predict(landmarks)
+            frame = handleInput(y_pred, frame)
+        else:
+            MC.resetMousePos()
+            
+        fps = str(int(1.0 / (time.time() - start_time)))
 
-cap.release()
-cv2.destroyAllWindows()
+        cv2.putText(frame, f'FPS: {fps}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
+        frame = cv2.resize(frame, (640, 480))
+        
+        cv2.imshow('Virtual Mouse', frame)
+
+        key = cv2.waitKey(1)
+        
+        if key == ord('q'):
+            break
+        
+except Exception as e:
+    print(f'Error: {e}')
+    
+finally:
+    cap.release()
+    cv2.destroyAllWindows()
+    capture_thread.join()
