@@ -2,13 +2,20 @@ import kivy
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.core.window import Window
-from views.homeView import HomeScreen
+from screens.HomeScreen import HomeScreen
+
+from kivy.uix.screenmanager import ScreenManager, Screen
+
+from kivy.lang import Builder
 
 class VirtualMouse(App):
     def build(self):
-        screen = HomeScreen()
-        return screen.getRoot()
-
+        
+        sm = ScreenManager()
+        sm.add_widget(HomeScreen(), name='home')
+        
+        return sm
+        
 if __name__ == '__main__':
     Window.fullscreen = True
     Window.size = (Window.width / 3, Window.height / 1.5)

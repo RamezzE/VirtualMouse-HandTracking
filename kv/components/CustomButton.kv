@@ -1,0 +1,9 @@
+<CustomButton>:
+    canvas.before:
+        Rectangle:
+            texture: self.current_texture
+            size: self.size
+            pos: self.pos[0], self.pos[1] - self.size[1] * 0.05
+
+    valign: 'middle'
+    halign: 'center'

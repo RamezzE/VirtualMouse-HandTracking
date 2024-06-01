@@ -1,0 +1,46 @@
+<HomeScreen>:
+    FloatLayout:
+        pos: root.pos
+        size: root.size
+        id: home
+
+        canvas.before:
+            Color:
+                rgba: 18/255, 18/255, 18/255, 1
+            Rectangle:
+                pos: home.pos
+                size: home.size
+
+        Label:
+            text: 'Virtual\nMouse'
+            font_name: root.fonts['poppins']['bold']
+            color: 1, 1, 1, 0.87
+            font_size: 48
+            size_hint: 1, 1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+
+        Label:
+            text: 'Ditch your mouse and\n       use your hand'
+            font_name: root.fonts['poppins']['light_italic']
+            color: 1, 1, 1, 0.87
+            font_size: 20
+            size_hint: 0.7, 0.2
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        CustomButton:
+            text: 'Start'
+            font_size: 24
+            font_name: root.fonts['poppins']['medium']
+            normal_text_color: 18/255, 18/255, 18/255, 1
+            pressed_text_color: 1, 1, 1, 0.87
+            # size_hint: 0.4, 0.12
+            size_hint: None, None
+            size: 140, 70
+            
+            pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+            normal_image: root.paths['assets']['buttons']['normal']
+            pressed_image: root.paths['assets']['buttons']['normal_pressed']
+
+
+
+
