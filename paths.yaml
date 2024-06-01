@@ -1,7 +1,7 @@
 assets:
   icons: 
-    settings: "assets/icons/settings_icon.png"
-    pointer: "assets/icons/pointer.png"
+    settings: "assets/icons/settings.png"
+    github: "assets/icons/github.png"
   
   fonts:
     poppins:

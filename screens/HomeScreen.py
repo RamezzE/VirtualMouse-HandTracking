@@ -15,7 +15,6 @@ class HomeScreen(Screen):
     with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
             
-    icons = paths['assets']['icons']
     fonts = paths['assets']['fonts']
     
     size = Window.size
