@@ -14,6 +14,8 @@ from kivy.uix.image import Image
 from components.CustomButton import CustomButton
 
 class CameraScreen(Screen):
+        
+    logsLabelText = ''
     
     with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
@@ -28,12 +30,24 @@ class CameraScreen(Screen):
         
         self.size = Window.size
         self.pos = Window._pos
+        
+        self.logs = []
+        self.ids['GCP'].updateLog = self.updateLog
+        
         self.bind(size = self.resize)
         
     def resize(self, instance, value):
         self.size = instance.size
         self.pos = Window._pos
         self.ids['layout'].size = self.size
+        
+    def updateLog(self, message):
+        self.logs.append(message)
+        
+        if len(self.logs) > 5:
+            self.logs.pop(0)
+            
+        self.ids['logsLabel'].text = '\n'.join(self.logs)
         
     def on_stop(self):
         self.ids['GCP'].on_stop()

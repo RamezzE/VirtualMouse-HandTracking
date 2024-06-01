@@ -13,6 +13,7 @@
 
         GestureControlPanel:
             id: GCP
+            callback: root.updateLog
             size_hint: 1, 0.5
             pos_hint: {'center_y': 0.75}
 
@@ -23,6 +24,15 @@
             size_hint: 1, 0.1 
             pos_hint: {'center_x': 0.25, 'center_y': 0.45}
             font_size: 24
+
+        Label:
+            id: logsLabel
+            text: root.logsLabelText
+            font_name: root.fonts['poppins']['regular']
+            color: 1, 1, 1, 0.87
+            size_hint: 0.2, 0.1 
+            pos_hint: {'x': 0.2, 'top': 0.4}
+            font_size: 18
 
         CustomButton:
             text: ''            

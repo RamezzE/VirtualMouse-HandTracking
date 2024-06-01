@@ -30,7 +30,7 @@ def prepareLandmarks(landmarks):
     return arr.reshape(1, -1)
 
 class GestureControlPanel(FloatLayout):
-    camera = ObjectProperty(None)
+    callback = ObjectProperty(None)
     def __init__(self, **kwargs):
         super(GestureControlPanel, self).__init__(**kwargs)
         
@@ -41,6 +41,8 @@ class GestureControlPanel(FloatLayout):
         
         self.KF_x = KF()
         self.KF_y = KF()
+        
+        self.updateLog = None
                 
         self.add_widget(self.camera)   
         
@@ -55,17 +57,18 @@ class GestureControlPanel(FloatLayout):
         frame = self.HD.highlightGesture(frame, prediction)
         
         actionName, actionIndex = self.GP.getAction(prediction)
-
+        
         if self.lastAction is None:
             self.lastAction = actionIndex
-            print(actionName)
+            if self.updateLog is not None: self.updateLog(actionName)
+            # print(actionName)
                 
         if actionIndex != self.lastAction:
             self.lastAction = actionIndex
             self.KF_x.reset()
             self.KF_y.reset()
-            
-            print(actionName)                
+            if self.updateLog is not None: self.updateLog(actionName)
+            # print(actionName)                
         
         if actionIndex == GP.IDLE:
             self.MC.handleMousePress(False)
