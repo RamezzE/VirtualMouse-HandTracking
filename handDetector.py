@@ -2,6 +2,16 @@ import mediapipe as mp
 import cv2
 import math
 
+FIST_CLOSED = 0
+HAND_OPEN = 1
+INDEX_MIDDLE_THUMB_EXTENDED = 2
+INDEX_THUMB_EXTENDED = 3
+INDEX_MIDDLE_EXTENDED = 4
+INDEX_EXTENDED = 5
+PINCH = 6
+THUMB_EXTENDED = 7
+SCISSORS = 8
+
 class HandDetector:
     WRIST = 0
     THUMB = 4
@@ -49,6 +59,31 @@ class HandDetector:
                 cv2.circle(img = img, center = (x, y), radius = 10, color = (255, 0, 0), thickness = cv2.FILLED)
                 
         return img
+    
+    def highlightGesture(self, img, gesture):
+        if not self.hands:
+            return img
+        
+        # switch case 
+        
+        if gesture == FIST_CLOSED or gesture == HAND_OPEN:
+            fingers = [self.THUMB, self.INDEX, self.MIDDLE, self.RING, self.PINKY]
+        elif gesture == INDEX_MIDDLE_THUMB_EXTENDED:
+            fingers = [self.INDEX, self.MIDDLE, self.THUMB]
+        elif gesture == INDEX_THUMB_EXTENDED:
+            fingers = [self.INDEX, self.THUMB]
+        elif gesture == INDEX_MIDDLE_EXTENDED:
+            fingers = [self.INDEX, self.MIDDLE]
+        elif gesture == INDEX_EXTENDED:
+            fingers = [self.INDEX]
+        elif gesture == PINCH:
+            fingers = [self.INDEX, self.THUMB]
+        elif gesture == THUMB_EXTENDED:
+            fingers = [self.THUMB]
+        else:
+            fingers = [self.INDEX, self.MIDDLE]
+        
+        return self.highlightFingers(img, fingers)
     
     def getFingerPosition(self, fingerId, hand = 0):
         landmarks = self.getLandmarks(hand)

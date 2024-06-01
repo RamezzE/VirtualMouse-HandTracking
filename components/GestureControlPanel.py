@@ -7,33 +7,16 @@ import numpy as np
 from components.Camera import Camera
 
 from handDetector import HandDetector
-from gesturePredictor import GesturePredictor
-from mouseController import MouseController
-from KalmanFilter import KalmanFilter1D
+from gesturePredictor import GesturePredictor as GP
+from mouseController import MouseController as MC
+from KalmanFilter import KalmanFilter1D as KF
 import pyautogui
 
-arr = ['idle', 'left_click', 'right_click', 'move_mouse', 'press_and_hold_left_click', 'pinch', 'scroll', 'double_click']
-
-IDLE = 0
-LEFT_CLICK = 1
-RIGHT_CLICK = 2
-MOVE_MOUSE = 3
-PRESS_AND_HOLD_LEFT_CLICK = 4
-PINCH = 5
-SCROLL = 6
-DOUBLE_LEFT_CLICK = 7
 screenSize = pyautogui.size()
 
 from tensorflow.keras.models import load_model
 
-
-model = load_model('model/model_no_z.keras')
-
-def preprocess(arr):
-    min_val = min(arr)
-    max_val = max(arr)
-    
-    return [(val - min_val) / (max_val - min_val) for val in arr]
+model = load_model('model/model_no_z2.keras')
 
 def prepareLandmarks(landmarks):
     x_values = np.array([landmark.x for landmark in landmarks])
@@ -53,57 +36,66 @@ class GestureControlPanel(FloatLayout):
         
         self.camera = Camera(captureIndex = 0, fps=30, size_hint = (1, 1), pos_hint={'top':1})
         self.HD = HandDetector()
-        self.MC = MouseController(screenSize)
-        self.GP = GesturePredictor(model)
+        self.MC = MC(screenSize)
+        self.GP = GP(model)
         
-        self.KF_x = KalmanFilter1D()
-        self.KF_y = KalmanFilter1D()
+        self.KF_x = KF()
+        self.KF_y = KF()
                 
         self.add_widget(self.camera)   
         
-        self.last_prediction = None
+        self.lastAction = None
                 
         Clock.schedule_interval(self.update, 1.0 / 30)
-        
+    
     def handleInput(self, prediction, frame):
+        if prediction is None:
+            return frame
         
-        if self.last_prediction is None:
-            self.last_prediction = prediction
-            print(arr[prediction])
+        frame = self.HD.highlightGesture(frame, prediction)
         
-        if prediction != self.last_prediction:
-            self.last_prediction = prediction
+        actionName, actionIndex = self.GP.getAction(prediction)
+
+        if self.lastAction is None:
+            self.lastAction = actionIndex
+            print(actionName)
+                
+        if actionIndex != self.lastAction:
+            self.lastAction = actionIndex
             self.KF_x.reset()
             self.KF_y.reset()
             
-            print(arr[prediction])
+            print(actionName)                
         
-        if prediction == IDLE:
+        if actionIndex == GP.IDLE:
             self.MC.handleMousePress(False)
             self.MC.resetClick()
             self.MC.resetMousePos()
             return frame
         
-        if prediction == LEFT_CLICK:
+        if actionIndex == GP.LEFT_CLICK:
             self.MC.clickMouse(button = 'left')
             self.MC.resetClick(button = 'right')
             self.MC.resetMousePos()
-            return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE, self.HD.THUMB])
+            return frame
+            # return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE, self.HD.THUMB])
         
-        if prediction == RIGHT_CLICK:
+        if actionIndex == GP.RIGHT_CLICK:
             self.MC.clickMouse(button = 'right') 
             self.MC.resetClick(button = 'left')
             self.MC.resetMousePos()
-            return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.THUMB])
+            return frame 
+            # return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.THUMB])
         
-        if prediction == DOUBLE_LEFT_CLICK:
+        if actionIndex == GP.DOUBLE_LEFT_CLICK:
             self.MC.doubleClick(button = 'left')
             
             self.MC.resetClick(button = 'right')
             self.MC.resetMousePos()
-            return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE])
+            return frame
+            # return self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE])
                 
-        if prediction == SCROLL:
+        if actionIndex == GP.SCROLL:
             frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.THUMB])
             self.MC.handleMousePress(False)
             self.MC.resetClick()
@@ -111,19 +103,18 @@ class GestureControlPanel(FloatLayout):
             self.MC.resetMousePos()
             return frame
         
-        if prediction == PINCH:
+        if actionIndex == GP.PINCH:
             return frame
             
-        if prediction == MOVE_MOUSE:
-            # if (HD.isDistanceWithin(HD.INDEX, HD.MIDDLE)):
+        if actionIndex == GP.MOVE_MOUSE:
             self.MC.handleMousePress(False)
             self.MC.resetClick()
-            frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE])
+            # frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX, self.HD.MIDDLE])
         
-        elif prediction == PRESS_AND_HOLD_LEFT_CLICK:
+        elif actionIndex == GP.DRAG:
             self.MC.handleMousePress(True)
             self.MC.resetClick()
-            frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX])
+            # frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.INDEX])
             
         IndexPos = self.HD.getFingerPosition(self.HD.INDEX)
         
