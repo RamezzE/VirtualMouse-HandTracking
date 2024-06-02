@@ -2,6 +2,7 @@ assets:
   icons: 
     settings: "assets/icons/settings.png"
     github: "assets/icons/github.png"
+    video: "assets/icons/video.png"
   
   fonts:
     poppins:
