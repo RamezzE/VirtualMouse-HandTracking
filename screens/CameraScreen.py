@@ -1,6 +1,12 @@
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 from components.GestureControlPanel import GestureControlPanel
+from components.CustomButton import CustomButton
+
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.lang import Builder
@@ -11,7 +17,6 @@ import webbrowser
 
 from kivy.uix.image import Image
 
-from components.CustomButton import CustomButton
 
 class CameraScreen(Screen):
         
@@ -52,6 +57,3 @@ class CameraScreen(Screen):
     def on_stop(self):
         self.ids['GCP'].on_stop()
         cv2.destroyAllWindows()
-        
-                
-        

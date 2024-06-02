@@ -30,9 +30,12 @@
             text: root.logsLabelText
             font_name: root.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
-            size_hint: 0.2, 0.1 
-            pos_hint: {'x': 0.2, 'top': 0.4}
+            size_hint: 1, 0.3
+            pos_hint: {'x':0.1, 'y': 0.1}
             font_size: 18
+            text_size: self.size
+            halign: 'left'
+            valign: 'top'
 
         CustomButton:
             text: ''            
@@ -44,7 +47,6 @@
             pressed_image: root.icons['settings']
 
             on_release: root.manager.current = 'home'
-            
 
         CustomButton:
             text: ''            

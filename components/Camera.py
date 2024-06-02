@@ -1,6 +1,5 @@
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
-from kivy.clock import Clock
 
 import queue
 import cv2
@@ -11,15 +10,29 @@ class Camera(Image):
         super(Camera, self).__init__(**kwargs)
         self.capture = cv2.VideoCapture(captureIndex)
         self.fps = fps
-        
+        self.running = False
         self.frame_queue = queue.Queue(maxsize = 3)
-                
-        self.capture_thread = threading.Thread(target = self.capture_frames)
-        self.capture_thread.start()
         
-    def capture_frames(self):
+    def startCapture(self):
         try:
-            while self.capture.isOpened():
+            self.capture.set(cv2.CAP_PROP_FPS, self.fps)
+            self.running = True
+            self.captureThread = threading.Thread(target = self.captureFrames)
+            self.captureThread.start()
+        except Exception as e:
+            print(f'Error starting the camera: {e}')
+        
+    def stopCapture(self):
+        try:
+            self.frame_queue.queue.clear()
+            self.captureThread.join()
+        except Exception as e:
+            print(f'Error stopping the camera: {e}')
+        
+        
+    def captureFrames(self):
+        try:
+            while self.capture.isOpened() and self.running:
                 ret, frame = self.capture.read()
                 if not ret:
                     break
@@ -48,7 +61,3 @@ class Camera(Image):
         texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.texture = texture
-        
-    def releaseCamera(self):
-        self.frame_queue.queue.clear()
-        self.capture.release()

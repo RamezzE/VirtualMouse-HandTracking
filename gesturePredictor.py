@@ -1,5 +1,4 @@
 import numpy as np
-import sqlite3
 from db import Database
 
 class GesturePredictor:
