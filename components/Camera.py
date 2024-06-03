@@ -1,19 +1,29 @@
+from kivy.uix.accordion import BooleanProperty, NumericProperty
+from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
 
 import queue
 import cv2
 import threading
-
+import numpy as np
 class Camera(Image):
-    def __init__(self, captureIndex, fps, **kwargs):
+    
+    captureIndex = NumericProperty(0)
+    fps = NumericProperty(30)
+    running = BooleanProperty(False)
+    
+    def __init__(self, **kwargs):
         super(Camera, self).__init__(**kwargs)
-        self.capture = cv2.VideoCapture(captureIndex)
-        self.fps = fps
+        
         self.running = False
         self.frame_queue = queue.Queue(maxsize = 3)
         
     def startCapture(self):
+        if self.running:
+            return
+        self.capture = cv2.VideoCapture(self.captureIndex)
+        
         try:
             self.capture.set(cv2.CAP_PROP_FPS, self.fps)
             self.running = True
@@ -23,12 +33,21 @@ class Camera(Image):
             print(f'Error starting the camera: {e}')
         
     def stopCapture(self):
+        if not self.running:
+            return
         try:
+            self.running = False
             self.frame_queue.queue.clear()
             self.captureThread.join()
+            
         except Exception as e:
             print(f'Error stopping the camera: {e}')
         
+    def toggleCapture(self):
+        if self.running:
+            self.stopCapture()
+        else:
+            self.startCapture()
         
     def captureFrames(self):
         try:
@@ -48,6 +67,10 @@ class Camera(Image):
         finally:
             self.capture.release()
             cv2.destroyAllWindows()
+            self.running = False
+            self.frame_queue.queue.clear()
+            white_frame = 255 * np.ones((480, 640, 3), np.uint8)
+            Clock.schedule_once(lambda dt: self.showFrame(white_frame), 0) 
             print('Capture thread released the camera')
             
     def getLatestFrame(self):

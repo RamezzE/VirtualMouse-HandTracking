@@ -21,9 +21,14 @@ class CustomButton(ButtonBehavior, Label):
 
     def __init__(self, **kwargs):
         super(CustomButton, self).__init__(**kwargs)
-        self.bind(normal_image=self.update_textures,
-                  pressed_image=self.update_textures,
-                  state=self.update_state_dependencies)
+        self.bind(
+            normal_image=self.update_textures,
+            pressed_image=self.update_textures,
+            state=self.update_state_dependencies,
+            normal_text_color=self.update_state_dependencies,
+            pressed_text_color=self.update_state_dependencies
+        )
+                  
 
     def update_textures(self, *args):
         if self.normal_image:
