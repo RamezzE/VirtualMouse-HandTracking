@@ -4,6 +4,9 @@ assets:
     github: "assets/icons/github.png"
     video: "assets/icons/video.png"
     arrow: "assets/icons/arrow.png"
+    pause: "assets/icons/pause.png"
+    play: "assets/icons/play.png"
+    
     gestures:
       hand_open: "assets/icons/gestures/hand_open.png"
       fist: "assets/icons/gestures/fist.png"
