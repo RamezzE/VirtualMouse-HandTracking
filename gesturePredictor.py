@@ -23,6 +23,9 @@ class GesturePredictor:
         self.mappings = self.db.getMappings()
 
     def predict(self, landmarks):
+        
+        landmarks = self._prepareLandmarks(landmarks)
+        
         prediction = self.model(landmarks)
         
         prediction = np.argmax(prediction)
@@ -39,3 +42,13 @@ class GesturePredictor:
             if mapping[0] == prediction:
                 return self.actions[mapping[1]-1], mapping[1]-1
         
+    def _prepareLandmarks(self, landmarks):
+        x_values = np.array([landmark.x for landmark in landmarks])
+        y_values = np.array([landmark.y for landmark in landmarks])
+
+        if x_values.size > 0 and y_values.size > 0:
+            x_values = (x_values - x_values.min()) / (x_values.max() - x_values.min())
+            y_values = (y_values - y_values.min()) / (y_values.max() - y_values.min())
+
+        arr = np.concatenate((x_values, y_values))
+        return arr.reshape(1, -1)

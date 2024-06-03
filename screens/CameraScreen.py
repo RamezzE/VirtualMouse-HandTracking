@@ -1,9 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
-
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-
+from kivy.clock import Clock
 from components.GestureControlPanel import GestureControlPanel
 from components.CustomButton import CustomButton
 
@@ -17,7 +14,6 @@ import webbrowser
 
 from kivy.uix.image import Image
 
-
 class CameraScreen(Screen):
         
     logsLabelText = ''
@@ -27,7 +23,9 @@ class CameraScreen(Screen):
             
     fonts = paths['assets']['fonts']
     icons = paths['assets']['icons']
-
+    
+    isCameraRunning = None
+    
     Builder.load_file('kv/screens/CameraScreen.kv')
 
     def __init__(self, **kwargs):
@@ -36,10 +34,16 @@ class CameraScreen(Screen):
         self.size = Window.size
         self.pos = Window._pos
         
+        self.isCameraRunning = False
+        
         self.logs = []
         self.ids['GCP'].updateLog = self.updateLog
         
-        self.bind(size = self.resize)
+        self.bind(size = self.resize)        
+
+    def startCamera(self):
+        print('Starting camera')
+        self.ids['GCP'].startCamera()
         
     def resize(self, instance, value):
         self.size = instance.size
@@ -53,6 +57,16 @@ class CameraScreen(Screen):
             self.logs.pop(0)
             
         self.ids['logsLabel'].text = '\n'.join(self.logs)
+        
+    def openSettings(self):
+        self.manager.transition.direction = 'up'
+        self.manager.current = 'settings'
+        self.on_stop()
+        
+    def openHome(self):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'home'
+        self.on_stop()
         
     def on_stop(self):
         self.ids['GCP'].on_stop()
