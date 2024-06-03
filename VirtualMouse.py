@@ -1,13 +1,17 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
+
 from screens.HomeScreen import HomeScreen
 from screens.CameraScreen import CameraScreen
+from screens.SettingsScreen import SettingsScreen
+
 from kivy.core.window import Window
 
 class VirtualMouse(App):
     def build(self):
         self.sm = ScreenManager()
         self.sm.add_widget(HomeScreen(name='home'))
+        self.sm.add_widget(SettingsScreen(name='settings'))
         self.camera_screen = CameraScreen(name='camera')
         self.sm.add_widget(self.camera_screen)
         return self.sm

@@ -8,9 +8,8 @@ from kivy.core.window import Window
 
 from kivy.lang import Builder
 
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import Screen
 
-        
 class HomeScreen(Screen):
     with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
@@ -26,13 +25,12 @@ class HomeScreen(Screen):
         super(HomeScreen, self).__init__(**kwargs)
         
         Window.bind(size=self.resize)
-        
     
     def resize(self, instance, value):
         self.size = instance.size
         self.pos = Window._pos
         self.ids['home'].size = self.size
         
-            
-        
-        
+    def toCameraScreen(self):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'camera'
