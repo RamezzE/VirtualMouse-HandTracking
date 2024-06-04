@@ -1,16 +1,24 @@
+from kivy.uix.accordion import BooleanProperty
+from kivy.uix.accordion import ObjectProperty
+from kivy.uix.actionbar import BoxLayout
 from kivy.uix.accordion import NumericProperty
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import StringProperty
+from kivy.uix.button import Button
+
 import yaml
 
 from components.CustomButton import CustomButton
 from components.CustomDropDown import CustomDropDown
 
+
 class SettingsScreen(Screen):
     
+    gesture_options = ['Idle','Move Mouse','Left Click','Double Click','Drag','Right Click','Pinch','Scroll Up','Scroll Down', 'Zoom', 'Toggle Relative Mouse',]
+
     with open('paths.yaml', 'r') as f:
         paths = yaml.safe_load(f)
             
@@ -33,9 +41,27 @@ class SettingsScreen(Screen):
         self.rowHeight = self.height * 0.08
         self.gestureRowHeight = self.rowHeight * 1.5
         
-        self.select('camera')
+        self.select('general')
                 
         self.bind(size=self.resize)
+        
+        self.drawGestureTable()
+        self.drawSettingsHeader()
+        
+    def drawSettingsHeader(self):
+        settings_header = self.ids['settings_header']
+        
+        settings_header.add_widget(ChooseSettingButton(text='General', settings=self))
+        settings_header.add_widget(ChooseSettingButton(text='Gestures', settings=self))
+        
+    def drawGestureTable(self):
+        gestures_table = self.ids['gestures_table']
+        
+        for i in range(11):
+            gesture_row = GestureRow(settings=self, alternate_background=(i % 2 == 0), image_source = self.icons['gestures'][f'gesture{i+1}'])
+            gesture_row.ids['dropdown'].selected = "X"
+            
+            gestures_table.add_widget(gesture_row)
                 
     def resize(self, instance, value):
         self.size = instance.size
@@ -75,11 +101,10 @@ class SettingsScreen(Screen):
                 print(child.selected)
         
 
-class DropdownApp(App):
-    def build(self):
-        sm = ScreenManager()
-        sm.add_widget(SettingsScreen(name='settings'))
-        return sm
-
-if __name__ == '__main__':
-    DropdownApp().run()
+class GestureRow(BoxLayout):
+    settings = ObjectProperty()
+    alternate_background = BooleanProperty(False)
+    image_source = StringProperty()
+    
+class ChooseSettingButton(Button):
+    settings = ObjectProperty()

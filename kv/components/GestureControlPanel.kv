@@ -9,9 +9,10 @@
         id: toggleCam
         text: ''
         size_hint: None, None
-        size: (30, 30) if root.threadLoaded else (0, 0)
+        size: (root.parent.height / 25, root.parent.height / 25) if root.threadLoaded else (0, 0)
         disabled: not root.threadLoaded
-        pos_hint: {'center_x': 0.9, 'center_y': 0}
+        pos_hint: {'center_y': 0}
+        x: layout.width - self.width * 1.5 - 10
         
         normal_image: root.icons['pause'] if root.camera.running else root.icons['play']
         pressed_image: root.icons['pause'] if root.camera.running else root.icons['play']

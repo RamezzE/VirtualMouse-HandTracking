@@ -12,6 +12,7 @@ Builder.load_file('kv/components/CustomButton.kv')
 class CustomButton(ButtonBehavior, Label):
     normal_image = StringProperty()
     pressed_image = StringProperty()
+    
     normal_texture = ObjectProperty()
     pressed_texture = ObjectProperty()
     current_texture = ObjectProperty()
@@ -27,8 +28,7 @@ class CustomButton(ButtonBehavior, Label):
             state=self.update_state_dependencies,
             normal_text_color=self.update_state_dependencies,
             pressed_text_color=self.update_state_dependencies
-        )
-                  
+        )    
 
     def update_textures(self, *args):
         if self.normal_image:

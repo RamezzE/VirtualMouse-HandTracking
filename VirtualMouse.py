@@ -8,7 +8,14 @@ from screens.SettingsScreen import SettingsScreen
 from kivy.core.window import Window
 
 class VirtualMouse(App):
+    
     def build(self):
+        
+        self.height = Window.height
+        self.width = Window.width
+        
+        Window.bind(on_resize=self.resize)
+                
         self.sm = ScreenManager()
         self.sm.add_widget(HomeScreen(name='home'))
         self.sm.add_widget(SettingsScreen(name='settings'))
@@ -19,10 +26,13 @@ class VirtualMouse(App):
     def on_stop(self):
         if hasattr(self.camera_screen, 'on_stop'):
             self.camera_screen.on_stop()
+            
+    def resize(self, instance, value, *args):
+        self.height = Window.height
+        self.width = Window.width
 
 if __name__ == '__main__':
-    # Window.fullscreen = 'auto'
     Window.size = (Window.width / 3, Window.height / 1.5)
-    Window.minimum_width = 300
+    Window.minimum_width = 330
     Window.minimum_height = 500
     VirtualMouse().run()

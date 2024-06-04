@@ -1,5 +1,4 @@
 <CustomDropDown>:
-    id: dropdown
     Button:
         text: root.selected
         color: root.text_color
@@ -17,9 +16,8 @@
     Image:
         source: root.icons['dropdown'] if not root.dropdown_open else root.icons['dropdown_up']
         size_hint: None, None
-        size: 15, 15
+        size: app.height / 40, app.height / 40
         pos_hint: {'center_x': 0.9, 'center_y': 0.5}
-        keep_ratio: True
 
 <OptionButton>:
     size_hint: None, None

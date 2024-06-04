@@ -16,15 +16,15 @@ class HomeScreen(Screen):
             
     fonts = paths['assets']['fonts']
     
-    size = Window.size
-    pos = Window._pos
-    
     Builder.load_file('kv/screens/HomeScreen.kv')
 
     def __init__(self, **kwargs):
         super(HomeScreen, self).__init__(**kwargs)
         
-        Window.bind(size=self.resize)
+        self.size = Window.size
+        self.pos = Window._pos
+        
+        self.bind(size = self.resize) 
     
     def resize(self, instance, value):
         self.size = instance.size

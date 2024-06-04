@@ -17,8 +17,11 @@
         CustomButton:
             text: ''
             size_hint: None, None
-            size: 30, 30
-            pos_hint: {'center_x': 0.1, 'center_y': 0.95}
+            size: root.height / 25, root.height / 25
+            pos_hint: {'center_y': 0.95}
+            text_size: self.size
+
+            x: 20
 
             normal_image: root.icons['arrow']
             pressed_image: root.icons['arrow']
@@ -27,157 +30,140 @@
 
         ############# Settings Options #############
         BoxLayout:
+            id: settings_header
             size_hint: 0.8, 0.2
-            pos_hint: {'center_x': 0.5, 'center_y': 0.8}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
 
-            CustomButton:
-                id: camera
-                text: 'Camera'
-                normal_text_color: 1, 1, 1, 0.87
-                pressed_text_color: 1, 1, 1, 0.87
-                font_name: root.fonts['poppins']['bold'] if root.selected == 'camera' else root.fonts['poppins']['medium']
-                font_size: 20
-                normal_image: ''
-                pressed_image: ''
-                
-                on_release: root.select('camera')
-
-            CustomButton:
-                id: gestures
-                text: 'Gestures'
-                normal_text_color: 1, 1, 1, 0.87
-                pressed_text_color: 1, 1, 1, 0.87
-
-                font_name: root.fonts['poppins']['bold'] if root.selected == 'gestures' else root.fonts['poppins']['medium']                
-                font_size: 20
-
-                normal_image: ''
-                pressed_image: ''
-                
-                on_release: root.select('gestures')
-
-            CustomButton:
-                id: btn3
-                text: 'Option 3'
-                normal_text_color: 1, 1, 1, 0.87
-                pressed_text_color: 1, 1, 1, 0.87
-                font_name: root.fonts['poppins']['bold'] if root.selected == 'btn3' else root.fonts['poppins']['medium']                
-                font_size: 20
-
-                normal_image: ''
-                pressed_image: ''
-                
-                on_release: root.select('btn3')
-
-        ############# Table 1 Camera Settings #############
-        BoxLayout:
-            id: table
-            size_hint: (0.9, 0.6) if root.selected == 'camera' else (0, 0)
-            opacity: 1 if root.selected == 'camera' else 0
-            disabled: False if root.selected == 'camera' else True         
-            pos_hint: {'center_x': 0.5, 'center_y': 0.45}
-            orientation: 'vertical'
-
-            ############# Row 1:
-                
-            BoxLayout:
-                size_hint: 1, None
-                spacing: 10
-                orientation: 'horizontal'
-                height: root.rowHeight
-
-                canvas.before:
-                    Color:
-                        rgba: 217/255, 217/255, 217/255, 0.08
-                    Rectangle:
-                        size: self.size
-                        pos: self.pos
-
-                BoxLayout:
-                    size_hint: 0.5, 1
-                    orientation: 'horizontal'
-                    
-                    Widget:
-                        size_hint: 0.1,1
-
-                    Label:
-                        text: 'Capturing Cam'
-                        font_name: root.fonts['poppins']['regular']
-                        color: 1, 1, 1, 0.87
-                        pos_hint: {'center_y': 0.5}
-                        size_hint: 0.9, 1
-                        text_size: self.size[0], None
-
-                BoxLayout:
-                    size_hint: 0.5, 1
-                    orientation: 'horizontal'
-
-                    CustomDropDown:
-                        selected: 'Front'
-                        font_name: root.fonts['poppins']['regular']
-                        color: 1, 1, 1, 0.87
-                        size_hint: 1, 1
-                        button_width: self.parent.width
-                        button_height: self.parent.height
-                        options: ['1', '2']
-                        background_color: 25/255,25/255,25/255, 1
-
-            ############# Row 2:
-    
-            BoxLayout:
-                size_hint: 1, None
-                orientation: 'horizontal'
-                height: root.rowHeight
-
-                BoxLayout:
-                    size_hint: 0.5, 1
-                    orientation: 'horizontal'
-                    
-                    Widget:
-                        size_hint: 0.1,1
-
-                    Label:
-                        text: 'Camera View'
-                        font_name: root.fonts['poppins']['regular']
-                        color: 1, 1, 1, 0.87
-                        pos_hint: {'center_y': 0.5}
-                        size_hint: 0.9, 1
-                        text_size: self.size[0], None
-
-                BoxLayout:
-                    size_hint: 0.5, 1
-                    orientation: 'horizontal'
-
-                    Button:
-                        text: 'ON'
-                        color: 0,0,0,1
-                        font_name: root.fonts['poppins']['regular']
-                        color: 0, 0, 0, 1
-                        size_hint: 0.5, 1
-
-                        background_normal: ''
-                        background_color: 185/255, 185/255, 185/255, 1
-                        background_down: ''
-
-                    Button:
-                        color: 0,0,0,1
-                        text: 'OFF'
-                        font_name: root.fonts['poppins']['regular']
-                        color: 0, 0, 0, 1
-                        size_hint: 0.5, 1
-
-                        background_normal: ''
-                        background_color: 110/255, 110/255, 110/255, 1
-                        background_down: ''
-
-            Widget:
-                size_hint: 1, 1
-
-
-        ############# Table 2 Gesture Settings #############
+        ############# Table 1 General Settings #############
+        
         ScrollView:
             pos_hint: {'center_x': 0.5, 'center_y': 0.45}
-            size_hint: (0.9, 0.6) if root.selected == 'gestures' else (0,0)
+            size_hint: (0.9, 0.6) if root.selected == 'general' else (0, 0)
+            opacity: 1 if root.selected == 'general' else 0
+            disabled: False if root.selected == 'general' else True  
+
+            do_scroll_x: False
+            do_scroll_y: True
+
+            bar_width: 3
+            bar_color: 1, 1, 1, 0.87
+            bar_inactive_color: 1, 1, 1, 0.34
+
+            BoxLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: 10
+
+                Label:
+                    text: 'Camera Settings'
+                    font_name: root.fonts['poppins']['semi_bold']
+                    font_size: root.height / 40 if root.height / 40 > 18 else 18
+                    color: 1, 1, 1, 0.87
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.size
+                    x: 25
+
+                ############# Camera Settings #############
+                BoxLayout:
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                
+                    ############# Row 1:
+                    BoxLayout:
+                        size_hint_y: None
+                        height: root.rowHeight
+                        spacing: 10
+                        orientation: 'horizontal'
+
+                        canvas.before:
+                            Color:
+                                rgba: 217/255, 217/255, 217/255, 0.08
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        BoxLayout:
+                            size_hint: 0.5, 1
+                            orientation: 'horizontal'
+                            
+                            Widget:
+                                size_hint_x: 0.1
+
+                            Label:
+                                text: 'Capturing Cam'
+                                font_name: root.fonts['poppins']['regular']
+                                color: 1, 1, 1, 0.87
+                                size_hint_x: 0.9
+                                # text_size: self.size
+
+                        BoxLayout:
+                            size_hint: 0.5, 1
+                            orientation: 'horizontal'
+
+                            CustomDropDown:
+                                selected: 'Front'
+                                font_name: root.fonts['poppins']['regular']
+                                color: 1, 1, 1, 0.87
+                                size_hint: 1, 1
+                                button_width: self.parent.width
+                                button_height: self.parent.height
+                                options: ['1', '2']
+                                background_color: 25/255,25/255,25/255, 1
+
+                    ############# Row 2:
+                    BoxLayout:
+                        size_hint_y: None
+                        height: root.rowHeight
+                        orientation: 'horizontal'
+
+                        BoxLayout:
+                            size_hint: 0.5, 1
+                            orientation: 'horizontal'
+                            
+                            Widget:
+                                size_hint_x: 0.1
+
+                            Label:
+                                text: 'Camera View'
+                                font_name: root.fonts['poppins']['regular']
+                                color: 1, 1, 1, 0.87
+                                size_hint_x: 0.9
+                                # text_size: self.size
+
+                        BoxLayout:
+                            size_hint: 0.5, 1
+                            orientation: 'horizontal'
+
+                            Button:
+                                text: 'ON'
+                                color: 0, 0, 0, 1
+                                font_name: root.fonts['poppins']['regular']
+                                size_hint: 0.5, 1
+                                background_normal: ''
+                                background_color: 185/255, 185/255, 185/255, 1
+                                background_down: ''
+
+                            Button:
+                                text: 'OFF'
+                                color: 0, 0, 0, 1
+                                font_name: root.fonts['poppins']['regular']
+                                size_hint: 0.5, 1
+                                background_normal: ''
+                                background_color: 110/255, 110/255, 110/255, 1
+                                background_down: ''
+
+                    Widget:
+                        size_hint_y: None
+                        height: root.rowHeight
+
+
+        ############# Table 2 Gesture Settings #############    
+        ScrollView:
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            size_hint: (0.9, 0.7) if root.selected == 'gestures' else (0,0)
             opacity: 1 if root.selected == 'gestures' else 0
             disabled: False if root.selected == 'gestures' else True  
 
@@ -187,139 +173,63 @@
             bar_width: 3
             bar_color: 1, 1, 1, 0.87
             bar_inactive_color: 1, 1, 1, 0.34
-
-
+        
             BoxLayout:
                 id: gestures_table
                 size_hint_y: None
                 height: self.minimum_height
-                pos_hint: {'center_x': 0.5, 'center_y': 0.45}
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 orientation: 'vertical'
 
-                ############# Row 1:
-                    
-                BoxLayout:
-                    size_hint: 1, None
-                    height: root.gestureRowHeight
-                    spacing: 10
-                    orientation: 'horizontal'
 
-                    canvas.before:
-                        Color:
-                            rgba: 217/255, 217/255, 217/255, 0.08
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
+<ChooseSettingButton>:
+    size_hint: 0.5, 1
+    background_normal: ''
+    background_down: ''
+    background_color: 0,0,0,0
+    font_name: root.settings.fonts['poppins']['bold'] if root.settings.selected == self.text.lower() else root.settings.fonts['poppins']['medium']
+    font_size: root.settings.height / 35 if root.settings.height / 35 > 20 else 20
+    color: 1, 1, 1, 0.87
+    on_release: root.settings.select(self.text.lower())
 
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
-                        
-                        Image:
-                            source: root.icons['gestures']['hand_open']
-                            size_hint: 1, 0.9
-                            text_size: self.size[0], None
-                            pos_hint: {'center_y': 0.5}
+<GestureRow>:             
+    size_hint: 1, None
+    height: root.settings.gestureRowHeight
+    spacing: 10
+    orientation: 'horizontal'
 
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba: (217/255, 217/255, 217/255, 0.08) if root.alternate_background else (0, 0, 0, 0)
+        Rectangle:
+            size: self.size
+            pos: self.pos
 
-                        CustomDropDown:
-                            selected: 'Idle'
-                            font_name: root.fonts['poppins']['regular']
-                            color: 1, 1, 1, 0.87
-                            size_hint: 1, 1
+    BoxLayout:
+        size_hint: 0.5, 1
+        orientation: 'horizontal'
+        
+        Image:
+            source: root.image_source
+            size_hint: 1, 0.6
+            text_size: self.size[0], None
+            pos_hint: {'center_y': 0.5}
 
-                            button_width: self.parent.width
-                            button_height: self.parent.height
-                            options_height: self.parent.height/2
+    BoxLayout:
+        size_hint: 0.5, 1
+        orientation: 'horizontal'
 
-                            options: ['Idle','Move Mouse','Left Click','Right Click','Scroll Up','Scroll Down','Zoom In','Zoom Out','Double Click',]
-                            
-                            background_color: 25/255,25/255,25/255, 1
-                            alt_background_color: 1/255,1/255,1/255, 1
+        CustomDropDown:
+            id: dropdown
+            font_name: root.settings.fonts['poppins']['regular']
+            color: 1, 1, 1, 0.87
+            size_hint: 1, 1
 
-                ############# Row 2:                    
-                BoxLayout:
-                    size_hint: 1, None
-                    height: root.gestureRowHeight
-                    spacing: 10
-                    orientation: 'horizontal'
+            button_width: self.parent.width
+            button_height: self.parent.height
+            options_height: self.parent.height/2
 
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
-                        
-                        Image:
-                            source: root.icons['gestures']['fist']
-                            size_hint: 1, 0.9
-                            text_size: self.size[0], None
-                            pos_hint: {'center_y': 0.5}
-
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
-
-                        CustomDropDown:
-                            selected: 'Idle'
-                            font_name: root.fonts['poppins']['regular']
-                            color: 1, 1, 1, 0.87
-                            size_hint: 1, 1
-
-                            button_width: self.parent.width
-                            button_height: self.parent.height
-                            
-                            options_height: self.parent.height/2
-
-                            options: ['Idle','Move Mouse','Left Click','Right Click','Scroll Up','Scroll Down','Zoom In','Zoom Out','Double Click',]
-                            
-                            background_color: 18/255,18/255,18/255, 1
-                            alt_background_color: 1/255,1/255,1/255, 1
-
-                ############# Row 3:
-                BoxLayout:
-                    size_hint: 1, None
-                    height: root.gestureRowHeight
-                    spacing: 10
-                    orientation: 'horizontal'
-
-                    canvas.before:
-                        Color:
-                            rgba: 217/255, 217/255, 217/255, 0.08
-                        Rectangle:
-                            size: self.size
-                            pos: self.pos
-
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
-                        
-                        Image:
-                            source: root.icons['gestures']['two_fingers']
-                            size_hint: 1, 0.9
-                            text_size: self.size[0], None
-                            pos_hint: {'center_y': 0.5}
-
-                    BoxLayout:
-                        size_hint: 0.5, 1
-                        orientation: 'horizontal'
-
-                        CustomDropDown:
-                            selected: 'Idle'
-                            font_name: root.fonts['poppins']['regular']
-                            color: 1, 1, 1, 0.87
-                            size_hint: 1, 1
-
-                            button_width: self.parent.width
-                            button_height: self.parent.height
-                            options_height: self.parent.height/2
-
-                            options: ['Idle','Move Mouse','Left Click','Right Click','Scroll Up','Scroll Down','Zoom In','Zoom Out','Double Click',]
-                            
-                            background_color: 25/255,25/255,25/255, 1
-                            alt_background_color: 1/255,1/255,1/255, 1
-
-                        # Widget:
-                        #     size_hint: None, None
-                        #     size: 1, 300
+            options: root.settings.gesture_options
+            
+            background_color: (25/255,25/255,25/255, 1) if root.alternate_background else (18/255, 18/255, 18/255, 1)
+            alt_background_color: (1/255,1/255,1/255, 1)

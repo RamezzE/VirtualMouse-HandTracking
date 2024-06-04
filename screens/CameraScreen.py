@@ -1,6 +1,5 @@
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
-from kivy.clock import Clock
 from components.GestureControlPanel import GestureControlPanel
 from components.CustomButton import CustomButton
 

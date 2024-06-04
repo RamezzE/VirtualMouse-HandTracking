@@ -21,9 +21,11 @@
             text: 'Gesture Log:'
             font_name: root.fonts['poppins']['semi_bold']
             color: 1, 1, 1, 0.87
-            size_hint: 0.5, 0.1
-            pos_hint: {'center_x': 0.25, 'center_y': 0.45}
-            font_size: 24
+            size_hint: 1, 0.1
+            pos_hint: {'center_y': 0.45}
+            x: 30
+            font_size: root.height / 32
+            text_size: self.size
 
         Label:
             id: logsLabel
@@ -31,18 +33,22 @@
             font_name: root.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
             size_hint: 1, 0.3
-            pos_hint: {'x':0.1, 'y': 0.1}
-            font_size: 18
+            pos_hint: {'y': 0.1}
+            x: 50
+            font_size: root.height / 40 if root.height / 40 > 18 else 18
             text_size: self.size
             halign: 'left'
             valign: 'top'
 
         CustomButton:
+            id: settingsButton
             text: ''            
             size_hint: None, None
-            size: 30, 30
+            size: root.height / 25, root.height / 25
             
-            pos_hint: {'center_x': 0.9, 'center_y': 0.05}
+            pos_hint: {'center_y': 0.05}
+            x: layout.width - self.width * 1.5 - 10
+
             normal_image: root.icons['settings']
             pressed_image: root.icons['settings']
 
@@ -51,9 +57,11 @@
         CustomButton:
             text: ''            
             size_hint: None, None
-            size: 30, 30
+            size: root.height / 25, root.height / 25
             
-            pos_hint: {'center_x': 0.8, 'center_y': 0.05}
+            pos_hint: {'center_y': 0.05}
+            x: settingsButton.x - settingsButton.size[0] - 20
+
             normal_image: root.icons['github']
             pressed_image: root.icons['github']
 
@@ -62,9 +70,10 @@
         CustomButton:
             text: ''            
             size_hint: None, None
-            size: 30, 30
-            
-            pos_hint: {'center_x': 0.1, 'center_y': 0.05}
+            size: root.height / 25, root.height / 25
+            x: 20
+
+            pos_hint: {'center_y': 0.05}
             normal_image: root.icons['arrow']
             pressed_image: root.icons['arrow']
 

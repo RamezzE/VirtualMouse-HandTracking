@@ -15,7 +15,7 @@
             text: 'Virtual\nMouse'
             font_name: root.fonts['poppins']['bold']
             color: 1, 1, 1, 0.87
-            font_size: 48
+            font_size: root.height / 15
             size_hint: 1, 1
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 
@@ -23,25 +23,21 @@
             text: 'Ditch your mouse and\n       use your hand'
             font_name: root.fonts['poppins']['light_italic']
             color: 1, 1, 1, 0.87
-            font_size: 20
+            font_size: root.height / 35
             size_hint: 0.7, 0.2
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
         CustomButton:
             text: 'Start'
-            font_size: 24
+            font_size: root.height / 25
             font_name: root.fonts['poppins']['medium']
             normal_text_color: 18/255, 18/255, 18/255, 1
             pressed_text_color: 1, 1, 1, 0.87
-            # size_hint: 0.4, 0.12
             size_hint: None, None
-            size: 140, 70
+            size: root.height / 4.5,  root.height / 9
             
             pos_hint: {'center_x': 0.5, 'center_y': 0.3}
             normal_image: root.paths['assets']['buttons']['normal']
             pressed_image: root.paths['assets']['buttons']['normal_pressed']
 
             on_release: root.toCameraScreen()
-
-
-
