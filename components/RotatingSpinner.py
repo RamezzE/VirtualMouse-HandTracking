@@ -32,7 +32,7 @@ class RotatingSpinner(Widget):
             num_lines = 12
             angle_step = 360 / num_lines
             line_thickness = 2
-            gap = 5  # degrees gap for each segment
+            gap = 5 
             circle_radius = min(self.size) / 2
             for i in range(num_lines):
                 Line(circle=(self.center_x, self.center_y, circle_radius, i * angle_step, i * angle_step + angle_step - gap),

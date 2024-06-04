@@ -25,6 +25,7 @@ class GestureControlPanel(FloatLayout):
             paths = yaml.safe_load(f)
         
     icons = paths['assets']['icons']
+    fonts = paths['assets']['fonts']
 
     Builder.load_file('kv/components/GestureControlPanel.kv')
     

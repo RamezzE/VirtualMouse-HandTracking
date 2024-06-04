@@ -35,3 +35,13 @@
         animationDuration: 3
         gap: 50
         color: 18/255, 18/255, 18/255, 0.87
+
+    Label:
+        id: statusLabel
+        text: 'Loading dependencies...'
+        font_name: root.fonts['poppins']['regular']
+        size_hint: 0.3, 0.3
+        pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+        opacity: 0 if root.threadLoaded else 1
+        color: 18/255, 18/255, 18/255, 0.87
+        font_size: 20

@@ -6,6 +6,8 @@ assets:
     arrow: "assets/icons/arrow.png"
     pause: "assets/icons/pause.png"
     play: "assets/icons/play.png"
+    dropdown: "assets/icons/dropdown.png"
+    dropdown_up: "assets/icons/dropdown_up.png"
     
     gestures:
       hand_open: "assets/icons/gestures/hand_open.png"
