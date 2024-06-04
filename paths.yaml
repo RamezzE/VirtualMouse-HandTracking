@@ -1,3 +1,5 @@
+model: "model/tfv3.keras"
+
 assets:
   icons: 
     settings: "assets/icons/settings.png"
@@ -10,9 +12,19 @@ assets:
     dropdown_up: "assets/icons/dropdown_up.png"
     
     gestures:
-      hand_open: "assets/icons/gestures/hand_open.png"
-      fist: "assets/icons/gestures/fist.png"
-      two_fingers: "assets/icons/gestures/two_fingers.png"
+      gesture1: "assets/icons/gestures/gesture1.png"
+      gesture2: "assets/icons/gestures/gesture2.png"
+      gesture3: "assets/icons/gestures/gesture3.png"
+      gesture4: "assets/icons/gestures/gesture4.png"
+      gesture5: "assets/icons/gestures/gesture5.png"
+      gesture6: "assets/icons/gestures/gesture6.png"
+      gesture7: "assets/icons/gestures/gesture7.png"
+      gesture8: "assets/icons/gestures/gesture8.png"
+      gesture9: "assets/icons/gestures/gesture9.png"
+      gesture10: "assets/icons/gestures/gesture10.png"
+      gesture11: "assets/icons/gestures/gesture11.png"
+
+    
   
   fonts:
     poppins:

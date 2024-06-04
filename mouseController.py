@@ -16,8 +16,8 @@ class MouseController:
         self.relativeMouse = False
         self.rangeX, self.rangeY = None, None
         
-    def toggleRelativeMouse(self, state):
-        self.relativeMouse = state
+    def toggleRelativeMouse(self):
+        self.relativeMouse = not self.relativeMouse
         
     def moveMouse(self, pos, imgShape):
         if not pos:

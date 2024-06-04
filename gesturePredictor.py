@@ -2,16 +2,18 @@ import numpy as np
 from db import Database
 
 class GesturePredictor:
-    
+     
     IDLE = 0
-    LEFT_CLICK = 1
-    RIGHT_CLICK = 2
-    MOVE_MOUSE = 3
+    MOVE_MOUSE = 1
+    LEFT_CLICK = 2
+    DOUBLE_CLICK = 3
     DRAG = 4
-    PINCH = 5
-    SCROLL = 6
-    DOUBLE_LEFT_CLICK = 7
-    
+    RIGHT_CLICK = 5
+    SCROLL_UP = 6
+    SCROLL_DOWN = 7
+    ZOOM = 8
+    TOGGLE_RELATIVE_MOUSE = 9
+                
     def __init__(self, tensorflow_model, buffer_size = 5):
         self.model = tensorflow_model
         self.buffer_size = buffer_size
@@ -21,9 +23,9 @@ class GesturePredictor:
         
         self.actions = self.db.getActionNames()
         self.mappings = self.db.getMappings()
-
-    def predict(self, landmarks):
         
+    def predict(self, landmarks):
+                
         landmarks = self._prepareLandmarks(landmarks)
         
         prediction = self.model(landmarks)
@@ -40,7 +42,11 @@ class GesturePredictor:
     def getAction(self, prediction):
         for mapping in self.mappings:
             if mapping[0] == prediction:
-                return self.actions[mapping[1]-1], mapping[1]-1
+                return self.actions[mapping[1]], mapping[1]
+            
+    def printMappings(self):
+        for mapping in self.mappings:
+            print(f'{self.actions[mapping[1]]} -> {mapping[0]}')
         
     def _prepareLandmarks(self, landmarks):
         x_values = np.array([landmark.x for landmark in landmarks])

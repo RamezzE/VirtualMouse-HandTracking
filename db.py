@@ -1,14 +1,16 @@
 import sqlite3
 
-FIST_CLOSED = 0
-HAND_OPEN = 1
-INDEX_MIDDLE_THUMB_EXTENDED = 2
-INDEX_THUMB_EXTENDED = 3
-INDEX_MIDDLE_EXTENDED = 4
-INDEX_EXTENDED = 5
-PINCH = 6
-THUMB_EXTENDED = 7
-SCISSORS = 8
+INDEX = 0
+INDEX_MIDDLE = 1
+INDEX_THUMB = 2
+INDEX_MIDDLE_THUMB = 3
+PEACE = 4
+HAND_OPEN = 5
+FIST = 6
+PINCH = 7
+THUMBS_UP = 8
+THUMBS_DOWN = 9
+THUMBS_PINKY = 10
 
 
 class Database:
@@ -48,7 +50,6 @@ class Database:
             self.conn.commit()
             return True
 
-
     def getMappings(self):
         self.c.execute("SELECT gesture_id, action_id FROM Mappings")
         return self.c.fetchall()
@@ -78,31 +79,46 @@ class Database:
         
     def insertDefaults(self):
         actions = {
-            'idle': 0,
-            'left click': 1,
-            'right click': 2,
-            'move mouse': 3,
-            'drag': 4,
-            'pinch': 5,
-            'scroll': 6,
-            'double click': 7
+            'Idle': 0,
+            'Move Mouse': 1,
+            'Left Click': 2,
+            'Double Click': 3,
+            'Drag': 4,
+            'Right Click': 5,
+            'Scroll Up': 6,
+            'Scroll Down': 7,
+            'Zoom' : 8,
+            'Toggle Relative Mouse': 9,
         }
         
-        arr = ['idle', 'left click', 'right click', 'move mouse', 'drag', 'pinch', 'scroll', 'double click']
+        arr = [
+            'Idle',
+            'Move Mouse',
+            'Left Click',
+            'Double Click',
+            'Drag',
+            'Right Click',
+            'Pinch',
+            'Scroll Up',
+            'Scroll Down', 
+            'Zoom', 
+            'Toggle Relative Mouse'
+        ]
         
         for action in arr:
             self.insertAction(action)
-        
-        self.insertMapping(gesture_id = FIST_CLOSED, action_id = actions['idle'] + 1)
-        self.insertMapping(gesture_id = HAND_OPEN, action_id = actions['idle'] + 1)
-        self.insertMapping(gesture_id = INDEX_EXTENDED, action_id = actions['drag'] + 1)
-        self.insertMapping(gesture_id = INDEX_MIDDLE_EXTENDED, action_id = actions['move mouse'] + 1)
-        self.insertMapping(gesture_id = INDEX_MIDDLE_THUMB_EXTENDED, action_id = actions['left click'] + 1)
-        self.insertMapping(gesture_id = INDEX_THUMB_EXTENDED, action_id = actions['right click'] + 1)
-        self.insertMapping(gesture_id = PINCH, action_id = actions['pinch'] + 1)
-        self.insertMapping(gesture_id = SCISSORS, action_id = actions['double click'] + 1)
-        self.insertMapping(gesture_id = THUMB_EXTENDED, action_id = actions['scroll'] + 1)
-        
+
+        self.insertMapping(gesture_id = INDEX, action_id = actions['Drag'])
+        self.insertMapping(gesture_id = INDEX_MIDDLE, action_id = actions['Move Mouse'])
+        self.insertMapping(gesture_id = INDEX_THUMB, action_id = actions['Right Click'])
+        self.insertMapping(gesture_id = INDEX_MIDDLE_THUMB, action_id = actions['Left Click'])
+        self.insertMapping(gesture_id = PEACE, action_id = actions['Double Click'])
+        self.insertMapping(gesture_id = HAND_OPEN, action_id = actions['Idle'])
+        self.insertMapping(gesture_id = FIST, action_id = actions['Idle'])
+        self.insertMapping(gesture_id = PINCH, action_id = actions['Zoom'])
+        self.insertMapping(gesture_id = THUMBS_UP, action_id = actions['Scroll Up'])
+        self.insertMapping(gesture_id = THUMBS_DOWN, action_id = actions['Scroll Down'])
+        self.insertMapping(gesture_id = THUMBS_PINKY, action_id = actions['Toggle Relative Mouse'])
 
     def deleteMappings(self):
         self.c.execute("DELETE FROM Mappings")
@@ -119,9 +135,7 @@ class Database:
 if __name__ == '__main__':
     db = Database('db/actions.db', 'db/schema.sql')
     db.reset()
-        
-    print(db.getActionNames())
     
     print(db.getMappings())
-    # print(db.getMappings()[0][1])
+    print(db.getMappings()[0][1])
     db.close()

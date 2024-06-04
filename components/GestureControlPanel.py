@@ -70,6 +70,9 @@ class GestureControlPanel(FloatLayout):
             self.KF_y.reset()
             if self.updateLog is not None: self.updateLog(actionName)
             # print(actionName)
+        else:
+            if actionIndex == GP.TOGGLE_RELATIVE_MOUSE:
+                return frame
         
         if actionIndex == GP.IDLE:
             self.MC.handleMousePress(False)
@@ -89,14 +92,14 @@ class GestureControlPanel(FloatLayout):
             self.MC.resetMousePos()
             return frame 
         
-        if actionIndex == GP.DOUBLE_LEFT_CLICK:
+        if actionIndex == GP.DOUBLE_CLICK:
             self.MC.doubleClick(button = 'left')
             
             self.MC.resetClick(button = 'right')
             self.MC.resetMousePos()
             return frame
                 
-        if actionIndex == GP.SCROLL:
+        if actionIndex == GP.SCROLL_UP or actionIndex == GP.SCROLL_DOWN:
             frame = self.HD.highlightFingers(img = frame, fingers = [self.HD.THUMB])
             self.MC.handleMousePress(False)
             self.MC.resetClick()
@@ -104,7 +107,11 @@ class GestureControlPanel(FloatLayout):
             self.MC.resetMousePos()
             return frame
         
-        if actionIndex == GP.PINCH:
+        if actionIndex == GP.ZOOM:
+            return frame
+        
+        if actionIndex == GP.TOGGLE_RELATIVE_MOUSE:
+            self.MC.toggleRelativeMouse()
             return frame
             
         if actionIndex == GP.MOVE_MOUSE:
@@ -147,7 +154,7 @@ class GestureControlPanel(FloatLayout):
         
         from tensorflow.keras.models import load_model
         
-        self.model = load_model('model/model_no_z2.keras')
+        self.model = load_model(self.paths['model'])
         
         self.GP = GP(self.model)
         
@@ -165,7 +172,6 @@ class GestureControlPanel(FloatLayout):
         
     def on_stop(self):
         self.camera.stopCapture()
-        # self.thread.join()
         
     def startCamera(self):
         self.camera.startCapture()

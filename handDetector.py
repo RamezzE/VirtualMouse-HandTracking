@@ -2,15 +2,17 @@ import mediapipe as mp
 import cv2
 import math
 
-FIST_CLOSED = 0
-HAND_OPEN = 1
-INDEX_MIDDLE_THUMB_EXTENDED = 2
-INDEX_THUMB_EXTENDED = 3
-INDEX_MIDDLE_EXTENDED = 4
-INDEX_EXTENDED = 5
-PINCH = 6
-THUMB_EXTENDED = 7
-SCISSORS = 8
+INDEX = 0
+INDEX_MIDDLE = 1
+INDEX_THUMB = 2
+INDEX_MIDDLE_THUMB = 3
+PEACE = 4
+HAND_OPEN = 5
+FIST = 6
+PINCH = 7
+THUMBS_UP = 8
+THUMBS_DOWN = 9
+THUMBS_PINKY = 10
 
 class HandDetector:
     WRIST = 0
@@ -23,7 +25,7 @@ class HandDetector:
     # Constructor
     def __init__(self):
         self.mpHands = mp.solutions.hands
-        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = 0.75, min_tracking_confidence = 0.1, max_num_hands = 1)
+        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = 0.75, min_tracking_confidence = 0.75, max_num_hands = 1)
         self.mpDraw = mp.solutions.drawing_utils
                         
     def findHands(self, img, drawConnections = True):
@@ -41,7 +43,6 @@ class HandDetector:
                 self.mpDraw.draw_landmarks(img, hand, self.mpHands.HAND_CONNECTIONS)
             
         return img
-    
     
     def highlightFingers(self, img, fingers = [THUMB, INDEX, MIDDLE, RING, PINKY]):
         if not self.hands:
@@ -64,24 +65,24 @@ class HandDetector:
         if not self.hands:
             return img
         
-        # switch case 
-        
-        if gesture == FIST_CLOSED or gesture == HAND_OPEN:
-            fingers = [self.THUMB, self.INDEX, self.MIDDLE, self.RING, self.PINKY]
-        elif gesture == INDEX_MIDDLE_THUMB_EXTENDED:
-            fingers = [self.INDEX, self.MIDDLE, self.THUMB]
-        elif gesture == INDEX_THUMB_EXTENDED:
-            fingers = [self.INDEX, self.THUMB]
-        elif gesture == INDEX_MIDDLE_EXTENDED:
-            fingers = [self.INDEX, self.MIDDLE]
-        elif gesture == INDEX_EXTENDED:
+        if gesture == INDEX:
             fingers = [self.INDEX]
+        elif gesture == INDEX_MIDDLE:
+            fingers = [self.INDEX, self.MIDDLE]
+        elif gesture == INDEX_THUMB:
+            fingers = [self.INDEX, self.THUMB]
+        elif gesture == INDEX_MIDDLE_THUMB:
+            fingers = [self.INDEX, self.MIDDLE, self.THUMB]
+        elif gesture == PEACE:
+            fingers = [self.INDEX, self.MIDDLE]
+        elif gesture == HAND_OPEN or gesture == FIST:
+            fingers = [self.THUMB, self.INDEX, self.MIDDLE, self.RING, self.PINKY]
         elif gesture == PINCH:
             fingers = [self.INDEX, self.THUMB]
-        elif gesture == THUMB_EXTENDED:
+        elif gesture == THUMBS_UP or gesture == THUMBS_DOWN:
             fingers = [self.THUMB]
-        else:
-            fingers = [self.INDEX, self.MIDDLE]
+        elif gesture == THUMBS_PINKY:
+            fingers = [self.THUMB, self.PINKY]
         
         return self.highlightFingers(img, fingers)
     
