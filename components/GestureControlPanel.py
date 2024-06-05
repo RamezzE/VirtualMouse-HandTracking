@@ -1,10 +1,11 @@
-from kivy.uix.accordion import BooleanProperty
+from kivy.properties import BooleanProperty, StringProperty
 from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.lang import Builder
+from kivy.app import App
 
-import threading 
+import threading
 import cv2
 import numpy as np
 import pyautogui
@@ -19,7 +20,9 @@ from KalmanFilter import KalmanFilter1D as KF
 
 class GestureControlPanel(FloatLayout):
     
-    threadLoaded = BooleanProperty(False)
+    thread_loaded, saving_settings, show_loading = BooleanProperty(False), BooleanProperty(False), BooleanProperty(True) 
+    
+    status = StringProperty()
     
     with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
@@ -31,10 +34,15 @@ class GestureControlPanel(FloatLayout):
     
     def __init__(self, **kwargs):
         super(GestureControlPanel, self).__init__(**kwargs)
+        
+        self.db = App.get_running_app().db
+        
+        self.actions = self.db.get_action_names()
+        self.mappings = self.db.get_mappings()
 
         self.updateLog, self.lastAction = None, None
         
-        self.threadLoaded = False
+        self.thread_loaded = False
         
         self.camera = Camera(
             captureIndex = 0,
@@ -50,6 +58,23 @@ class GestureControlPanel(FloatLayout):
         self.thread.start()
         
         Clock.schedule_interval(self.update, 1.0 / 30)
+        
+    def update_status(self, dt = 0):
+        if not self.thread_loaded:
+            self.show_loading = True
+            self.status = "Loading dependencies..."
+        elif self.saving_settings:
+            self.show_loading = True
+            self.status = "Saving settings..."
+        else:
+            self.show_loading = False
+            self.status = "Press the toggle button\n to start/stop camera feed"
+        
+        
+    def getAction(self, prediction):
+        for mapping in self.mappings:
+            if mapping[0] == prediction:
+                return self.actions[mapping[1]], mapping[1]
     
     def handleInput(self, prediction, frame):
         if prediction is None:
@@ -57,7 +82,7 @@ class GestureControlPanel(FloatLayout):
         
         frame = self.HD.highlightGesture(frame, prediction)
         
-        actionName, actionIndex = self.GP.getAction(prediction)
+        actionName, actionIndex = self.getAction(prediction)
         
         if self.lastAction is None:
             self.lastAction = actionIndex
@@ -133,9 +158,16 @@ class GestureControlPanel(FloatLayout):
         return frame
         
     def update(self, dt):
+        
+        self.update_status()
+        
+        if self.db.is_updated:
+            self.mappings = self.db.get_mappings()
+            self.db.is_updated = False  
+            print("Mappings Updated")
 
-        if not self.threadLoaded:
-            return
+        if not self.thread_loaded:
+            return                             
 
         frame = self.camera.getLatestFrame()
         
@@ -165,10 +197,10 @@ class GestureControlPanel(FloatLayout):
         self.KF_x = KF()
         self.KF_y = KF()
         
-        Clock.schedule_once(self.set_threadLoaded)
+        Clock.schedule_once(self.set_thread_loaded)
 
-    def set_threadLoaded(self, dt):
-        self.threadLoaded = True      
+    def set_thread_loaded(self, dt):
+        self.thread_loaded = True      
         
     def on_stop(self):
         self.camera.stopCapture()
