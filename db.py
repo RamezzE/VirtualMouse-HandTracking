@@ -119,7 +119,6 @@ class Database:
             'Double Click',
             'Drag',
             'Right Click',
-            'Pinch',
             'Scroll Up',
             'Scroll Down',
             'Zoom',

@@ -1,3 +1,4 @@
+from kivy.uix.accordion import NumericProperty
 from kivy.properties import BooleanProperty, StringProperty
 from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
@@ -10,6 +11,7 @@ import cv2
 import numpy as np
 import pyautogui
 import yaml
+import time
 
 from components.CustomButton import CustomButton
 from components.Camera import Camera
@@ -22,8 +24,8 @@ class GestureControlPanel(FloatLayout):
     
     thread_loaded, saving_settings, show_loading = BooleanProperty(False), BooleanProperty(False), BooleanProperty(True) 
     
-    status = StringProperty()
-    
+    status, current_fps = StringProperty(), StringProperty()
+        
     with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
         
@@ -46,7 +48,6 @@ class GestureControlPanel(FloatLayout):
         
         self.camera = Camera(
             captureIndex = 0,
-            fps= 30 ,
             size_hint= (1, 0.9),
             pos_hint= {'top':1}
         )
@@ -57,7 +58,7 @@ class GestureControlPanel(FloatLayout):
         self.thread.daemon = True
         self.thread.start()
         
-        Clock.schedule_interval(self.update, 1.0 / 30)
+        Clock.schedule_interval(self.update, 0)
         
     def update_status(self, dt = 0):
         if not self.thread_loaded:
@@ -158,18 +159,18 @@ class GestureControlPanel(FloatLayout):
         return frame
         
     def update(self, dt):
-        
         self.update_status()
-        
+        self.current_fps = str(int(Clock.get_rfps()))
+
         if self.db.is_updated:
             self.mappings = self.db.get_mappings()
             self.db.is_updated = False  
             print("Mappings Updated")
 
-        if not self.thread_loaded:
-            return                             
+        if not self.camera.running or not self.thread_loaded:
+            return  
 
-        frame = self.camera.getLatestFrame()
+        frame = self.camera.get_latest_frame()
         
         if frame is not None:
             frame = cv2.flip(frame, 1)
@@ -180,7 +181,8 @@ class GestureControlPanel(FloatLayout):
                 prediction = self.GP.predict(landmarks)
                 frame = self.handleInput(prediction, frame)
 
-            self.camera.showFrame(frame)        
+            self.camera.show_frame(frame)
+            
         
     def loadComponents(self):
         
@@ -203,8 +205,8 @@ class GestureControlPanel(FloatLayout):
         self.thread_loaded = True      
         
     def on_stop(self):
-        self.camera.stopCapture()
+        self.camera.stop_capture()
         
     def startCamera(self):
-        self.camera.startCapture()
+        self.camera.start_capture()
     

@@ -6,7 +6,7 @@
         size: 0, 0
 
     CustomButton:
-        id: toggleCam
+        id: toggle_camera
         text: ''
         size_hint: None, None
         size: (root.parent.height / 25, root.parent.height / 25) if root.thread_loaded else (0, 0)
@@ -17,7 +17,7 @@
         normal_image: root.icons['pause'] if root.camera.running else root.icons['play']
         pressed_image: root.icons['pause'] if root.camera.running else root.icons['play']
 
-        on_release: root.camera.toggleCapture()
+        on_release: root.camera.toggle_capture()
 
     Image:
         id: videoIcon
@@ -46,3 +46,15 @@
         opacity: 0 if root.camera.running else 1
         color: 18/255, 18/255, 18/255, 0.87
         font_size: 20
+
+    Label:
+        id: fps
+        text: 'FPS: ' + root.current_fps
+        font_name: root.fonts['poppins']['semi_bold']
+        size_hint: 0.3, 0.3
+        y: toggle_camera.y
+        x: 25
+        text_size: self.size
+        opacity: 1 if root.thread_loaded else 0
+        color: 1, 1, 1, 0.87
+        font_size: root.height / 18
