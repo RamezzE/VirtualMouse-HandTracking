@@ -1,5 +1,4 @@
 import numpy as np
-from db import Database
 
 class GesturePredictor:
      
@@ -19,11 +18,6 @@ class GesturePredictor:
         self.buffer_size = buffer_size
         self.prediction_buffer = []
         
-        self.db = Database('db/actions.db', 'db/schema.sql')
-        
-        self.actions = self.db.getActionNames()
-        self.mappings = self.db.getMappings()
-        
     def predict(self, landmarks):
                 
         landmarks = self._prepareLandmarks(landmarks)
@@ -38,15 +32,6 @@ class GesturePredictor:
             self.prediction_buffer.pop(0)
         
         return max(set(self.prediction_buffer), key=self.prediction_buffer.count)
-    
-    def getAction(self, prediction):
-        for mapping in self.mappings:
-            if mapping[0] == prediction:
-                return self.actions[mapping[1]], mapping[1]
-            
-    def printMappings(self):
-        for mapping in self.mappings:
-            print(f'{self.actions[mapping[1]]} -> {mapping[0]}')
         
     def _prepareLandmarks(self, landmarks):
         x_values = np.array([landmark.x for landmark in landmarks])

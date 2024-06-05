@@ -6,11 +6,12 @@ from screens.CameraScreen import CameraScreen
 from screens.SettingsScreen import SettingsScreen
 
 from kivy.core.window import Window
-
+from db import Database
 class VirtualMouse(App):
     
     def build(self):
-        
+        self.db = Database('db/actions.db', 'db/schema.sql')
+
         self.height = Window.height
         self.width = Window.width
         
