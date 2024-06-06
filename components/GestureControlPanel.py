@@ -41,6 +41,9 @@ class GestureControlPanel(FloatLayout):
 
         self.actions = (np.array(self.db.get('Actions', columns_to_select='name'))).reshape(-1)
         self.mappings = np.array((self.db.get('Mappings', columns_to_select='action_id'))).reshape(-1)
+        self.detection_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name = 'Detection Confidence')[0])
+        self.tracking_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name = 'Tracking Confidence')[0])
+                
         self.updateLog, self.lastAction = None, None
         
         self.thread_loaded = False
@@ -186,7 +189,7 @@ class GestureControlPanel(FloatLayout):
         self.GP = GP(self.model)
         
         from handDetector import HandDetector as HD
-        self.HD = HD()
+        self.HD = HD(detectionCon=self.detection_confidence, trackCon=self.tracking_confidence)
         self.MC = MC(pyautogui.size())
         
         self.KF_x = KF()
@@ -202,3 +205,9 @@ class GestureControlPanel(FloatLayout):
         
     def start_camera(self):
         self.camera.start_capture()
+        
+    def update_settings(self):
+        try:
+            self.HD.setCon(self.detection_confidence, self.tracking_confidence)
+        except:
+            pass

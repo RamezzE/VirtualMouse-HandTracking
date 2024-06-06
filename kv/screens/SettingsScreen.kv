@@ -35,7 +35,6 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.85}
 
         ############# General Settings #############
-        
         ScrollView:
             pos_hint: {'center_x': 0.5, 'center_y': 0.45}
             size_hint: (0.9, 0.6) if root.selected == 'general' else (0, 0)
@@ -53,20 +52,36 @@
                 size_hint_y: None
                 height: self.minimum_height
                 orientation: 'vertical'
-                spacing: 10
+                spacing: 20
 
                 ############# Camera Settings #############
-                SettingName:
-                    text: 'Camera Settings'
-                    font_name: root.fonts['poppins']['semi_bold']
-                    font_size: root.height / 40 if root.height / 40 > 18 else 18
-                
-                BoxLayout:
-                    id: camera_settings
-                    size_hint_y: None
-                    height: self.minimum_height
-                    orientation: 'vertical'
+                SettingsArea:
 
+                    SettingName:
+                        text: 'Camera Settings'
+                        font_name: root.fonts['poppins']['semi_bold']
+                        font_size: root.height / 40 if root.height / 40 > 18 else 18
+                    
+                    BoxLayout:
+                        id: camera_settings
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+
+                ############# Detection Settings #############
+                SettingsArea:
+                
+                    SettingName:
+                        text: 'Detection Settings'
+                        font_name: root.fonts['poppins']['semi_bold']
+                        font_size: root.height / 40 if root.height / 40 > 18 else 18
+                    
+                    BoxLayout:
+                        id: detection_settings
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                    
         ############# Gesture Settings #############    
         ScrollView:
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
@@ -100,9 +115,27 @@
                     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     orientation: 'vertical'
 
+
+<SettingsArea@BoxLayout>
+    size_hint_y: None
+    orientation: 'vertical'
+    height: self.minimum_height
+    spacing: 10
+
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1
+            points: [self.x, self.y, self.x + self.width, self.y]
+
 <RowSpacer@Widget>:
     size_hint: None, 1
-    width: 25
+    width: 10
+
+<SmallRowSpacer@Widget>:
+    size_hint: None, 1
+    width: 10
 
 <SettingName@Label>:
     color: 1, 1, 1, 0.87
@@ -148,6 +181,8 @@
         RowLabel:
             text: root.text
             font_name: root.settings.fonts['poppins']['regular']
+
+        SmallRowSpacer:
             
 
     BoxLayout:
@@ -164,6 +199,7 @@
             button_height: self.parent.height
             options_height: self.parent.height/1.5
 
+            selected: root.selected
             options: root.options
             
             background_color: (25/255,25/255,25/255, 1) if root.alternate_background else (18/255, 18/255, 18/255, 1)
@@ -191,6 +227,8 @@
             text: root.text
             font_name: root.settings.fonts['poppins']['regular']
 
+        SmallRowSpacer:
+
     BoxLayout:
         size_hint: 0.5, 1
         orientation: 'horizontal'
@@ -212,6 +250,57 @@
             background_normal: ''
             background_color: 110/255, 110/255, 110/255, 1
             background_down: ''
+
+
+
+<SliderRow>:
+    size_hint_y: None
+    height: root.settings.rowHeight
+    orientation: 'horizontal'
+
+    canvas.before:
+        Color:
+            rgba: 217/255, 217/255, 217/255, 0.08 if root.alternate_background else 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    BoxLayout:
+        size_hint: 0.5, 1
+        orientation: 'horizontal'
+
+        RowSpacer:
+    
+        RowLabel:
+            text: root.text + ' (' + str(root.value) + '%)' 
+            font_name: root.settings.fonts['poppins']['regular']
+
+        SmallRowSpacer:
+
+    BoxLayout:
+        size_hint: 0.5, 1
+        orientation: 'horizontal'
+
+        canvas.before:
+            Color:
+                rgba: 25/255, 25/255, 25/255, 1 if root.alternate_background else 0
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        Slider:
+            id: slider
+            min: root.min
+            max: root.max
+            value: root.value
+            step: 1
+            size_hint: 1, 1
+            pos_hint: {'center_y': 0.5}
+            background_color: 185/255, 185/255, 185/255, 1
+            value_track_color: 1, 1, 1, 0.87
+            value_track_width: 2
+            cursor_size: 20, 20
+            on_value: root.on_value(int(self.value))
 
 <GestureRow>:             
     size_hint: 1, None
