@@ -40,9 +40,9 @@ class CameraScreen(Screen):
         
         self.bind(size = self.resize)        
 
-    def startCamera(self):
+    def start_camera(self):
         print('Starting camera')
-        self.ids['GCP'].startCamera()
+        self.ids['GCP'].start_camera()
         
     def resize(self, instance, value):
         self.size = instance.size

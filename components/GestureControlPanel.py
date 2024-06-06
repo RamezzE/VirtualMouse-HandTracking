@@ -38,10 +38,9 @@ class GestureControlPanel(FloatLayout):
         super(GestureControlPanel, self).__init__(**kwargs)
         
         self.db = App.get_running_app().db
-        
-        self.actions = self.db.get_action_names()
-        self.mappings = self.db.get_mappings()
 
+        self.actions = (np.array(self.db.get('Actions', columns_to_select='name'))).reshape(-1)
+        self.mappings = np.array((self.db.get('Mappings', columns_to_select='action_id'))).reshape(-1)
         self.updateLog, self.lastAction = None, None
         
         self.thread_loaded = False
@@ -73,16 +72,14 @@ class GestureControlPanel(FloatLayout):
         
         
     def getAction(self, prediction):
-        for mapping in self.mappings:
-            if mapping[0] == prediction:
-                return self.actions[mapping[1]], mapping[1]
+        return self.actions[self.mappings[prediction]-1], self.mappings[prediction]-1
     
     def handleInput(self, prediction, frame):
         if prediction is None:
             return frame
         
         frame = self.HD.highlightGesture(frame, prediction)
-        
+                
         actionName, actionIndex = self.getAction(prediction)
         
         if self.lastAction is None:
@@ -162,10 +159,6 @@ class GestureControlPanel(FloatLayout):
         self.update_status()
         self.current_fps = str(int(Clock.get_rfps()))
 
-        if self.db.is_updated:
-            self.mappings = self.db.get_mappings()
-            self.db.is_updated = False  
-            print("Mappings Updated")
 
         if not self.camera.running or not self.thread_loaded:
             return  
@@ -203,10 +196,9 @@ class GestureControlPanel(FloatLayout):
 
     def set_thread_loaded(self, dt):
         self.thread_loaded = True      
-        
+    
     def on_stop(self):
         self.camera.stop_capture()
         
-    def startCamera(self):
+    def start_camera(self):
         self.camera.start_capture()
-    

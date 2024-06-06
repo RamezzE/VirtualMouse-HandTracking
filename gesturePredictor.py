@@ -3,14 +3,14 @@ import numpy as np
 class GesturePredictor:
      
     IDLE = 0
-    MOVE_MOUSE = 1
-    LEFT_CLICK = 2
-    DOUBLE_CLICK = 3
-    DRAG = 4
-    RIGHT_CLICK = 5
-    SCROLL_UP = 6
-    SCROLL_DOWN = 7
-    ZOOM = 8
+    DRAG = 1
+    MOVE_MOUSE = 2
+    RIGHT_CLICK = 3
+    LEFT_CLICK = 4
+    DOUBLE_CLICK = 5
+    ZOOM = 6
+    SCROLL_UP = 7
+    SCROLL_DOWN = 8
     TOGGLE_RELATIVE_MOUSE = 9
                 
     def __init__(self, tensorflow_model, buffer_size = 5):
