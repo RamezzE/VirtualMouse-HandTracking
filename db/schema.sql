@@ -9,3 +9,15 @@ CREATE TABLE IF NOT EXISTS Mappings (
 	PRIMARY KEY (gesture_id, action_id),
     FOREIGN KEY(action_id) REFERENCES Actions(id)
 );
+
+CREATE TABLE IF NOT EXISTS CameraSettings(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS DetectionSettings(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    value TEXT NOT NULL
+);

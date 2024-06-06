@@ -1,18 +1,6 @@
 import sqlite3
 import threading
 
-INDEX = 0
-INDEX_MIDDLE = 1
-INDEX_THUMB = 2
-INDEX_MIDDLE_THUMB = 3
-PEACE = 4
-HAND_OPEN = 5
-FIST = 6
-PINCH = 7
-THUMBS_UP = 8
-THUMBS_DOWN = 9
-THUMBS_PINKY = 10
-
 class Database:
     def __init__(self, db_path, schema_path):
         self.db_path = db_path
@@ -20,6 +8,7 @@ class Database:
         self.local = threading.local()
         self.is_updated = False
         self._create_tables_from_file(schema_path)
+        self._check_and_insert_defaults()
 
     def _get_connection(self):
         if not hasattr(self.local, 'connection'):
@@ -34,125 +23,186 @@ class Database:
         c.executescript(sql_script)
         conn.commit()
 
-    def insert_action(self, name):
+    def _check_and_insert_defaults(self):
         conn = self._get_connection()
         c = conn.cursor()
-        try:
-            c.execute("INSERT INTO Actions (name) VALUES (?)", (name,))
-            conn.commit()
-            return c.lastrowid
-        except sqlite3.IntegrityError:
-            print("Action already exists.")
-            return self.get_action_id(name)
+        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = c.fetchall()
+        tables = tables[1:]
+        
+        all_tables_empty = True
+        
+        for table in tables:
+            if not self._is_table_empty(table[0]):
+                all_tables_empty = False
+                break
+            
+        if all_tables_empty:
+            self._insert_defaults()
+
+    def _is_table_empty(self, table_name):
+        conn = self._get_connection()
+        c = conn.cursor()
+        c.execute(f"SELECT COUNT(*) FROM {table_name}")
+        count = c.fetchone()[0]
+        return count == 0
 
     def get_action_names(self):
         conn = self._get_connection()
         c = conn.cursor()
         c.execute("SELECT name FROM Actions")
         return [row[0] for row in c.fetchall()]
-
-    def insert_mapping(self, gesture_id, action_id):
+    
+    def insert(self, table, **kwargs):
         conn = self._get_connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM Mappings WHERE gesture_id = ? AND action_id = ?", (gesture_id, action_id))
-        if c.fetchone():
-            print("Mapping already exists.")
-            return False
-        else:
-            c.execute("INSERT INTO Mappings (action_id, gesture_id) VALUES (?, ?)", (action_id, gesture_id))
-            conn.commit()
-            return True
-
-    def insert_mappings(self, mappings):
-        for i in range(len(mappings)):
-            self.insert_mapping(i, mappings[i])
-
-    def get_mappings(self):
-        conn = self._get_connection()
-        c = conn.cursor()
-        c.execute("SELECT gesture_id, action_id FROM Mappings")
-        return c.fetchall()
-
-    def get_action_by_gesture_id(self, gesture_id):
-        conn = self._get_connection()
-        c = conn.cursor()
-        c.execute('''
-            SELECT a.name
-            FROM Actions a
-            JOIN Mappings m ON a.id = m.action_id
-            WHERE m.gesture_id = ?
-        ''', (gesture_id,))
-        result = c.fetchone()
-        return result[0] if result else None
-
-    def delete_actions(self):
-        conn = self._get_connection()
-        c = conn.cursor()
-        c.execute("DELETE FROM Actions")
+        columns = ', '.join(kwargs.keys())
+        placeholders = ', '.join('?' * len(kwargs))
+        values = tuple(kwargs.values())
+        c.execute(f"INSERT INTO {table} ({columns}) VALUES ({placeholders})", values)
         conn.commit()
+            
+    def get_all(self, table):
+        conn = self._get_connection()
+        c = conn.cursor()
+        c.execute(f"SELECT * FROM {table}")
+        return c.fetchall()
+            
+    def get(self, table, **kwargs):
+        conn = self._get_connection()
+        c = conn.cursor()
+        columns = ', '.join(kwargs.keys())
+        placeholders = ', '.join('?' * len(kwargs))
+        values = tuple(kwargs.values())
+        c.execute(f"SELECT * FROM {table} WHERE {columns} = {placeholders}", values)
+        return c.fetchone()
+    
+    def get(self, table, columns_to_select="*", **kwargs):
+        conn = self._get_connection()
+        c = conn.cursor()
+        
+        if isinstance(columns_to_select, list):
+            columns_to_select = ', '.join(columns_to_select)
+        else:
+            columns_to_select = str(columns_to_select)
+
+        where_clause = ' AND '.join([f"{key} = ?" for key in kwargs.keys()])
+        values = tuple(kwargs.values())
+        
+        if not where_clause:
+            query = f"SELECT {columns_to_select} FROM {table}"
+            c.execute(query)
+            return c.fetchall()
+        
+        query = f"SELECT {columns_to_select} FROM {table} WHERE {where_clause}"
+        c.execute(query, values)
+        
+        return c.fetchone()
+    
+    def update(self, table, columns_to_update, **kwargs):
+        conn = self._get_connection()
+        c = conn.cursor()
+
+        set_clause = ', '.join([f"{col} = ?" for col in columns_to_update.keys()])
+        set_values = tuple(columns_to_update.values())
+
+        where_clause = ' AND '.join([f"{key} = ?" for key in kwargs.keys()])
+        where_values = tuple(kwargs.values())
+
+        values = set_values + where_values
+
+        c.execute(f"UPDATE {table} SET {set_clause} WHERE {where_clause}", values)
+        conn.commit()
+
+
+    def delete_table_contents(self, table):
+        conn = self._get_connection()
+        c = conn.cursor()
+        c.execute(f"DELETE FROM {table}")
+        conn.commit()
+        
+    def drop_table(self, table):
+        conn = self._get_connection()
+        c = conn.cursor()
+        c.execute(f"DROP TABLE {table}")
+        conn.commit()
+        
+    def drop_all_tables(self):
+        print('Dropping all tables')
+        conn = self._get_connection()
+        c = conn.cursor()
+        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = c.fetchall()
+        tables = tables[1:]
+        
+        for table in tables:
+            print(f'Dropped: {table[0]}')
+            self.drop_table(table[0])
 
     def reset(self):
-        self.delete_mappings()
-        self.delete_actions()
-        self.drop_tables()
+        self.drop_all_tables()
         self._create_tables_from_file(self.schema_path)
-        self.insert_defaults()
+        self._check_and_insert_defaults()
 
-    def insert_defaults(self):
-        actions = {
-            'Idle': 0,
-            'Move Mouse': 1,
-            'Left Click': 2,
-            'Double Click': 3,
-            'Drag': 4,
-            'Right Click': 5,
-            'Scroll Up': 6,
-            'Scroll Down': 7,
-            'Zoom': 8,
-            'Toggle Relative Mouse': 9,
+    def _insert_defaults(self):
+        
+        INDEX = 0
+        INDEX_MIDDLE = 1
+        INDEX_THUMB = 2
+        INDEX_MIDDLE_THUMB = 3
+        PEACE = 4
+        HAND_OPEN = 5
+        FIST = 6
+        PINCH = 7
+        THUMBS_UP = 8
+        THUMBS_DOWN = 9
+        THUMBS_PINKY = 10
+        
+        actions = ['Idle',
+                   'Drag', 
+                   'Move Mouse', 
+                   'Right Click', 
+                   'Left Click', 
+                   'Double Click',
+                   'Zoom', 
+                   'Scroll Up', 
+                   'Scroll Down', 
+                   'Toggle Relative Mouse']    
+        
+        dict = {
+            INDEX: 'Drag',
+            INDEX_MIDDLE: 'Move Mouse',
+            INDEX_THUMB: 'Right Click',
+            INDEX_MIDDLE_THUMB: 'Left Click',
+            PEACE: 'Double Click',
+            HAND_OPEN: 'Idle',
+            FIST: 'Idle',
+            PINCH: 'Zoom',
+            THUMBS_UP: 'Scroll Up',
+            THUMBS_DOWN: 'Scroll Down',
+            THUMBS_PINKY: 'Toggle Relative Mouse'
         }
+        
+        print('\nInserting actions:\n')
+        for action in actions:
+            self.insert('Actions', name=action)
+            print("Inserting: ", action)
+            
+        print('\nInserting mappings:\n')
+        for key, value in dict.items():
+            print(f'Inserting: {key} -> {value} (id: {self.get("Actions", columns_to_select="id", name=value)[0]})')
+            self.insert('Mappings', gesture_id=key, action_id = self.get('Actions', columns_to_select='id', name=value)[0])
+            
+        print('\nInserting settings:\n')
+            
+        self.insert("CameraSettings", name = "Camera", value = 0)
+        self.insert("CameraSettings", name = "Show FPS", value = 1)
 
-        arr = [
-            'Idle',
-            'Move Mouse',
-            'Left Click',
-            'Double Click',
-            'Drag',
-            'Right Click',
-            'Scroll Up',
-            'Scroll Down',
-            'Zoom',
-            'Toggle Relative Mouse'
-        ]
-
-        for action in arr:
-            self.insert_action(action)
-
-        self.insert_mapping(gesture_id=INDEX, action_id=actions['Drag'])
-        self.insert_mapping(gesture_id=INDEX_MIDDLE, action_id=actions['Move Mouse'])
-        self.insert_mapping(gesture_id=INDEX_THUMB, action_id=actions['Right Click'])
-        self.insert_mapping(gesture_id=INDEX_MIDDLE_THUMB, action_id=actions['Left Click'])
-        self.insert_mapping(gesture_id=PEACE, action_id=actions['Double Click'])
-        self.insert_mapping(gesture_id=HAND_OPEN, action_id=actions['Idle'])
-        self.insert_mapping(gesture_id=FIST, action_id=actions['Idle'])
-        self.insert_mapping(gesture_id=PINCH, action_id=actions['Zoom'])
-        self.insert_mapping(gesture_id=THUMBS_UP, action_id=actions['Scroll Up'])
-        self.insert_mapping(gesture_id=THUMBS_DOWN, action_id=actions['Scroll Down'])
-        self.insert_mapping(gesture_id=THUMBS_PINKY, action_id=actions['Toggle Relative Mouse'])
-
-    def delete_mappings(self):
-        conn = self._get_connection()
-        c = conn.cursor()
-        c.execute("DELETE FROM Mappings")
-        conn.commit()
-
-    def drop_tables(self):
-        conn = self._get_connection()
-        c = conn.cursor()
-        c.execute("DROP TABLE Actions")
-        c.execute("DROP TABLE Mappings")
-        conn.commit()
-
+        self.insert("DetectionSettings", name = "Detection Confidence", value = 0.5)
+        self.insert("DetectionSettings", name = "Tracking Confidence", value = 0.5)
+        
+        print('Inserted everything\n')
+        
     def close(self):
         if hasattr(self.local, 'connection'):
             self.local.connection.close()
@@ -161,6 +211,4 @@ if __name__ == '__main__':
     db = Database('db/actions.db', 'db/schema.sql')
     db.reset()
 
-    print(db.get_mappings())
-    print(db.get_mappings()[0][1])
     db.close()
