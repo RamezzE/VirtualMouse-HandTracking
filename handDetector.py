@@ -23,10 +23,14 @@ class HandDetector:
     PINKY = 20
     
     # Constructor
-    def __init__(self):
+    def __init__(self, detectionCon = 0.5, trackCon = 0.5):
+        
         self.mpHands = mp.solutions.hands
-        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = 0.75, min_tracking_confidence = 0.75, max_num_hands = 1)
+        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = detectionCon, min_tracking_confidence = trackCon, max_num_hands = 1)
         self.mpDraw = mp.solutions.drawing_utils
+        
+    def setCon(self, detectionCon = 0.5, trackCon = 0.5):
+        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = detectionCon, min_tracking_confidence = trackCon, max_num_hands = 1)
                         
     def findHands(self, img, drawConnections = True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
