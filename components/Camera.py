@@ -2,11 +2,9 @@ from kivy.uix.accordion import BooleanProperty, NumericProperty
 from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
-import queue
 import cv2
 import threading
 import numpy as np
-import time
 
 class Camera(Image):
     
@@ -37,6 +35,7 @@ class Camera(Image):
         try:
             self.running = False
             white_frame = 255 * np.ones((480, 640, 3), np.uint8)
+            self.capture.release()
             self.captureThread.join()
             Clock.schedule_once(lambda dt: self.show_frame(white_frame), 0) 
             
@@ -75,4 +74,14 @@ class Camera(Image):
         texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.texture = texture
+        
+    staticmethod
+    def get_available_cameras(n = 10):
+        available_cameras = []
+        for i in range(n):
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                available_cameras.append(i)
+                cap.release()
+        return available_cameras
     
