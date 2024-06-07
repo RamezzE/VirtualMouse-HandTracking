@@ -4,9 +4,6 @@ import time
 
 class MouseController:
     
-    LOW_SENSITIVITY = 1
-    NORMAL_SENSITIVITY = 2
-    
     def __init__(self, screenSize):
         self.screenWidth, self.screenHeight = screenSize
         self.mouseHeld = False

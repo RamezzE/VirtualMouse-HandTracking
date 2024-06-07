@@ -1,4 +1,4 @@
-<GestureControlPanel>:
+<GestureDetectionView>:
     size_hint: 1, 1
     id: layout
 
@@ -9,8 +9,8 @@
         id: toggle_camera
         text: ''
         size_hint: None, None
-        size: (root.parent.height / 25, root.parent.height / 25) if root.thread_loaded else (0, 0)
-        disabled: not root.thread_loaded
+        size: (root.parent.height / 25, root.parent.height / 25) if not root.show_loading_spinner else (0, 0)
+        disabled: root.show_loading_spinner
         pos_hint: {'center_y': 0}
         x: layout.width - self.width * 1.5 - 10
         
@@ -20,7 +20,6 @@
         on_release: root.camera.toggle_capture()
 
     Image:
-        id: videoIcon
         source: root.icons['video']
         size_hint: 0.2, 0.2
         pos_hint: {'center_x': 0.5, 'center_y': 0.55}
@@ -30,7 +29,7 @@
         id: spinner
         size_hint: 0.5, 0.5
         pos_hint: {'center_x': 0.5, 'center_y': 0.55}
-        opacity: 1 if root.show_loading else 0
+        opacity: 1 if root.show_loading_spinner else 0
         numLines: 3
         lineThickness: 2
         animationDuration: 3
@@ -49,12 +48,12 @@
 
     Label:
         id: fps
-        text: 'FPS: ' + root.current_fps
+        text: 'FPS: ' + str(root.current_fps)
         font_name: root.fonts['poppins']['semi_bold']
         size_hint: 0.3, 0.3
         y: toggle_camera.y
         x: 25
         text_size: self.size
-        opacity: 1 if root.thread_loaded else 0
+        opacity: 1 if not root.show_loading_spinner else 0
         color: 1, 1, 1, 0.87
         font_size: root.height / 18

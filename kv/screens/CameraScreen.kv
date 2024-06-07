@@ -11,9 +11,8 @@
                 pos: layout.pos
                 size: layout.size
 
-        GestureControlPanel:
+        GestureDetectionView:
             id: GCP
-            callback: root.updateLog
             size_hint: 1, 0.6
             pos_hint: {'center_y': 0.75}
 
@@ -29,7 +28,7 @@
 
         Label:
             id: logsLabel
-            text: root.logsLabelText
+            text: GCP.presenter.model.log
             font_name: root.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
             size_hint: 1, 0.3

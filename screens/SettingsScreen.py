@@ -4,16 +4,13 @@ from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import StringProperty, BooleanProperty, ObjectProperty, NumericProperty, ListProperty
-from kivy.uix.button import Button
 from kivy.clock import Clock
-from kivy.uix.slider import Slider
 import numpy as np
 import yaml
 import threading
 
-from components.CustomButton import CustomButton
-from components.CustomDropDown import CustomDropDown
-from components.Camera import Camera
+from components.settings import ChooseSettingButton, DropdownRow, SliderRow, OnOffRow, GestureRow
+from components import Camera, CustomDropDown, CustomButton
 
 class SettingsScreen(Screen):
     
@@ -122,9 +119,11 @@ class SettingsScreen(Screen):
         self.update_gesture_mappings()
         self.manager.get_screen('camera').ids['GCP'].saving_settings = False
 
-        Clock.schedule_once(self.update_thread_loaded, 0)
+        Clock.schedule_once(self.update_dependencies_loaded, 0)
 
     def update_general_settings(self):
+        print("Updating general settings")
+        
         if int(self.sliders[1].value)/100 != self.detection_confidence:
             self.db.update('DetectionSettings', {'value': int(self.sliders[0].value)/100}, name='Detection Confidence')
             self.detection_confidence = int(self.sliders[1].value)/100    
@@ -157,10 +156,10 @@ class SettingsScreen(Screen):
     def update_gesture_mappings(self):
         indices_to_change = self.get_new_gesture_mappings()
         
-        for (gesture_id, action_id) in enumerate(indices_to_change):
+        for i, (gesture_id, action_id) in enumerate(indices_to_change):
             self.db.update('Mappings', {'action_id': action_id}, gesture_id=gesture_id)
                 
-    def update_thread_loaded(self, dt):
+    def update_dependencies_loaded(self, dt):
         self.manager.get_screen('camera').ids['GCP'].mappings = self.mappings
         self.manager.get_screen('camera').ids['GCP'].saving_settings = False
         
@@ -181,42 +180,3 @@ class SettingsScreen(Screen):
                 self.mappings[i] = new_mappings[i]+1
                 
         return mappings_to_change
-    
-    
-class ChooseSettingButton(Button):
-    settings = ObjectProperty()
-    
-class DropdownRow(BoxLayout):
-    settings = ObjectProperty()
-    text = StringProperty()
-    options = ListProperty()
-    alternate_background = BooleanProperty(False)
-    selected = StringProperty()
-    
-class SliderRow(BoxLayout):
-    settings = ObjectProperty()
-    text = StringProperty("Slider Value:")
-    alternate_background = BooleanProperty(False)
-    min = NumericProperty(0)
-    max = NumericProperty(100)
-    value = NumericProperty(0)
-    
-    def __init__(self, **kwargs):
-        super(SliderRow, self).__init__(**kwargs)
-        self.ids.slider.value = self.value
-    
-    def on_value(self, instance = None, value = None):
-        try:
-            self.value = int(self.ids.slider.value)
-        except:
-            pass       
-            
-class OnOffRow(BoxLayout):
-    settings = ObjectProperty()
-    text = StringProperty()
-    alternate_background = BooleanProperty(False)
-    
-class GestureRow(BoxLayout):
-    settings = ObjectProperty()
-    alternate_background = BooleanProperty(False)
-    image_source = StringProperty()

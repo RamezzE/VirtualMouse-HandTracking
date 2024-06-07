@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
-from components.GestureControlPanel import GestureControlPanel
+from views.components.GestureDetectionView import GestureDetectionView 
 from components.CustomButton import CustomButton
 
 from kivy.uix.floatlayout import FloatLayout
