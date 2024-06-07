@@ -16,7 +16,7 @@ class HomeScreen(Screen):
             
     fonts = paths['assets']['fonts']
     
-    Builder.load_file('kv/screens/HomeScreen.kv')
+    Builder.load_file('views/screens/HomeScreen.kv')
 
     def __init__(self, **kwargs):
         super(HomeScreen, self).__init__(**kwargs)
@@ -31,6 +31,5 @@ class HomeScreen(Screen):
         self.pos = Window._pos
         self.ids['home'].size = self.size
         
-    def toCameraScreen(self):
+    def to_camera_screen(self):
         self.manager.transition.direction = 'right'
-        self.manager.current = 'camera'

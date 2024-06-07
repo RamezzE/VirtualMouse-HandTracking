@@ -1,4 +1,4 @@
-<CameraScreen>:
+<CameraFeedbackScreen>:
     FloatLayout:
         pos: root.pos
         size: root.size
@@ -51,7 +51,7 @@
             normal_image: root.icons['settings']
             pressed_image: root.icons['settings']
 
-            on_release: root.openSettings()
+            on_release: root.switch_to_settings_screen()
 
         CustomButton:
             text: ''            
@@ -76,4 +76,4 @@
             normal_image: root.icons['arrow']
             pressed_image: root.icons['arrow']
 
-            on_release: root.openHome()
+            on_release: root.switch_to_home_screen()

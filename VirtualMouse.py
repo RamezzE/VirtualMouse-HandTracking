@@ -1,9 +1,7 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 
-from screens.HomeScreen import HomeScreen
-from screens.CameraScreen import CameraScreen
-from views.screens.SettingsScreen import SettingsScreen
+from views.screens import SettingsScreen, CameraFeedbackScreen, HomeScreen
 from kivy.core.window import Window
 
 from kivy.clock import Clock
@@ -22,7 +20,7 @@ class VirtualMouse(App):
         self.sm = ScreenManager()
         self.sm.add_widget(HomeScreen(name='home'))
         self.sm.add_widget(SettingsScreen(name='settings'))
-        Clock.schedule_once(lambda dt: self.sm.add_widget(CameraScreen(name='camera')), 0)
+        Clock.schedule_once(lambda dt: self.sm.add_widget(CameraFeedbackScreen(name='camera')), 0)
         return self.sm
 
     def on_stop(self):

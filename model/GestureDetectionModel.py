@@ -47,7 +47,7 @@ class GestureDetetctionModel:
     def get_action(self, prediction):
         return self.actions[self.mappings[prediction] - 1], self.mappings[prediction] - 1
 
-    def handle_input(self, prediction, frame, updateLog=None):
+    def handle_input(self, prediction, frame):
         if prediction is None:
             return frame
 
