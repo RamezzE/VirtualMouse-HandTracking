@@ -6,17 +6,10 @@ from views.components.CustomButton import CustomButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.lang import Builder
-import yaml
 
 from presenters.CameraFeedbackPresenter import CameraFeedbackPresenter
 
 class CameraFeedbackScreen(Screen):
-    
-    with open('paths.yaml', 'r') as f:
-            paths = yaml.safe_load(f)
-            
-    fonts = paths['assets']['fonts']
-    icons = paths['assets']['icons']
         
     Builder.load_file('views/screens/CameraFeedbackScreen.kv')
 

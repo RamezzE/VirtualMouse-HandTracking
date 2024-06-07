@@ -23,8 +23,8 @@
 
             x: 20
 
-            normal_image: root.icons['arrow']
-            pressed_image: root.icons['arrow']
+            normal_image: app.icons['arrow']
+            pressed_image: app.icons['arrow']
 
             on_release: root.to_camera_screen()
 
@@ -59,7 +59,7 @@
 
                     SettingName:
                         text: 'Camera Settings'
-                        font_name: root.fonts['poppins']['semi_bold']
+                        font_name: app.fonts['poppins']['semi_bold']
                         font_size: root.height / 40 if root.height / 40 > 18 else 18
                     
                     BoxLayout:
@@ -73,7 +73,7 @@
                 
                     SettingName:
                         text: 'Detection Settings'
-                        font_name: root.fonts['poppins']['semi_bold']
+                        font_name: app.fonts['poppins']['semi_bold']
                         font_size: root.height / 40 if root.height / 40 > 18 else 18
                     
                     BoxLayout:
@@ -105,7 +105,7 @@
 
                 SettingName:
                     text: 'Gesture Mappings'
-                    font_name: root.fonts['poppins']['semi_bold']
+                    font_name: app.fonts['poppins']['semi_bold']
                     font_size: root.height / 40 if root.height / 40 > 18 else 18
 
                 BoxLayout:

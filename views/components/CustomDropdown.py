@@ -3,7 +3,6 @@ from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.properties import StringProperty, ObjectProperty, ListProperty, NumericProperty, BooleanProperty, ColorProperty
 from kivy.lang import Builder
-import yaml
 
 class CustomDropdown(FloatLayout):
     selected = StringProperty()
@@ -28,11 +27,6 @@ class CustomDropdown(FloatLayout):
     dropdown_open = BooleanProperty(False)
     
     _i = None
-    
-    with open('paths.yaml', 'r') as f:
-        paths = yaml.safe_load(f)
-
-    icons = paths['assets']['icons']
     
     Builder.load_file('views/components/CustomDropdown.kv')
     

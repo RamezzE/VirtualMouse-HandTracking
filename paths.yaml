@@ -1,5 +1,7 @@
 model: "model/tfv3.keras"
-
+db:
+  actions: "db/actions.db"
+  schema: "db/schema.sql"
 assets:
   icons: 
     settings: "assets/icons/settings.png"

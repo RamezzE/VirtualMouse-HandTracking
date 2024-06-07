@@ -1,14 +1,11 @@
 from kivy.app import App
 import numpy as np
-import yaml
 from presenters import CameraPresenter as Camera
 
 class SettingsModel:
     def __init__(self):
-        with open('paths.yaml', 'r') as f:
-            self.paths = yaml.safe_load(f)
-        
-        # self.db = Database(self.paths['db']['path'], self.paths['db']['schema'])
+        self.paths = App.get_running_app().paths
+
         self.db = App.get_running_app().db
         
     def get_fonts(self):

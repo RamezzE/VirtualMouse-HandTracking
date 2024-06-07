@@ -1,7 +1,6 @@
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
-import yaml
 from views.components.CustomButton import CustomButton
 
 from kivy.core.window import Window
@@ -11,10 +10,6 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 
 class HomeScreen(Screen):
-    with open('paths.yaml', 'r') as f:
-            paths = yaml.safe_load(f)
-            
-    fonts = paths['assets']['fonts']
     
     Builder.load_file('views/screens/HomeScreen.kv')
 

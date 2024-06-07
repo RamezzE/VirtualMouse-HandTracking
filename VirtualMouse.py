@@ -7,10 +7,19 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 
 from db.db import Database
+
+import yaml
 class VirtualMouse(App):
     
     def build(self):
-        self.db = Database('db/actions.db', 'db/schema.sql')
+        
+        with open('paths.yaml', 'r') as f:
+            self.paths = yaml.safe_load(f)
+            
+        self.fonts = self.paths['assets']['fonts']
+        self.icons = self.paths['assets']['icons']
+        
+        self.db = Database(self.paths['db']['actions'], self.paths['db']['schema'])
 
         self.height = Window.height
         self.width = Window.width

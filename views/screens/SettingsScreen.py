@@ -9,8 +9,6 @@ from presenters.SettingsPresenter import SettingsPresenter
 
 from kivy.lang import Builder
 
-import yaml
-
 Builder.load_file('views/components/settings/SettingsComponents.kv')
 
 
@@ -29,12 +27,6 @@ class SettingsScreen(Screen):
     current_fps = StringProperty()
     detection_confidence = NumericProperty()
     tracking_confidence = NumericProperty()
-    
-    with open('paths.yaml', 'r') as f:
-        paths = yaml.safe_load(f)
-        
-    icons = paths['assets']['icons']
-    fonts = paths['assets']['fonts']
     
     Builder.load_file('views/screens/SettingsScreen.kv')
 

@@ -4,20 +4,12 @@ from kivy.properties import BooleanProperty, StringProperty, NumericProperty, Ob
 from presenters import GestureDetectionPresenter as Presenter
 from views.components import CameraView, RotatingSpinner
 
-import yaml
-
 from kivy.lang import Builder
 
 class GestureDetectionView(FloatLayout):
     show_loading_spinner = BooleanProperty(False)
     current_fps = NumericProperty()
     status = StringProperty()
-        
-    with open('paths.yaml', 'r') as f:
-        paths = yaml.safe_load(f)
-        
-    icons = paths['assets']['icons']
-    fonts = paths['assets']['fonts']
     
     Builder.load_file('views/components/GestureDetectionView.kv')
     

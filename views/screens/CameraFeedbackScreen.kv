@@ -18,7 +18,7 @@
 
         Label:
             text: 'Gesture Log:'
-            font_name: root.fonts['poppins']['semi_bold']
+            font_name: app.fonts['poppins']['semi_bold']
             color: 1, 1, 1, 0.87
             size_hint: 1, 0.1
             pos_hint: {'center_y': 0.4}
@@ -29,7 +29,7 @@
         Label:
             id: logsLabel
             text: GCP.presenter.model.log
-            font_name: root.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
             size_hint: 1, 0.3
             pos_hint: {'y': 0.03}
@@ -48,8 +48,8 @@
             pos_hint: {'center_y': 0.05}
             x: layout.width - self.width * 1.5 - 10
 
-            normal_image: root.icons['settings']
-            pressed_image: root.icons['settings']
+            normal_image: app.icons['settings']
+            pressed_image: app.icons['settings']
 
             on_release: root.switch_to_settings_screen()
 
@@ -61,8 +61,8 @@
             pos_hint: {'center_y': 0.05}
             x: settingsButton.x - settingsButton.size[0] - 20
 
-            normal_image: root.icons['github']
-            pressed_image: root.icons['github']
+            normal_image: app.icons['github']
+            pressed_image: app.icons['github']
 
             # on_release: webbrowser.open('https://github.com/RamezzE/VirtualMouse-HandTracking')
 
@@ -73,7 +73,7 @@
             x: 20
 
             pos_hint: {'center_y': 0.05}
-            normal_image: root.icons['arrow']
-            pressed_image: root.icons['arrow']
+            normal_image: app.icons['arrow']
+            pressed_image: app.icons['arrow']
 
             on_release: root.switch_to_home_screen()

@@ -14,7 +14,7 @@
         on_release: root._open_dropdown()
 
     Image:
-        source: root.icons['dropdown'] if not root.dropdown_open else root.icons['dropdown_up']
+        source: app.icons['dropdown'] if not root.dropdown_open else app.icons['dropdown_up']
         size_hint: None, None
         size: app.height / 40, app.height / 40
         pos_hint: {'center_y': 0.5}
