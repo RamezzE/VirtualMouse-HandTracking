@@ -19,6 +19,7 @@
     background_down: ''
     background_color: 0,0,0,0
     font_name: root.settings.fonts['poppins']['bold'] if root.settings.selected == self.text.lower() else root.settings.fonts['poppins']['medium']
+    font_size: 20
     font_size: root.settings.height / 35 if root.settings.height / 35 > 20 else 20
     color: 1, 1, 1, 0.87
     on_release: root.settings.select(self.text.lower())

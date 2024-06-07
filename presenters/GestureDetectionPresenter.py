@@ -10,6 +10,8 @@ class GestureDetectionPresenter:
         self.dependencies_loaded = False
         self.saving_settings = False
         
+        Clock.schedule_interval(self.update, 0)
+        
     def on_dependencies_loaded(self):
         self.dependencies_loaded = True
         Clock.schedule_once(self.update_status, 0)

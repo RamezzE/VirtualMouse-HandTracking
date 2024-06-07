@@ -1,5 +1,3 @@
-from kivy.clock import Clock
-
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty, StringProperty, NumericProperty, ObjectProperty
 
@@ -36,7 +34,6 @@ class GestureDetectionView(FloatLayout):
         )
         
         self.add_widget(self.camera)
-        Clock.schedule_interval(self.update, 0)
         
     def set_presenter(self, presenter):
         self.presenter = presenter
@@ -48,9 +45,6 @@ class GestureDetectionView(FloatLayout):
     def hide_loading(self, message):
         self.show_loading_spinner = False
         self.status = message
-
-    def update(self, dt):
-        self.presenter.update(dt)
 
     def show_frame(self, frame):
         self.camera.show_frame(frame)

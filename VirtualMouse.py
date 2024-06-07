@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import ScreenManager
 
 from screens.HomeScreen import HomeScreen
 from screens.CameraScreen import CameraScreen
-from screens.SettingsScreen import SettingsScreen
+from views.screens.SettingsScreen import SettingsScreen
 from kivy.core.window import Window
 
 from kivy.clock import Clock

@@ -25,6 +25,7 @@ class Camera(Image):
         try:
             self.running = True
             self.captureThread = threading.Thread(target=self.capture_frames)
+            self.captureThread.daemon = True
             self.captureThread.start()
         except Exception as e:
             print(f'Error starting the camera: {e}')
@@ -34,9 +35,8 @@ class Camera(Image):
             return
         try:
             self.running = False
-            white_frame = 255 * np.ones((480, 640, 3), np.uint8)
-            self.capture.release()
             self.captureThread.join()
+            white_frame = 255 * np.ones((480, 640, 3), np.uint8)
             Clock.schedule_once(lambda dt: self.show_frame(white_frame), 0) 
             
         except Exception as e:
