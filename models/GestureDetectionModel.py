@@ -1,9 +1,10 @@
 from kivy.app import App
 import numpy as np
 
-from gesturePredictor import GesturePredictor as GP
-from mouseController import MouseController as MC
-from KalmanFilter import KalmanFilter1D as KF
+from modules.GesturePredictor import GesturePredictor as GP
+from modules.MouseController import MouseController as MC
+from modules.KalmanFilter import KalmanFilter1D as KF
+
 
 import pyautogui
 import threading 
@@ -35,8 +36,8 @@ class GestureDetetctionModel:
         
         self.GP = GP(self.model)
         
-        from handDetector import HandDetector as HD
-        self.HD = HD(detectionCon=self.detection_confidence, trackCon=self.tracking_confidence)
+        from modules.HandDetector import HandDetector as HD
+        self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
         self.MC = MC(pyautogui.size())
         
         self.KF_x = KF()
@@ -51,7 +52,7 @@ class GestureDetetctionModel:
         if prediction is None:
             return frame
 
-        frame = self.HD.highlightGesture(frame, prediction)
+        frame = self.HD.highlight_gesture(frame, prediction)
         actionName, actionIndex = self.get_action(prediction)
 
         if self.lastAction is None:
@@ -69,58 +70,58 @@ class GestureDetetctionModel:
                 return frame
 
         if actionIndex == GP.IDLE:
-            self.MC.handleMousePress(False)
-            self.MC.resetClick()
-            self.MC.resetMousePos()
+            self.MC.handle_mouse_press(False)
+            self.MC.reset_click()
+            self.MC.reset_mouse_pos()
             return frame
 
         if actionIndex == GP.LEFT_CLICK:
-            self.MC.clickMouse(button='left')
-            self.MC.resetClick(button='right')
-            self.MC.resetMousePos()
+            self.MC.click_mouse(button='left')
+            self.MC.reset_click(button='right')
+            self.MC.reset_mouse_pos()
             return frame
 
         if actionIndex == GP.RIGHT_CLICK:
-            self.MC.clickMouse(button='right')
-            self.MC.resetClick(button='left')
-            self.MC.resetMousePos()
+            self.MC.click_mouse(button='right')
+            self.MC.reset_click(button='left')
+            self.MC.reset_mouse_pos()
             return frame
 
         if actionIndex == GP.DOUBLE_CLICK:
-            self.MC.doubleClick(button='left')
-            self.MC.resetClick(button='right')
-            self.MC.resetMousePos()
+            self.MC.double_click(button='left')
+            self.MC.reset_click(button='right')
+            self.MC.reset_mouse_pos()
             return frame
 
         if actionIndex in (GP.SCROLL_UP, GP.SCROLL_DOWN):
-            frame = self.HD.highlightFingers(img=frame, fingers=[self.HD.THUMB])
-            self.MC.handleMousePress(False)
-            self.MC.resetClick()
-            self.MC.resetMousePos()
+            frame = self.HD.highlight_fingers(img=frame, fingers=[self.HD.THUMB])
+            self.MC.handle_mouse_press(False)
+            self.MC.reset_click()
+            self.MC.reset_mouse_pos()
             return frame
 
         if actionIndex == GP.ZOOM:
             return frame
 
         if actionIndex == GP.TOGGLE_RELATIVE_MOUSE:
-            self.MC.toggleRelativeMouse()
+            self.MC.toggle_relative_mouse()
             return frame
 
         if actionIndex == GP.MOVE_MOUSE:
-            self.MC.handleMousePress(False)
-            self.MC.resetClick()
+            self.MC.handle_mouse_press(False)
+            self.MC.reset_click()
 
         elif actionIndex == GP.DRAG:
-            self.MC.handleMousePress(True)
-            self.MC.resetClick()
+            self.MC.handle_mouse_press(True)
+            self.MC.reset_click()
 
-        IndexPos = self.HD.getFingerPosition(self.HD.INDEX)
+        IndexPos = self.HD.get_finger_position(self.HD.INDEX)
 
         if IndexPos is not None:
             x, y = IndexPos
             x = self.KF_x.update(x)
             y = self.KF_y.update(y)
-            self.MC.moveMouse((x, y), frame.shape)
+            self.MC.move_mouse((x, y), frame.shape)
 
         return frame
     

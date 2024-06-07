@@ -20,7 +20,7 @@ class GesturePredictor:
         
     def predict(self, landmarks):
                 
-        landmarks = self._prepareLandmarks(landmarks)
+        landmarks = self._prepare_landmarks(landmarks)
         
         prediction = self.model(landmarks)
         
@@ -33,7 +33,7 @@ class GesturePredictor:
         
         return max(set(self.prediction_buffer), key=self.prediction_buffer.count)
         
-    def _prepareLandmarks(self, landmarks):
+    def _prepare_landmarks(self, landmarks):
         x_values = np.array([landmark.x for landmark in landmarks])
         y_values = np.array([landmark.y for landmark in landmarks])
 

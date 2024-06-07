@@ -35,8 +35,8 @@ class GestureDetectionPresenter:
         
         if frame is not None:
             frame = cv2.flip(frame, 1)
-            frame = self.model.HD.findHands(img=frame, drawConnections=True)
-            landmarks = self.model.HD.getLandmarks()
+            frame = self.model.HD.find_hands(img=frame, draw_connections=True)
+            landmarks = self.model.HD.get_landmarks()
             
             if landmarks:
                 prediction = self.model.GP.predict(landmarks)

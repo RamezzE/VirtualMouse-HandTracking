@@ -23,32 +23,32 @@ class HandDetector:
     PINKY = 20
     
     # Constructor
-    def __init__(self, detectionCon = 0.5, trackCon = 0.5):
+    def __init__(self, detection_con = 0.5, track_con = 0.5):
         
-        self.mpHands = mp.solutions.hands
-        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = detectionCon, min_tracking_confidence = trackCon, max_num_hands = 1)
-        self.mpDraw = mp.solutions.drawing_utils
+        self.mp_hands = mp.solutions.hands
+        self.mp_hands_detector = self.mp_hands.Hands(min_detection_confidence = detection_con, min_tracking_confidence = track_con, max_num_hands = 1)
+        self.mp_draw = mp.solutions.drawing_utils
         
-    def setCon(self, detectionCon = 0.5, trackCon = 0.5):
-        self.mpHandsDetector = self.mpHands.Hands(min_detection_confidence = detectionCon, min_tracking_confidence = trackCon, max_num_hands = 1)
+    def setCon(self, detection_con = 0.5, track_con = 0.5):
+        self.mp_hands_detector = self.mp_hands.Hands(min_detection_confidence = detection_con, min_tracking_confidence = track_con, max_num_hands = 1)
                         
-    def findHands(self, img, drawConnections = True):
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    def find_hands(self, img, draw_connections = True):
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         self.imgHeight, self.imgWidth, _ = img.shape
-        self.results = self.mpHandsDetector.process(imgRGB)
+        self.results = self.mp_hands_detector.process(img_rgb)
         self.hands = self.results.multi_hand_landmarks
         
-        if drawConnections:
+        if draw_connections:
             if not self.hands:
                 return img
             
             for hand in self.hands:
-                self.mpDraw.draw_landmarks(img, hand, self.mpHands.HAND_CONNECTIONS)
+                self.mp_draw.draw_landmarks(img, hand, self.mp_hands.HAND_CONNECTIONS)
             
         return img
     
-    def highlightFingers(self, img, fingers = [THUMB, INDEX, MIDDLE, RING, PINKY]):
+    def highlight_fingers(self, img, fingers = [THUMB, INDEX, MIDDLE, RING, PINKY]):
         if not self.hands:
             return img
         
@@ -65,7 +65,7 @@ class HandDetector:
                 
         return img
     
-    def highlightGesture(self, img, gesture):
+    def highlight_gesture(self, img, gesture):
         if not self.hands:
             return img
         
@@ -88,10 +88,10 @@ class HandDetector:
         elif gesture == THUMBS_PINKY:
             fingers = [self.THUMB, self.PINKY]
         
-        return self.highlightFingers(img, fingers)
+        return self.highlight_fingers(img, fingers)
     
-    def getFingerPosition(self, fingerId, hand = 0):
-        landmarks = self.getLandmarks(hand)
+    def get_finger_position(self, fingerId, hand = 0):
+        landmarks = self.get_landmarks(hand)
         if landmarks and fingerId < len(landmarks):
             finger = landmarks[fingerId]
             x = int(finger.x * self.imgWidth)
@@ -101,7 +101,7 @@ class HandDetector:
         return None, None
 
     
-    def getLandmarks(self, hand = 0):
+    def get_landmarks(self, hand = 0):
         try:
             if self.hands and hand < len(self.hands):
                 return self.hands[hand].landmark
@@ -109,53 +109,53 @@ class HandDetector:
         except:
             return None
     
-    def getFingersUp(self, hand = 0):
+    def get_fingers_up(self, hand = 0):
         if not self.hands:
             return None
         
-        handType = self.results.multi_handedness[hand].classification[0].label
-        lmList = self.getLandmarks(hand)
+        hand_type = self.results.multi_handedness[hand].classification[0].label
+        lm_list = self.get_landmarks(hand)
         
-        fingersUp = []
+        fingers_up = []
                 
         # Thumb
-        # if handType == "Right":
-        if handType == "Left":
-            if lmList[self.THUMB].x > lmList[self.THUMB - 1].x:
-                fingersUp.append(1)
+        # if hand_type == "Right":
+        if hand_type == "Left":
+            if lm_list[self.THUMB].x > lm_list[self.THUMB - 1].x:
+                fingers_up.append(1)
             else:
-                fingersUp.append(0)
+                fingers_up.append(0)
         else:
-            if lmList[self.THUMB].x < lmList[self.THUMB - 1].x:
-                fingersUp.append(1)
+            if lm_list[self.THUMB].x < lm_list[self.THUMB - 1].x:
+                fingers_up.append(1)
             else:
-                fingersUp.append(0)
+                fingers_up.append(0)
 
         for fingerId in [self.INDEX, self.MIDDLE, self.RING, self.PINKY]:
-            if lmList[fingerId].y < lmList[fingerId - 2].y:
-                fingersUp.append(1)
+            if lm_list[fingerId].y < lm_list[fingerId - 2].y:
+                fingers_up.append(1)
             else:
-                fingersUp.append(0)
+                fingers_up.append(0)
         
-        return fingersUp
+        return fingers_up
     
-    def isFingerOnlyUp(self, finger, hand = 0):
-        fingers = self.getFingersUp(hand)
+    def is_finger_only_up(self, finger, hand = 0):
+        fingers = self.get_fingers_up(hand)
         if not fingers:
             return False
         
         return sum (fingers) == 1 and fingers[int(finger / 4) -1] == 1
     
-    def isFistClosed(self, hand = 0):
-        fingers = self.getFingersUp(hand)
+    def is_fist_closed(self, hand = 0):
+        fingers = self.get_fingers_up(hand)
         if not fingers:
             return None
         
         return sum(fingers) == 0
     
-    def getDistance(self, f1, f2, img = None, color = (255, 0, 255), scale = 5, draw = True):
-        x1, y1 = self.getFingerPosition(f1)
-        x2, y2 = self.getFingerPosition(f2)
+    def get_distance(self, f1, f2, img = None, color = (255, 0, 255), scale = 5, draw = True):
+        x1, y1 = self.get_finger_position(f1)
+        x2, y2 = self.get_finger_position(f2)
         
         if x1 is None or x2 is None or y1 is None or y2 is None:
             return None, img
@@ -170,7 +170,7 @@ class HandDetector:
 
         return distance, img
 
-    def isDistanceWithin(self, f1, f2, distance = 25):
-        dist, _ = self.getDistance(f1, f2)
+    def is_distance_within(self, f1, f2, distance = 25):
+        dist, _ = self.get_distance(f1, f2)
         return dist is not None and dist < distance
     
