@@ -6,7 +6,7 @@ from kivy.core.window import Window
 
 from kivy.clock import Clock
 
-from db import Database
+from db.db import Database
 class VirtualMouse(App):
     
     def build(self):

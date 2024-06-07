@@ -1,6 +1,6 @@
 import threading
-from model.SettingsModel import SettingsModel
-from components.CustomDropDown import CustomDropDown
+from models.SettingsModel import SettingsModel
+from views.components.CustomDropdown import CustomDropdown
 
 class SettingsPresenter:
     def __init__(self, view):
@@ -47,7 +47,7 @@ class SettingsPresenter:
         return mappings_to_change
 
     def get_dropdowns(self, widget):
-        custom_dropdowns = [child for child in widget.children if isinstance(child, CustomDropDown)]
+        custom_dropdowns = [child for child in widget.children if isinstance(child, CustomDropdown)]
         for child in widget.children:
             custom_dropdowns.extend(self.get_dropdowns(child))
         return custom_dropdowns

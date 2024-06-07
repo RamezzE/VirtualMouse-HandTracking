@@ -1,13 +1,11 @@
-from kivy.uix.actionbar import ColorProperty
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.label import Label
 from kivy.graphics import Rectangle, Color
 from kivy.properties import StringProperty, ObjectProperty, ColorProperty
 from kivy.lang import Builder
-from kivy.animation import Animation
 from kivy.core.image import Image as CoreImage
 
-Builder.load_file('kv/components/CustomButton.kv')
+Builder.load_file('views/components/CustomButton.kv')
 
 class CustomButton(ButtonBehavior, Label):
     normal_image = StringProperty()

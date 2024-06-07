@@ -31,7 +31,7 @@ class GestureDetetctionModel:
         
         from tensorflow.keras.models import load_model
         
-        self.model = load_model("model/tfv3.keras")
+        self.model = load_model("models/tfv3.keras")
         
         self.GP = GP(self.model)
         

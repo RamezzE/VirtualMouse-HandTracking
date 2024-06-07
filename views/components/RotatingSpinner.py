@@ -1,4 +1,3 @@
-from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.animation import Animation
 from kivy.graphics import Color, Line, PushMatrix, PopMatrix, Rotate
@@ -59,21 +58,3 @@ class RotatingSpinner(Widget):
             for i in range(self.numLines):
                 Line(circle=(self.center_x, self.center_y, self.radius, i * angle_step, i * angle_step + angle_step - self.gap),
                      width=self.lineThickness)
-
-class MyApp(App):
-    def build(self):
-        root = FloatLayout()
-        spinner = RotatingSpinner(
-            size_hint = (0.2, 0.2),
-            pos_hint = {'center_x': 0.5, 'center_y': 0.5},
-            numLines = 3,
-            lineThickness = 2,
-            animationDuration = 3,
-            gap = 50,
-            color = [1, 1, 1, 0.87]
-        )
-        root.add_widget(spinner)
-        return root
-
-if __name__ == '__main__':
-    MyApp().run()

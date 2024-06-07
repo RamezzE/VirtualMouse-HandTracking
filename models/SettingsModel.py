@@ -1,7 +1,7 @@
 from kivy.app import App
 import numpy as np
 import yaml
-from components import Camera
+from presenters import CameraPresenter as Camera
 
 class SettingsModel:
     def __init__(self):

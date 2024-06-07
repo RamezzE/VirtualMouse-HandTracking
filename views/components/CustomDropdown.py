@@ -5,7 +5,7 @@ from kivy.properties import StringProperty, ObjectProperty, ListProperty, Numeri
 from kivy.lang import Builder
 import yaml
 
-class CustomDropDown(FloatLayout):
+class CustomDropdown(FloatLayout):
     selected = StringProperty()
     font_name = StringProperty()
     font_size = NumericProperty(20)
@@ -34,10 +34,10 @@ class CustomDropDown(FloatLayout):
 
     icons = paths['assets']['icons']
     
-    Builder.load_file('kv/components/CustomDropDown.kv')
+    Builder.load_file('views/components/CustomDropdown.kv')
     
     def __init__(self, **kwargs):
-        super(CustomDropDown, self).__init__(**kwargs)
+        super(CustomDropdown, self).__init__(**kwargs)
         
         self.dropdown = DropDown()
         

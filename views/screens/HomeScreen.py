@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
 import yaml
-from components.CustomButton import CustomButton
+from views.components.CustomButton import CustomButton
 
 from kivy.core.window import Window
 
@@ -31,5 +31,6 @@ class HomeScreen(Screen):
         self.pos = Window._pos
         self.ids['home'].size = self.size
         
-    def to_camera_screen(self):
+    def switch_to_camera_screen(self):
         self.manager.transition.direction = 'right'
+        self.manager.current = 'camera'

@@ -2,14 +2,16 @@ from kivy.uix.screenmanager import Screen
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivy.core.window import Window
 
-from components.settings import ChooseSettingButton, DropdownRow, OnOffRow, SliderRow, GestureRow
-from components import CustomDropDown
+from views.components.settings import ChooseSettingButton, DropdownRow, OnOffRow, SliderRow, GestureRow
+from views.components import CustomDropdown
 
 from presenters.SettingsPresenter import SettingsPresenter
 
 from kivy.lang import Builder
 
 import yaml
+
+Builder.load_file('views/components/settings/SettingsComponents.kv')
 
 
 class SettingsScreen(Screen):

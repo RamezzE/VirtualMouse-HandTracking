@@ -1,6 +1,6 @@
 from kivy.clock import Clock
 import cv2
-from model.GestureDetectionModel import GestureDetetctionModel as Model
+from models.GestureDetectionModel import GestureDetetctionModel as Model
 
 class GestureDetectionPresenter:
     def __init__(self, view):
@@ -28,10 +28,10 @@ class GestureDetectionPresenter:
         self.update_status()
         self.view.update_fps(int(Clock.get_rfps()))
 
-        if not self.view.camera.running or not self.dependencies_loaded:
+        if not self.view.ids.camera.running or not self.dependencies_loaded:
             return  
 
-        frame = self.view.camera.get_latest_frame()
+        frame = self.view.ids.camera.get_latest_frame()
         
         if frame is not None:
             frame = cv2.flip(frame, 1)

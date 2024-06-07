@@ -2,6 +2,12 @@
     size_hint: 1, 1
     id: layout
 
+    CameraView:
+        id: camera
+        size_hint: 
+        size_hint: 1, 0.9
+        pos_hint: {'top': 1}
+
     CustomButton:
         size: 0, 0
 
@@ -14,16 +20,16 @@
         pos_hint: {'center_y': 0}
         x: layout.width - self.width * 1.5 - 10
         
-        normal_image: root.icons['pause'] if root.camera.running else root.icons['play']
-        pressed_image: root.icons['pause'] if root.camera.running else root.icons['play']
+        normal_image: root.icons['pause'] if camera.running else root.icons['play']
+        pressed_image: root.icons['pause'] if camera.running else root.icons['play']
 
-        on_release: root.camera.toggle_capture()
+        on_release: camera.toggle_capture()
 
     Image:
         source: root.icons['video']
         size_hint: 0.2, 0.2
         pos_hint: {'center_x': 0.5, 'center_y': 0.55}
-        opacity: 0 if root.camera.running else 1
+        opacity: 0 if camera.running else 1
 
     RotatingSpinner:
         id: spinner
@@ -42,7 +48,7 @@
         font_name: root.fonts['poppins']['regular']
         size_hint: 0.3, 0.3
         pos_hint: {'center_x': 0.5, 'center_y': 0.22}
-        opacity: 0 if root.camera.running else 1
+        opacity: 0 if camera.running else 1
         color: 18/255, 18/255, 18/255, 0.87
         font_size: 20
 
