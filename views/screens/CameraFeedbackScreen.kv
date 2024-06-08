@@ -1,8 +1,10 @@
 <CameraFeedbackScreen>:
-    FloatLayout:
+    BoxLayout:
         pos: root.pos
         size: root.size
         id: layout
+        orientation: 'vertical'
+        spacing: 0
 
         canvas.before:
             Color:
@@ -13,67 +15,114 @@
 
         GestureDetectionView:
             id: GCP
-            size_hint: 1, 0.6
+            size_hint: 1, 0.5
             pos_hint: {'center_y': 0.75}
 
-        Label:
-            text: 'Gesture Log:'
-            font_name: app.fonts['poppins']['semi_bold']
-            color: 1, 1, 1, 0.87
+        FloatLayout:
+            size_hint: 1, 0.4
+
+            ScrollView:
+                id: logs_scroll
+                size_hint: 0.8, 0.8
+                pos_hint: {'center_x':0.5,'center_y': 0.425}
+                bar_width: 3
+                bar_color: 1, 1, 1, 0.87
+                bar_inactive_color: 1, 1, 1, 0.34
+                
+                canvas.before:
+                    Color:
+                        rgba: 0/255, 0/255, 0/255, 0.5
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                BoxLayout:
+                    id: logs_table
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 2.5
+
+
+        FloatLayout:
             size_hint: 1, 0.1
-            pos_hint: {'center_y': 0.4}
-            x: 25
-            font_size: root.height / 32
-            text_size: self.size
 
-        Label:
-            id: logsLabel
-            text: GCP.presenter.model.log
-            font_name: app.fonts['poppins']['regular']
-            color: 1, 1, 1, 0.87
-            size_hint: 1, 0.3
-            pos_hint: {'y': 0.03}
-            x: 50
-            font_size: root.height / 40 if root.height / 40 > 18 else 18
-            text_size: self.size
-            halign: 'left'
-            valign: 'top'
+            CustomButton:
+                id: settings_button
+                text: ''            
+                size_hint: None, None
+                size: root.height / 25, root.height / 25
+                
+                pos_hint: {'center_y': 0.5}
+                x: layout.width - self.width * 1.5 - 10
 
-        CustomButton:
-            id: settingsButton
-            text: ''            
-            size_hint: None, None
-            size: root.height / 25, root.height / 25
-            
-            pos_hint: {'center_y': 0.05}
-            x: layout.width - self.width * 1.5 - 10
+                normal_image: app.icons['settings']
+                pressed_image: app.icons['settings']
 
-            normal_image: app.icons['settings']
-            pressed_image: app.icons['settings']
+                on_release: root.switch_to_settings_screen()
 
-            on_release: root.switch_to_settings_screen()
+            CustomButton:
+                text: ''            
+                size_hint: None, None
+                size: root.height / 25, root.height / 25
+                
+                pos_hint: {'center_y': 0.5}
+                x: settings_button.x - settings_button.size[0] - 20
 
-        CustomButton:
-            text: ''            
-            size_hint: None, None
-            size: root.height / 25, root.height / 25
-            
-            pos_hint: {'center_y': 0.05}
-            x: settingsButton.x - settingsButton.size[0] - 20
+                normal_image: app.icons['github']
+                pressed_image: app.icons['github']
 
-            normal_image: app.icons['github']
-            pressed_image: app.icons['github']
+                # on_release: webbrowser.open('https://github.com/RamezzE/VirtualMouse-HandTracking')
 
-            # on_release: webbrowser.open('https://github.com/RamezzE/VirtualMouse-HandTracking')
+            CustomButton:
+                text: ''            
+                size_hint: None, None
+                size: root.height / 25, root.height / 25
+                x: 20
 
-        CustomButton:
-            text: ''            
-            size_hint: None, None
-            size: root.height / 25, root.height / 25
-            x: 20
+                pos_hint: {'center_y': 0.5}
+                normal_image: app.icons['arrow']
+                pressed_image: app.icons['arrow']
 
-            pos_hint: {'center_y': 0.05}
-            normal_image: app.icons['arrow']
-            pressed_image: app.icons['arrow']
+                on_release: root.switch_to_home_screen()
 
-            on_release: root.switch_to_home_screen()
+
+<LogsRow>:
+    orientation: 'horizontal'
+    size_hint: 1, None
+    height: 30
+    spacing: 10
+
+    canvas.before:
+        Color:
+            rgba: 217/255, 217/255, 217/255, 0.5
+        Line:
+            width: 1
+            points: [self.x, self.y, self.x + self.width, self.y]
+
+    Widget:
+        size_hint: None, 1
+        width: 5
+        
+    Label:
+        id: time_label 
+        text: root.current_time
+        font_name: app.fonts['poppins']['regular']
+        color: 1, 1, 1, 0.87
+        size_hint: None, 1
+        font_size: 16
+        text_size: self.size[0], None
+
+    Image:
+        source: app.icons['gestures']['gesture' + str(root.prediction_no + 1)]
+        size_hint: None, None
+        pos_hint: {'center_y': 0.5}
+        size: root.height*0.75, root.height*0.75
+        
+    Label:
+        text: root.action_name
+        font_name: app.fonts['poppins']['regular']
+        color: 1, 1, 1, 0.87
+        size_hint: 1, 1
+        font_size: 16
+        text_size: self.size[0], None

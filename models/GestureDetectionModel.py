@@ -10,21 +10,20 @@ import pyautogui
 import threading 
 
 class GestureDetetctionModel:
-    log = ''
     
-    def __init__(self, callback, paths = ''):
+    def __init__(self, callback, add_log):
         self.db = App.get_running_app().db
-
-        self.paths = paths
 
         self.actions = np.array(self.db.get('Actions', columns_to_select='name')).reshape(-1)
         self.mappings = np.array((self.db.get('Mappings', columns_to_select='action_id'))).reshape(-1)
         self.detection_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Confidence')[0])
         self.tracking_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Tracking Confidence')[0])
-
+        
         self.lastAction = None
+        self.lastPrediction = None
         
         self.callback = callback
+        self.add_log = add_log
         
         threading.Thread(target=self._load_components).start()
 
@@ -57,13 +56,20 @@ class GestureDetetctionModel:
 
         if self.lastAction is None:
             self.lastAction = actionIndex
-            self.log = actionName
+            if self.add_log is not None:
+                self.add_log(int(prediction), actionName)
+                
+        elif prediction != self.lastPrediction:
+            self.lastPrediction = prediction
+            self.lastAction = actionIndex
+            
+            if self.add_log is not None:
+                self.add_log(int(prediction), actionName)
 
         if actionIndex != self.lastAction:
             self.lastAction = actionIndex
             self.KF_x.reset()
             self.KF_y.reset()
-            self.log = actionName
 
         else:
             if actionIndex == GP.TOGGLE_RELATIVE_MOUSE:
@@ -130,6 +136,3 @@ class GestureDetetctionModel:
         self.tracking_confidence = tracking_confidence
         
         self.HD.setCon(detection_confidence, tracking_confidence)
-        
-        # self.db.update('DetectionSettings', 'value', detection_confidence, name='Detection Confidence')
-        # self.db.update('DetectionSettings', 'value', tracking_confidence, name='Tracking Confidence')

@@ -1,10 +1,12 @@
+from kivy.app import App
 from kivy.clock import Clock
 import cv2
 from models.GestureDetectionModel import GestureDetetctionModel as Model
 
 class GestureDetectionPresenter:
     def __init__(self, view):
-        self.model = Model(self.on_dependencies_loaded)
+
+        self.model = Model(self.on_dependencies_loaded, None)
         self.view = view
         
         self.dependencies_loaded = False
@@ -14,6 +16,8 @@ class GestureDetectionPresenter:
         
     def on_dependencies_loaded(self):
         self.dependencies_loaded = True
+        add_log_func = App.get_running_app().sm.get_screen('camera').add_log
+        self.model.add_log = add_log_func
         Clock.schedule_once(self.update_status, 0)
 
     def update_status(self, dt = 0):

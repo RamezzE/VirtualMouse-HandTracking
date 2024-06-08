@@ -1,3 +1,5 @@
+from kivy.uix.accordion import NumericProperty
+from kivy.uix.accordion import StringProperty
 from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 from views.components.GestureDetectionView import GestureDetectionView 
@@ -8,7 +10,7 @@ from kivy.uix.label import Label
 from kivy.lang import Builder
 
 from presenters.CameraFeedbackPresenter import CameraFeedbackPresenter
-
+from views.components import LogsRow
 class CameraFeedbackScreen(Screen):
         
     Builder.load_file('views/screens/CameraFeedbackScreen.kv')
@@ -21,9 +23,18 @@ class CameraFeedbackScreen(Screen):
         
         CameraFeedbackPresenter(self)
         
-        self.logs = []
+        self.log_rows = []
         
         self.bind(size = self.resize)   
+        
+    def add_log(self, prediction_no, action_name):
+        
+        if len(self.log_rows) > 10:
+            self.ids.logs_table.remove_widget(self.log_rows.pop(0))
+            
+        self.log_rows.append(LogsRow(prediction_no = prediction_no, action_name = action_name))
+        self.ids.logs_table.add_widget(self.log_rows[-1])
+        self.ids.logs_scroll.scroll_y = 0
         
     def set_presenter(self, presenter):
         self.presenter = presenter     

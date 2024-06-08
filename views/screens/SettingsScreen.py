@@ -5,7 +5,7 @@ from kivy.core.window import Window
 from views.components.settings import ChooseSettingButton, DropdownRow, OnOffRow, SliderRow, GestureRow
 from views.components import CustomDropdown
 
-from presenters.SettingsPresenter import SettingsPresenter
+from presenters import SettingsPresenter
 
 from kivy.lang import Builder
 

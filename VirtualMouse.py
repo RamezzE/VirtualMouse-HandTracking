@@ -28,8 +28,8 @@ class VirtualMouse(App):
                 
         self.sm = ScreenManager()
         self.sm.add_widget(HomeScreen(name='home'))
-        self.sm.add_widget(SettingsScreen(name='settings'))
         Clock.schedule_once(lambda dt: self.sm.add_widget(CameraFeedbackScreen(name='camera')), 0)
+        self.sm.add_widget(SettingsScreen(name='settings'))
         return self.sm
 
     def on_stop(self):

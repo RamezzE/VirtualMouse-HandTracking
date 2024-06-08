@@ -2,10 +2,24 @@
     size_hint: 1, 1
     id: layout
 
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1 if root.show_loading_spinner else 0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
     CameraView:
         id: camera
         size_hint: 1, 0.9
         pos_hint: {'top': 1}
+
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1 if not camera.running else 0
+            Rectangle:
+                size: self.size
+                pos: self.pos
 
     CustomButton:
         size: 0, 0
