@@ -23,8 +23,8 @@ class SettingsModel:
     def get_last_used_camera(self):
         return self.db.get('CameraSettings', columns_to_select=['value'], name='Camera')[0]
 
-    def get_show_fps_setting(self):
-        return self.db.get('CameraSettings', columns_to_select=['value'], name='Show FPS')[0]
+    # def get_show_fps_setting(self):
+    #     return self.db.get('CameraSettings', columns_to_select=['value'], name='Show FPS')[0]
 
     def get_detection_confidence(self):
         return float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Confidence')[0])
@@ -34,6 +34,9 @@ class SettingsModel:
 
     def get_detection_responsiveness(self):
         return int(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Responsiveness')[0])
+    
+    def get_relative_mouse_sensitivity(self):
+        return float(self.db.get('MouseSettings', columns_to_select=['value'], name='Relative Mouse Sensitivity')[0])
     
     def update_detection_confidence(self, value):
         self.db.update('DetectionSettings', {'value': value}, name='Detection Confidence')
@@ -46,6 +49,9 @@ class SettingsModel:
         
     def update_detection_responsiveness(self, value):
         self.db.update('DetectionSettings', {'value': value}, name='Detection Responsiveness')
+        
+    def update_relative_mouse_sensitivity(self, value):
+        self.db.update('MouseSettings', {'value': value}, name='Relative Mouse Sensitivity')
         
     def get_available_cameras(self):
         return np.array(Camera.get_available_cameras(5))

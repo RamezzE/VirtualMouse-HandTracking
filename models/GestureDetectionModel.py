@@ -19,6 +19,7 @@ class GestureDetetctionModel:
         self.detection_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Confidence')[0])
         self.tracking_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Tracking Confidence')[0])
         self.buffer_size = int(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Responsiveness')[0])
+        self.relative_mouse_sensitivity = float(self.db.get('MouseSettings', columns_to_select=['value'], name='Relative Mouse Sensitivity')[0])
         self.last_action_index = None
         self.last_prediction = None
         
@@ -36,7 +37,7 @@ class GestureDetetctionModel:
         
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
         self.GP = GP(self.model, self.buffer_size)
-        self.MC = MC(pyautogui.size())
+        self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity)
         self.KF_x = KF()
         self.KF_y = KF()
         
@@ -125,13 +126,28 @@ class GestureDetetctionModel:
 
         return frame
     
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness):
-        self.detection_confidence = detection_confidence
-        self.tracking_confidence = tracking_confidence
-        self.buffer_size = detection_responsiveness
-                
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
+
         try:
-            self.HD.set_confidence(detection_confidence, tracking_confidence)
-            self.GP.set_buffer_size(detection_responsiveness)
+            if self.buffer_size != detection_responsiveness:
+                self.buffer_size = detection_responsiveness
+                self.GP.set_buffer_size(self.buffer_size)
+                
         except:
-            pass
+            print('Error updating detection responsiveness')
+            
+        try:
+            if self.detection_confidence != detection_confidence or self.tracking_confidence != tracking_confidence:
+                self.detection_confidence = detection_confidence
+                self.tracking_confidence = tracking_confidence
+                self.HD.set_confidence(detection_confidence, tracking_confidence)
+        except:
+            print('Error updating detection and/or tracking confidence')
+            
+        try:
+            if self.relative_mouse_sensitivity != relative_mouse_sensitivity:
+                self.relative_mouse_sensitivity = relative_mouse_sensitivity  
+                self.MC.set_relative_mouse_sensitivity(relative_mouse_sensitivity)
+        except:
+            print('Error updating relative mouse sensitivity')  
+        

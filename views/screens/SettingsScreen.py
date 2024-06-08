@@ -28,6 +28,7 @@ class SettingsScreen(Screen):
     detection_confidence = NumericProperty()
     tracking_confidence = NumericProperty()
     detection_responsiveness = NumericProperty()
+    relative_mouse_sensitivity = NumericProperty()
     
     Builder.load_file('views/screens/SettingsScreen.kv')
 
@@ -67,6 +68,9 @@ class SettingsScreen(Screen):
         
     def set_detection_responsiveness(self, value):
         self.detection_responsiveness = value
+        
+    def set_relative_mouse_sensitivity(self, value):
+        self.relative_mouse_sensitivity = value
 
     def set_camera_options(self, options):
         self.camera_options = options
@@ -74,8 +78,8 @@ class SettingsScreen(Screen):
     def set_selected_camera(self, camera):
         self.selected_camera = camera
 
-    def set_show_fps(self, show_fps):
-        self.show_fps = show_fps
+    # def set_show_fps(self, show_fps):
+    #     self.show_fps = show_fps
 
     def draw_settings(self):
         settings_header = self.ids['settings_header']
@@ -84,10 +88,11 @@ class SettingsScreen(Screen):
         settings_header.add_widget(ChooseSettingButton(text='Gestures', settings=self))
                                                     
         self.ids['camera_settings'].add_widget(DropdownRow(text='Capturing Camera', settings=self, options= self.camera_options, selected = self.selected_camera,alternate_background=True))
-        self.ids['camera_settings'].add_widget(OnOffRow(text='Show FPS', settings=self))
+        # self.ids['camera_settings'].add_widget(OnOffRow(text='Show FPS', settings=self))
         
         self.ids['detection_settings'].add_widget(SliderRow(text='Detection Confidence', settings=self, value = int(self.detection_confidence * 100),alternate_background=True))
         self.ids['detection_settings'].add_widget(SliderRow(text='Tracking Confidence', settings=self, value = int(self.tracking_confidence * 100)))
+        
         
         detection_responsiveness_options = ['Instant', 'Fast', 'Normal', 'Slow']
         if self.detection_responsiveness == 1:
@@ -101,10 +106,15 @@ class SettingsScreen(Screen):
         
         self.ids['detection_settings'].add_widget(DropdownRow(text='Detection Responsiveness', settings=self, options= detection_responsiveness_options, selected = selected, alternate_background=True))
 
-        self.ids['sensitivity_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = 50, alternate_background=True))
+        self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = int(self.relative_mouse_sensitivity * 100), alternate_background=True))
+
 
         self.sliders = []
         for child in self.ids['detection_settings'].children:
+            if isinstance(child, SliderRow):
+                self.sliders.append(child.ids['slider'])
+                
+        for child in self.ids['mouse_settings'].children:
             if isinstance(child, SliderRow):
                 self.sliders.append(child.ids['slider'])
 

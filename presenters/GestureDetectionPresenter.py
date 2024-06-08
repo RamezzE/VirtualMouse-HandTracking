@@ -48,6 +48,6 @@ class GestureDetectionPresenter:
 
             self.view.show_frame(frame)
             
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness):
-        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness)
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
+        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity)
         

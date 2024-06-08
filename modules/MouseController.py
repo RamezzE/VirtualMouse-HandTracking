@@ -4,13 +4,14 @@ import time
 
 class MouseController:
     
-    def __init__(self, screen_size):
+    def __init__(self, screen_size, relative_mouse_sensitivity = 0.75):
         self.screen_width, self.screen_height = screen_size
         self.mouse_held = False
         self.just_clicked_left = self.just_clicked_right = False
         self.prev_pos, self.prev_pos_time = None, None
         self.hand_speed = 0
         self.relative_mouse = False
+        self.relative_mouse_sensitivity = relative_mouse_sensitivity
         self.range_x, self.range_y = None, None
         
     def toggle_relative_mouse(self):
@@ -18,6 +19,9 @@ class MouseController:
             self.relative_mouse = False
         else:
             self.relative_mouse = True
+            
+    def set_relative_mouse_sensitivity(self, sensitivity):
+        self.relative_mouse_sensitivity = sensitivity
         
     def move_mouse(self, pos, img_shape):
         if not pos:
@@ -44,7 +48,7 @@ class MouseController:
             
         mouse.move(x, y)
         
-    def __move_mouse_relative(self, pos, sensitivity_scale = 0.75):
+    def __move_mouse_relative(self, pos):
         
         x = np.interp(pos[0], (self.range_x[0], self.range_x[1]), (0, self.screen_width))
         y = np.interp(pos[1], (self.range_y[0], self.range_y[1]), (0, self.screen_height))
@@ -54,8 +58,8 @@ class MouseController:
         
         self.prev_pos = pos
         
-        new_x = (x - prev_x) * sensitivity_scale
-        new_y = (y - prev_y) * sensitivity_scale
+        new_x = (x - prev_x) * self.relative_mouse_sensitivity  
+        new_y = (y - prev_y) * self.relative_mouse_sensitivity
                 
         mouse.move(new_x, new_y, absolute = False)
         

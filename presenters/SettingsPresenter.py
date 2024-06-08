@@ -19,9 +19,11 @@ class SettingsPresenter:
         self.view.set_detection_confidence(self.model.get_detection_confidence())
         self.view.set_tracking_confidence(self.model.get_tracking_confidence())
         self.view.set_detection_responsiveness(self.model.get_detection_responsiveness())
+        self.view.set_relative_mouse_sensitivity(self.model.get_relative_mouse_sensitivity())
+        
         
         selected_camera = self.model.get_last_used_camera()
-        show_fps = self.model.get_show_fps_setting()
+        # show_fps = self.model.get_show_fps_setting()
         available_camera_indices = self.model.get_available_cameras()
         
         camera_options = [f'Camera {i+1}' for i in available_camera_indices]
@@ -33,7 +35,7 @@ class SettingsPresenter:
         
         self.view.set_camera_options(camera_options)
         self.view.set_selected_camera(selected_camera)
-        self.view.set_show_fps(show_fps)
+        # self.view.set_show_fps(show_fps)
         
         self.numeric_gesture_options = {v: k for k, v in enumerate(self.view.gesture_options)}
 
@@ -56,6 +58,8 @@ class SettingsPresenter:
     def update_general_settings(self):
         detection_confidence = float(self.view.sliders[1].value) / 100
         tracking_confidence = float(self.view.sliders[0].value) / 100
+        relative_mouse_sensitivity = float(self.view.sliders[2].value) / 100
+        
         detection_responsiveness = self.get_dropdowns(self.view.ids.detection_settings)
         detection_responsiveness = detection_responsiveness[0].selected
         detection_responsiveness = 1 if detection_responsiveness == 'Instant' else 3 if detection_responsiveness == 'Fast' else 5 if detection_responsiveness == 'Normal' else 7
@@ -67,6 +71,10 @@ class SettingsPresenter:
         if tracking_confidence != self.view.tracking_confidence:
             self.model.update_tracking_confidence(tracking_confidence)
             self.view.tracking_confidence = tracking_confidence
+            
+        if relative_mouse_sensitivity != self.view.relative_mouse_sensitivity:
+            self.model.update_relative_mouse_sensitivity(relative_mouse_sensitivity)
+            self.view.relative_mouse_sensitivity = relative_mouse_sensitivity
             
         if detection_responsiveness != self.view.detection_responsiveness:
             self.model.update_detection_responsiveness(detection_responsiveness)
@@ -82,7 +90,7 @@ class SettingsPresenter:
         self.view.manager.get_screen('camera').ids.GCP.presenter.saving_settings = True
         self.update_general_settings()
         self.update_gesture_mappings()
-        self.view.manager.get_screen('camera').ids.GCP.presenter.update_settings(self.view.detection_confidence, self.view.tracking_confidence, self.view.detection_responsiveness)
+        self.view.manager.get_screen('camera').ids.GCP.presenter.update_settings(self.view.detection_confidence, self.view.tracking_confidence, self.view.detection_responsiveness, self.view.relative_mouse_sensitivity)
         self.view.manager.get_screen('camera').ids.GCP.presenter.saving_settings = False
 
     def to_camera_screen(self):

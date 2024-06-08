@@ -201,12 +201,14 @@ class Database:
         print('\nInserting settings:\n')
 
         self.insert("CameraSettings", name="Camera", value=0)
-        self.insert("CameraSettings", name="Show FPS", value=1)
+        # self.insert("CameraSettings", name="Show FPS", value=1)
 
         self.insert("DetectionSettings", name="Detection Confidence", value=0.5)
         self.insert("DetectionSettings", name="Tracking Confidence", value=0.5)
         self.insert("DetectionSettings", name="Detection Responsiveness", value = 3)
 
+        self.insert("MouseSettings", name="Relative Mouse Sensitivity", value=0.75)
+        
         print('Inserted everything\n')
 
     def close(self):
