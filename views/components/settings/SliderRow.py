@@ -10,6 +10,7 @@ class SliderRow(BoxLayout):
     min = NumericProperty(0)
     max = NumericProperty(100)
     value = NumericProperty(0)
+    step = NumericProperty(1)
     
     def __init__(self, **kwargs):
         super(SliderRow, self).__init__(**kwargs)

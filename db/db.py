@@ -205,6 +205,7 @@ class Database:
 
         self.insert("DetectionSettings", name="Detection Confidence", value=0.5)
         self.insert("DetectionSettings", name="Tracking Confidence", value=0.5)
+        self.insert("DetectionSettings", name="Detection Responsiveness", value = 3)
 
         print('Inserted everything\n')
 

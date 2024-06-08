@@ -31,7 +31,10 @@ class GesturePredictor:
         if len(self.prediction_buffer) > self.buffer_size:
             self.prediction_buffer.pop(0)
         
-        return max(set(self.prediction_buffer), key=self.prediction_buffer.count)
+        try:
+            return max(set(self.prediction_buffer), key=self.prediction_buffer.count)
+        except:
+            return prediction
         
     def _prepare_landmarks(self, landmarks):
         x_values = np.array([landmark.x for landmark in landmarks])
@@ -43,3 +46,8 @@ class GesturePredictor:
 
         arr = np.concatenate((x_values, y_values))
         return arr.reshape(1, -1)
+    
+    def set_buffer_size(self, buffer_size):
+        self.prediction_buffer.clear()
+        self.buffer_size = buffer_size
+        print(f'Buffer size set to {buffer_size}')

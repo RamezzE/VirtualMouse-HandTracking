@@ -14,9 +14,12 @@ class MouseController:
         self.range_x, self.range_y = None, None
         
     def toggle_relative_mouse(self):
-        self.relative_mouse = not self.relative_mouse
+        if self.relative_mouse:
+            self.relative_mouse = False
+        else:
+            self.relative_mouse = True
         
-    def move_mouse(self, pos, imgShape):
+    def move_mouse(self, pos, img_shape):
         if not pos:
             return
         
@@ -25,8 +28,8 @@ class MouseController:
             return
         
         if self.range_x is None or self.range_y is None:
-            self.range_x = [imgShape[0]*0.2, imgShape[0]*1.1]   
-            self.range_y = [imgShape[1]*0.05, imgShape[1]*0.5]
+            self.range_x = [img_shape[0]*0.2, img_shape[0]*1.1]   
+            self.range_y = [img_shape[1]*0.05, img_shape[1]*0.5]
         
         if self.relative_mouse:
             self.__move_mouse_relative(pos)

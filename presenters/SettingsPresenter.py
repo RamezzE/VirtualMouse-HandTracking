@@ -18,7 +18,8 @@ class SettingsPresenter:
         self.view.set_mappings(self.model.get_mappings())
         self.view.set_detection_confidence(self.model.get_detection_confidence())
         self.view.set_tracking_confidence(self.model.get_tracking_confidence())
-
+        self.view.set_detection_responsiveness(self.model.get_detection_responsiveness())
+        
         selected_camera = self.model.get_last_used_camera()
         show_fps = self.model.get_show_fps_setting()
         available_camera_indices = self.model.get_available_cameras()
@@ -55,6 +56,9 @@ class SettingsPresenter:
     def update_general_settings(self):
         detection_confidence = float(self.view.sliders[1].value) / 100
         tracking_confidence = float(self.view.sliders[0].value) / 100
+        detection_responsiveness = self.get_dropdowns(self.view.ids.detection_settings)
+        detection_responsiveness = detection_responsiveness[0].selected
+        detection_responsiveness = 1 if detection_responsiveness == 'Instant' else 3 if detection_responsiveness == 'Fast' else 5 if detection_responsiveness == 'Normal' else 7
 
         if detection_confidence != self.view.detection_confidence:
             self.model.update_detection_confidence(detection_confidence)
@@ -63,7 +67,11 @@ class SettingsPresenter:
         if tracking_confidence != self.view.tracking_confidence:
             self.model.update_tracking_confidence(tracking_confidence)
             self.view.tracking_confidence = tracking_confidence
-
+            
+        if detection_responsiveness != self.view.detection_responsiveness:
+            self.model.update_detection_responsiveness(detection_responsiveness)
+            self.view.detection_responsiveness = detection_responsiveness
+            
     def update_gesture_mappings(self):
         indices_to_change = self.get_new_gesture_mappings()
 
@@ -74,6 +82,7 @@ class SettingsPresenter:
         self.view.manager.get_screen('camera').ids.GCP.presenter.saving_settings = True
         self.update_general_settings()
         self.update_gesture_mappings()
+        self.view.manager.get_screen('camera').ids.GCP.presenter.update_settings(self.view.detection_confidence, self.view.tracking_confidence, self.view.detection_responsiveness)
         self.view.manager.get_screen('camera').ids.GCP.presenter.saving_settings = False
 
     def to_camera_screen(self):

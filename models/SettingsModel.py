@@ -32,6 +32,9 @@ class SettingsModel:
     def get_tracking_confidence(self):
         return float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Tracking Confidence')[0])
 
+    def get_detection_responsiveness(self):
+        return int(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Responsiveness')[0])
+    
     def update_detection_confidence(self, value):
         self.db.update('DetectionSettings', {'value': value}, name='Detection Confidence')
 
@@ -40,6 +43,9 @@ class SettingsModel:
 
     def update_gesture_mappings(self, gesture_id, action_id):
         self.db.update('Mappings', {'action_id': action_id}, gesture_id=gesture_id)
+        
+    def update_detection_responsiveness(self, value):
+        self.db.update('DetectionSettings', {'value': value}, name='Detection Responsiveness')
         
     def get_available_cameras(self):
         return np.array(Camera.get_available_cameras(5))

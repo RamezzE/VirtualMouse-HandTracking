@@ -27,6 +27,7 @@ class SettingsScreen(Screen):
     current_fps = StringProperty()
     detection_confidence = NumericProperty()
     tracking_confidence = NumericProperty()
+    detection_responsiveness = NumericProperty()
     
     Builder.load_file('views/screens/SettingsScreen.kv')
 
@@ -63,6 +64,9 @@ class SettingsScreen(Screen):
 
     def set_tracking_confidence(self, value):
         self.tracking_confidence = value
+        
+    def set_detection_responsiveness(self, value):
+        self.detection_responsiveness = value
 
     def set_camera_options(self, options):
         self.camera_options = options
@@ -84,10 +88,25 @@ class SettingsScreen(Screen):
         
         self.ids['detection_settings'].add_widget(SliderRow(text='Detection Confidence', settings=self, value = int(self.detection_confidence * 100),alternate_background=True))
         self.ids['detection_settings'].add_widget(SliderRow(text='Tracking Confidence', settings=self, value = int(self.tracking_confidence * 100)))
+        
+        detection_responsiveness_options = ['Instant', 'Fast', 'Normal', 'Slow']
+        if self.detection_responsiveness == 1:
+            selected = detection_responsiveness_options[0]
+        elif self.detection_responsiveness == 3:
+            selected = detection_responsiveness_options[1]
+        elif self.detection_responsiveness == 5:
+            selected = detection_responsiveness_options[2]
+        else:
+            selected = detection_responsiveness_options[3]
+        
+        self.ids['detection_settings'].add_widget(DropdownRow(text='Detection Responsiveness', settings=self, options= detection_responsiveness_options, selected = selected, alternate_background=True))
+
+        self.ids['sensitivity_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = 50, alternate_background=True))
 
         self.sliders = []
         for child in self.ids['detection_settings'].children:
-            self.sliders.append(child.ids['slider'])
+            if isinstance(child, SliderRow):
+                self.sliders.append(child.ids['slider'])
 
         gestures_table = self.ids['gestures_table']
         
