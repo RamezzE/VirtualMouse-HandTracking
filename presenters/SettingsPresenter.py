@@ -36,7 +36,7 @@ class SettingsPresenter:
         return int(self.tracking_confidence * 100)
 
     def get_detection_responsiveness(self):
-        return self.detection_responsiveness_options[int(self.detection_responsiveness / 2) - 1]
+        return self.detection_responsiveness_options[int(self.detection_responsiveness / 2)]
 
     def get_relative_mouse_sensitivity(self):
         return int(self.relative_mouse_sensitivity * 100)
@@ -82,7 +82,10 @@ class SettingsPresenter:
         detection_responsiveness = self.view.get_detection_dropdowns()
         
         detection_responsiveness = detection_responsiveness[0].selected
-        detection_responsiveness = 1 if detection_responsiveness == 'Instant' else 3 if detection_responsiveness == 'Fast' else 5 if detection_responsiveness == 'Normal' else 7
+        arr = self.detection_responsiveness_options
+        
+        d_r = detection_responsiveness  
+        detection_responsiveness = 1 if d_r == arr[0] else 3 if d_r == arr[1] else 5 if d_r == arr[2] else 7
 
         if detection_confidence != self.detection_confidence:
             self.model.update_detection_confidence(detection_confidence)

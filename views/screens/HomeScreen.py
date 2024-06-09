@@ -27,5 +27,5 @@ class HomeScreen(Screen):
         self.ids['home'].size = self.size
         
     def switch_to_camera_screen(self):
-        self.manager.transition.direction = 'right'
+        self.manager.transition.direction = 'left'
         self.manager.current = 'camera'

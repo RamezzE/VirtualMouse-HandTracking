@@ -1,7 +1,4 @@
-from kivy.uix.recycleview import LayoutChangeException
-from kivy.app import App
 from kivy.clock import Clock
-import cv2
 from models.GestureDetectionModel import GestureDetetctionModel
 
 class GestureDetectionPresenter:

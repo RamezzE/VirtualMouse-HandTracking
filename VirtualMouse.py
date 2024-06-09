@@ -42,7 +42,7 @@ class VirtualMouse(App):
         self.width = Window.width
 
 if __name__ == '__main__':
-    Window.size = (350, 500)
-    Window.minimum_width = 350
+    Window.size = (360, 500)
+    Window.minimum_width = 360
     Window.minimum_height = 500
     VirtualMouse().run()

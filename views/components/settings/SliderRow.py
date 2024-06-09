@@ -14,10 +14,10 @@ class SliderRow(BoxLayout):
     
     def __init__(self, **kwargs):
         super(SliderRow, self).__init__(**kwargs)
-        self.ids.slider.value = self.value
+        self.ids['slider'].value = self.value
     
     def on_value(self, instance = None, value = None):
         try:
-            self.value = int(self.ids.slider.value)
+            self.value = int(self.ids['slider'].value)
         except:
             pass       
