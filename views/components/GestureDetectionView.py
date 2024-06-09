@@ -20,6 +20,9 @@ class GestureDetectionView(FloatLayout):
         
     def set_log_callback(self, callback):
         self.presenter.set_log_callback(callback)
+        
+    def set_saving_settings(self, value):
+        self.presenter.set_saving_settings(value)
 
     def show_loading(self, message):
         self.show_loading_spinner = True
@@ -35,8 +38,8 @@ class GestureDetectionView(FloatLayout):
     def update_fps(self, fps):
         self.current_fps = fps
         
-    def update_settings(self):
-        self.presenter.update_settings()
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
+        self.presenter.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)
         
     def start_camera(self):
         self.ids['camera'].start()

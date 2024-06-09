@@ -65,13 +65,14 @@ class SettingsPresenter:
 
     def _get_new_gesture_mappings(self):
         dropdowns = self.view.get_gesture_dropdowns()
-        
-        new_mappings = [self.numeric_gesture_options[dropdown.selected] for dropdown in dropdowns]
+    
+        new_mappings = [self.numeric_gesture_options[dropdown.selected] + 1 for dropdown in dropdowns]
 
         mappings_to_change = [
-            [i, new_mappings[i]+1] for i in range(len(self.mappings)) if self.mappings[i]-1 != new_mappings[i]
+            [i, new_mappings[i]] for i in range(len(self.mappings)) if self.mappings[i] != new_mappings[i]
         ]
-        return mappings_to_change
+
+        return mappings_to_change, new_mappings
 
     def _update_general_settings(self):
         detection_confidence = float(self.view.get_detection_confidence_slider().value) / 100
@@ -100,16 +101,18 @@ class SettingsPresenter:
             self.detection_responsiveness = detection_responsiveness
             
     def _update_gesture_mappings(self):
-        indices_to_change = self._get_new_gesture_mappings()
+        indices_to_change, new_mappings = self._get_new_gesture_mappings()
+        self.mappings = new_mappings
 
         for gesture_id, action_id in indices_to_change:
             self.model.update_gesture_mappings(gesture_id, action_id)
 
     def update_settings(self):
         self.view.set_saving_settings(True)
-        self._update_general_settings()
+        # Update gesture mappings first
         self._update_gesture_mappings()
-        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity)
+        self._update_general_settings()
+        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity, self.mappings)
         self.view.set_saving_settings(False)
 
     def switch_to_camera_screen(self):

@@ -111,7 +111,7 @@ class SettingsScreen(Screen):
         return self.sliders[2]
     
     def set_saving_settings(self, saving):
-        self.manager.get_screen('camera').ids['GCP'].presenter.saving_settings = saving
+        self.manager.get_screen('camera').ids['GCP'].set_saving_settings(saving)
 
-    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
-        self.manager.get_screen('camera').ids['GCP'].presenter.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity)
+    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
+        self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)

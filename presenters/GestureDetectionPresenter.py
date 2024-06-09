@@ -24,6 +24,9 @@ class GestureDetectionPresenter:
     def set_log_callback(self, callback):
         self.add_log = callback
         
+    def set_saving_settings(self, value):
+        self.saving_settings = value
+        
     def on_dependencies_loaded(self):
         self.dependencies_loaded = True
         Clock.schedule_once(self.update_status, 0)
@@ -83,6 +86,5 @@ class GestureDetectionPresenter:
             
         return frame
             
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
-        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity)
-        
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
+        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)

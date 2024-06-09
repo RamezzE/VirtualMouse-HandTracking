@@ -170,7 +170,9 @@ class GestureDetetctionModel:
 
         return
     
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
+
+        self.mappings = mappings
 
         try:
             if self.buffer_size != detection_responsiveness:
