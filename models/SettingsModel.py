@@ -4,15 +4,7 @@ from presenters import CameraPresenter as Camera
 
 class SettingsModel:
     def __init__(self):
-        self.paths = App.get_running_app().paths
-
         self.db = App.get_running_app().db
-        
-    def get_fonts(self):
-        return self.paths['assets']['fonts']
-
-    def get_icons(self):
-        return self.paths['assets']['icons']
 
     def get_actions(self):
         return (np.array(self.db.get('Actions', columns_to_select='name'))).reshape(-1)
@@ -22,9 +14,6 @@ class SettingsModel:
 
     def get_last_used_camera(self):
         return self.db.get('CameraSettings', columns_to_select=['value'], name='Camera')[0]
-
-    # def get_show_fps_setting(self):
-    #     return self.db.get('CameraSettings', columns_to_select=['value'], name='Show FPS')[0]
 
     def get_detection_confidence(self):
         return float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Confidence')[0])
@@ -53,5 +42,5 @@ class SettingsModel:
     def update_relative_mouse_sensitivity(self, value):
         self.db.update('MouseSettings', {'value': value}, name='Relative Mouse Sensitivity')
         
-    def get_available_cameras(self):
-        return np.array(Camera.get_available_cameras(5))
+    def get_available_cameras(self, max_cameras = 5):
+        return np.array(Camera.get_available_cameras(max_cameras))

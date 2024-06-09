@@ -17,15 +17,15 @@
     background_normal: ''
     background_down: ''
     background_color: 0,0,0,0
-    font_name: root.settings.fonts['poppins']['bold'] if root.settings.selected == self.text.lower() else root.settings.fonts['poppins']['medium']
+    font_name: app.fonts['poppins']['bold'] if root.settings.selected_setting == self.text.lower() else app.fonts['poppins']['medium']
     font_size: 20
     font_size: root.settings.height / 35 if root.settings.height / 35 > 20 else 20
     color: 1, 1, 1, 0.87
-    on_release: root.settings.select(self.text.lower())
+    on_release: root.settings.select_setting(self.text.lower())
 
 <DropdownRow>:
     size_hint_y: None
-    height: root.settings.rowHeight
+    height: root.settings.row_height
     orientation: 'horizontal'
 
     canvas.before:
@@ -43,7 +43,7 @@
     
         RowLabel:
             text: root.text
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
 
         SmallRowSpacer:
             
@@ -54,7 +54,7 @@
 
         CustomDropdown:
             id: dropdown
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
             size_hint: 1, 1
 
@@ -70,7 +70,7 @@
 
 <OnOffRow>:
     size_hint_y: None
-    height: root.settings.rowHeight
+    height: root.settings.row_height
     orientation: 'horizontal'
 
     canvas.before:
@@ -88,7 +88,7 @@
 
         RowLabel:
             text: root.text
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
 
         SmallRowSpacer:
 
@@ -99,7 +99,7 @@
         Button:
             text: 'ON'
             color: 0, 0, 0, 1
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
             size_hint: 0.5, 1
             background_normal: ''
             background_color: 185/255, 185/255, 185/255, 1
@@ -108,7 +108,7 @@
         Button:
             text: 'OFF'
             color: 0, 0, 0, 1
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
             size_hint: 0.5, 1
             background_normal: ''
             background_color: 110/255, 110/255, 110/255, 1
@@ -116,7 +116,7 @@
 
 <SliderRow>:
     size_hint_y: None
-    height: root.settings.rowHeight
+    height: root.settings.row_height
     orientation: 'horizontal'
 
     canvas.before:
@@ -134,7 +134,7 @@
     
         RowLabel:
             text: root.text + ' (' + str(root.value) + '%)' 
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
 
         SmallRowSpacer:
 
@@ -165,7 +165,7 @@
 
 <GestureRow>:             
     size_hint: 1, None
-    height: root.settings.gestureRowHeight
+    height: root.settings.gesture_row_height
     spacing: 10
     orientation: 'horizontal'
 
@@ -192,7 +192,7 @@
 
         CustomDropdown:
             id: dropdown
-            font_name: root.settings.fonts['poppins']['regular']
+            font_name: app.fonts['poppins']['regular']
             color: 1, 1, 1, 0.87
             size_hint: 1, 1
 

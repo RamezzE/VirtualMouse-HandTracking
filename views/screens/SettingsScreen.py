@@ -1,9 +1,10 @@
+from kivy.app import App
 from kivy.uix.screenmanager import Screen
-from kivy.properties import StringProperty, BooleanProperty, NumericProperty
+from kivy.properties import StringProperty, NumericProperty
 from kivy.core.window import Window
 
 from views.components.settings import ChooseSettingButton, DropdownRow, OnOffRow, SliderRow, GestureRow
-from views.components import CustomDropdown
+from views.components.CustomDropdown import CustomDropdown
 
 from presenters import SettingsPresenter
 
@@ -11,24 +12,13 @@ from kivy.lang import Builder
 
 Builder.load_file('views/components/settings/SettingsComponents.kv')
 
-
 class SettingsScreen(Screen):
     gesture_options = []
 
-    selected = StringProperty(None)
+    selected_setting = StringProperty(None)
 
-    rowHeight = NumericProperty()
-    gestureRowHeight = NumericProperty()
-
-    thread_loaded = BooleanProperty(False)
-    saving_settings = BooleanProperty(False)
-    show_loading = BooleanProperty(True)
-    status = StringProperty()
-    current_fps = StringProperty()
-    detection_confidence = NumericProperty()
-    tracking_confidence = NumericProperty()
-    detection_responsiveness = NumericProperty()
-    relative_mouse_sensitivity = NumericProperty()
+    row_height = NumericProperty()
+    gesture_row_height = NumericProperty()
     
     Builder.load_file('views/screens/SettingsScreen.kv')
 
@@ -36,78 +26,40 @@ class SettingsScreen(Screen):
         super(SettingsScreen, self).__init__(**kwargs)
         self.size = Window.size
         self.pos = Window._pos
-        
-        SettingsPresenter(self)
 
-        self.rowHeight = self.height * 0.08
-        self.gestureRowHeight = self.rowHeight * 1.5
+        self.row_height = self.height * 0.08
+        self.gesture_row_height = self.row_height * 1.5
         
-        self.select('general')
         self.bind(size=self.resize)
         
-    def set_presenter(self, presenter):
-        self.presenter = presenter
+        self.presenter = SettingsPresenter(self)
         
-    def set_fonts(self, fonts):
-        self.fonts = fonts
+    def resize(self, instance, value):
+        self.size = instance.size
+        self.pos = Window._pos
+        self.ids['layout'].size = self.size
+    
+    def switch_screen(self, screen_name, direction):
+            self.manager.transition.direction = direction
+            self.manager.current = screen_name
+    
+    def select_setting(self, button_id):
+        self.selected_setting = button_id
 
-    def set_icons(self, icons):
-        self.icons = icons
-
-    def set_gesture_options(self, options):
-        self.gesture_options = options
-
-    def set_mappings(self, mappings):
-        self.mappings = mappings
-
-    def set_detection_confidence(self, value):
-        self.detection_confidence = value
-
-    def set_tracking_confidence(self, value):
-        self.tracking_confidence = value
+    def draw_settings(self):        
         
-    def set_detection_responsiveness(self, value):
-        self.detection_responsiveness = value
+        self.ids['settings_header'].add_widget(ChooseSettingButton(text='General', settings=self))
+        self.ids['settings_header'].add_widget(ChooseSettingButton(text='Gestures', settings=self))
+                                     
+        camera_options, selected_camera = self.presenter.get_camera_options()             
+        self.ids['camera_settings'].add_widget(DropdownRow(text='Capturing Camera', settings=self, options= camera_options, selected = selected_camera,alternate_background=True))
         
-    def set_relative_mouse_sensitivity(self, value):
-        self.relative_mouse_sensitivity = value
-
-    def set_camera_options(self, options):
-        self.camera_options = options
-
-    def set_selected_camera(self, camera):
-        self.selected_camera = camera
-
-    # def set_show_fps(self, show_fps):
-    #     self.show_fps = show_fps
-
-    def draw_settings(self):
-        settings_header = self.ids['settings_header']
+        self.ids['detection_settings'].add_widget(SliderRow(text='Detection Confidence', settings=self, value = self.presenter.get_detection_confidence() ,alternate_background=True))
+        self.ids['detection_settings'].add_widget(SliderRow(text='Tracking Confidence', settings=self, value = self.presenter.get_tracking_confidence()))
         
-        settings_header.add_widget(ChooseSettingButton(text='General', settings=self))
-        settings_header.add_widget(ChooseSettingButton(text='Gestures', settings=self))
-                                                    
-        self.ids['camera_settings'].add_widget(DropdownRow(text='Capturing Camera', settings=self, options= self.camera_options, selected = self.selected_camera,alternate_background=True))
-        # self.ids['camera_settings'].add_widget(OnOffRow(text='Show FPS', settings=self))
-        
-        self.ids['detection_settings'].add_widget(SliderRow(text='Detection Confidence', settings=self, value = int(self.detection_confidence * 100),alternate_background=True))
-        self.ids['detection_settings'].add_widget(SliderRow(text='Tracking Confidence', settings=self, value = int(self.tracking_confidence * 100)))
-        
-        
-        detection_responsiveness_options = ['Instant', 'Fast', 'Normal', 'Slow']
-        if self.detection_responsiveness == 1:
-            selected = detection_responsiveness_options[0]
-        elif self.detection_responsiveness == 3:
-            selected = detection_responsiveness_options[1]
-        elif self.detection_responsiveness == 5:
-            selected = detection_responsiveness_options[2]
-        else:
-            selected = detection_responsiveness_options[3]
-        
-        self.ids['detection_settings'].add_widget(DropdownRow(text='Detection Responsiveness', settings=self, options= detection_responsiveness_options, selected = selected, alternate_background=True))
+        self.ids['detection_settings'].add_widget(DropdownRow(text='Detection Responsiveness', settings=self, options=self.presenter.get_detection_responsiveness_options(), selected = self.presenter.get_detection_responsiveness(), alternate_background=True))
 
-        self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = int(self.relative_mouse_sensitivity * 100), alternate_background=True))
-
+        self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = self.presenter.get_relative_mouse_sensitivity(), alternate_background=True))
 
         self.sliders = []
         for child in self.ids['detection_settings'].children:
@@ -117,30 +69,49 @@ class SettingsScreen(Screen):
         for child in self.ids['mouse_settings'].children:
             if isinstance(child, SliderRow):
                 self.sliders.append(child.ids['slider'])
-
-        gestures_table = self.ids['gestures_table']
         
-        for i in range(len(self.mappings)):
-            gesture_row = GestureRow(settings=self, alternate_background=(i % 2 == 0), image_source = self.icons['gestures'][f'gesture{i+1}'])
-            gesture_row.ids['dropdown'].selected = self.gesture_options[self.mappings[i]-1]
+        mappings = self.presenter.get_mappings()
+        
+        for i in range(len(mappings)):
+            gesture_row = GestureRow(settings=self, alternate_background=(i % 2 == 0), image_source = App.get_running_app().icons['gestures'][f'gesture{i+1}'])
+            gesture_row.ids['dropdown'].selected = self.gesture_options[mappings[i]-1]
             
-            gestures_table.add_widget(gesture_row)
+            self.ids['gestures_table'].add_widget(gesture_row)
         
         self.ids['layout'].size = self.size
+
+    def set_gesture_options(self, options):
+        self.gesture_options = options
+        
+    def get_gesture_dropdowns(self):
+        dropdowns = self._get_dropdowns(self.ids['gestures_table'])
+        if dropdowns:
+            dropdowns.reverse()
+        return dropdowns
     
-    def resize(self, instance, value):
-        self.size = instance.size
-        self.pos = Window._pos
-        self.ids['layout'].size = self.size
+    def get_detection_dropdowns(self):
+        dropdowns = self._get_dropdowns(self.ids['detection_settings'])
+        if dropdowns:
+            dropdowns.reverse()
+        return dropdowns
 
-    def select(self, button_id):
-        self.selected = button_id
-
-    def to_camera_screen(self):
-        self.presenter.to_camera_screen()
-
-    def switch_to_camera_screen(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'camera'
-
+    def _get_dropdowns(self, widget):
+        custom_dropdowns = [child for child in widget.children if isinstance(child, CustomDropdown)]
+        for child in widget.children:
+            custom_dropdowns.extend(self._get_dropdowns(child))
+        return custom_dropdowns
     
+    def get_detection_confidence_slider(self):
+        return self.sliders[1]
+    
+    def get_tracking_confidence_slider(self):
+        return self.sliders[0]
+    
+    def get_relative_mouse_sensitivity_slider(self):
+        return self.sliders[2]
+    
+    def set_saving_settings(self, saving):
+        self.manager.get_screen('camera').ids['GCP'].presenter.saving_settings = saving
+
+    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
+        self.manager.get_screen('camera').ids['GCP'].presenter.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity)

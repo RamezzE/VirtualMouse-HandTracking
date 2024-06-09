@@ -26,7 +26,7 @@
             normal_image: app.icons['arrow']
             pressed_image: app.icons['arrow']
 
-            on_release: root.to_camera_screen()
+            on_release: root.presenter.switch_to_camera_screen()
 
         ############# Settings Options #############
         BoxLayout:
@@ -37,9 +37,9 @@
         ############# General Settings #############
         ScrollView:
             pos_hint: {'center_x': 0.5, 'center_y': 0.45}
-            size_hint: (0.9, 0.7) if root.selected == 'general' else (0, 0)
-            opacity: 1 if root.selected == 'general' else 0
-            disabled: False if root.selected == 'general' else True  
+            size_hint: (0.9, 0.7) if root.selected_setting == 'general' else (0, 0)
+            opacity: 1 if root.selected_setting == 'general' else 0
+            disabled: False if root.selected_setting == 'general' else True  
 
             do_scroll_x: False
             do_scroll_y: True
@@ -99,9 +99,9 @@
         ############# Gesture Settings #############    
         ScrollView:
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
-            size_hint: (0.9, 0.7) if root.selected == 'gestures' else (0,0)
-            opacity: 1 if root.selected == 'gestures' else 0
-            disabled: False if root.selected == 'gestures' else True  
+            size_hint: (0.9, 0.7) if root.selected_setting == 'gestures' else (0,0)
+            opacity: 1 if root.selected_setting == 'gestures' else 0
+            disabled: False if root.selected_setting == 'gestures' else True  
 
             do_scroll_x: False
             do_scroll_y: True
