@@ -1,7 +1,7 @@
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import BooleanProperty, StringProperty, NumericProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, NumericProperty
 
-from presenters import GestureDetectionPresenter as Presenter
+from presenters import GestureDetectionPresenter
 from views.components import CameraView, RotatingSpinner
 
 from kivy.lang import Builder
@@ -16,10 +16,10 @@ class GestureDetectionView(FloatLayout):
     def __init__(self, **kwargs):
         super(GestureDetectionView, self).__init__(**kwargs)
                 
-        self.presenter = Presenter(self)
+        self.presenter = GestureDetectionPresenter(self)
         
-    def set_presenter(self, presenter):
-        self.presenter = presenter
+    def set_log_callback(self, callback):
+        self.presenter.set_log_callback(callback)
 
     def show_loading(self, message):
         self.show_loading_spinner = True
@@ -30,13 +30,22 @@ class GestureDetectionView(FloatLayout):
         self.status = message
 
     def show_frame(self, frame):
-        self.ids.camera.show_frame(frame)
+        self.ids['camera'].show_frame(frame)
         
     def update_fps(self, fps):
         self.current_fps = fps
         
-    def on_stop(self):
-        self.ids.camera.on_stop()
-        
     def update_settings(self):
         self.presenter.update_settings()
+        
+    def start_camera(self):
+        self.ids['camera'].start()
+        
+    def stop_camera(self):
+        self.ids['camera'].stop()
+        
+    def is_camera_running(self):
+        return self.ids['camera'].is_running()
+    
+    def get_latest_frame(self):
+        return self.ids['camera'].get_latest_frame()

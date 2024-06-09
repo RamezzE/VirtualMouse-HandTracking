@@ -1,24 +1,26 @@
 class CameraFeedbackPresenter:
     def __init__(self, view):
         self.view = view
-        self.view.set_presenter(self)
+        self.view.set_log_callback(self.add_log)
+        
+    def add_log(self, prediction_no, action_name):
+        self.view.add_log(prediction_no, action_name)
         
     def start_camera(self):
-        print('Starting camera')
-        self.view.ids['GCP'].start_camera()
+        self.view.start_camera()
         
     def stop_camera(self):
-        self.view.ids['GCP'].on_stop()
+        self.view.stop_camera()
+        
+    def switch_to_settings_screen(self):
+        self.view.switch_screen('settings', 'up')
+        self.view.on_stop()
+        
+    def switch_to_home_screen(self):
+        self.view.switch_screen('home', 'right')
+        self.view.on_stop()
         
     def on_stop(self):
         self.stop_camera()
         
-    def switch_to_settings_screen(self):
-        self.view.manager.transition.direction = 'up'
-        self.view.manager.current = 'settings'
-        self.view.on_stop()
         
-    def switch_to_home_screen(self):
-        self.view.manager.transition.direction = 'right'
-        self.view.manager.current = 'home'
-        self.view.on_stop()

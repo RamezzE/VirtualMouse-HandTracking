@@ -1,23 +1,31 @@
+from kivy.uix.recycleview import LayoutChangeException
 from kivy.app import App
 from kivy.clock import Clock
 import cv2
-from models.GestureDetectionModel import GestureDetetctionModel as Model
+from models.GestureDetectionModel import GestureDetetctionModel
 
 class GestureDetectionPresenter:
     def __init__(self, view):
 
-        self.model = Model(self.on_dependencies_loaded, None)
+        self.model = GestureDetetctionModel(self.on_dependencies_loaded)
         self.view = view
+        
+        self.action_types = self.model.action_types
         
         self.dependencies_loaded = False
         self.saving_settings = False
         
+        self.last_prediction = None
+        self.last_action_index = None
+        self.add_log = None
+        
         Clock.schedule_interval(self.update, 0)
+        
+    def set_log_callback(self, callback):
+        self.add_log = callback
         
     def on_dependencies_loaded(self):
         self.dependencies_loaded = True
-        add_log_func = App.get_running_app().sm.get_screen('camera').add_log
-        self.model.add_log = add_log_func
         Clock.schedule_once(self.update_status, 0)
 
     def update_status(self, dt = 0):
@@ -32,21 +40,48 @@ class GestureDetectionPresenter:
         self.update_status()
         self.view.update_fps(int(Clock.get_rfps()))
 
-        if not self.view.ids.camera.running or not self.dependencies_loaded:
+        if not self.view.is_camera_running() or not self.dependencies_loaded:
             return  
 
-        frame = self.view.ids.camera.get_latest_frame()
+        frame = self.view.get_latest_frame()
         
-        if frame is not None:
-            frame = cv2.flip(frame, 1)
-            frame = self.model.HD.find_hands(img=frame, draw_connections=True)
-            landmarks = self.model.HD.get_landmarks()
-            
-            if landmarks:
-                prediction = self.model.GP.predict(landmarks)
-                frame = self.model.handle_input(prediction, frame)
+        if frame is None:
+            return
+        
+        frame, landmarks = self.model.process_frame(frame, draw_connections=True)
+        
+        if landmarks:
+            prediction = self.model.predict(landmarks)   
+            frame = self.handle_input(prediction, frame)
 
-            self.view.show_frame(frame)
+        self.view.show_frame(frame)
+            
+    def handle_input(self, prediction, frame):
+        if prediction is None:
+            return frame
+        
+        frame = self.model.highlight_gesture(frame, prediction)
+        action_name, action_index = self.model.get_action(prediction)
+
+        if self.last_action_index is None:
+            self.last_action_index = action_index
+                
+        elif prediction != self.last_prediction:
+            self.last_prediction = prediction
+            
+            if self.add_log is not None:
+                self.add_log(int(prediction), action_name)
+
+        if action_index != self.last_action_index:
+            self.last_action_index = action_index
+            self.model.reset_kalman_filter()
+
+        elif action_index == self.action_types['TOGGLE_RELATIVE_MOUSE']:
+            return frame
+        
+        self.model.execute_action(action_index, frame)
+            
+        return frame
             
     def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity):
         self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity)

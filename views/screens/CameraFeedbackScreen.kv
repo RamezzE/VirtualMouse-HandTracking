@@ -59,7 +59,7 @@
                 normal_image: app.icons['settings']
                 pressed_image: app.icons['settings']
 
-                on_release: root.switch_to_settings_screen()
+                on_release: root.presenter.switch_to_settings_screen()
 
             CustomButton:
                 text: ''            
@@ -84,7 +84,7 @@
                 normal_image: app.icons['arrow']
                 pressed_image: app.icons['arrow']
 
-                on_release: root.switch_to_home_screen()
+                on_release: root.presenter.switch_to_home_screen()
 
 
 <LogsRow>:
