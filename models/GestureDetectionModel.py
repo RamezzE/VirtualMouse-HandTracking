@@ -60,13 +60,15 @@ class GestureDetetctionModel:
 
     def _load_components(self):
         
-        from tensorflow.keras.models import load_model
+        # from tensorflow.keras.models import load_model
+        import pickle as pkl
         from modules.HandDetector import HandDetector as HD
 
-        self.model = load_model("models/tfv3.keras")
-        
+        # self.model = load_model("models/tfv3.keras")
+        self.model = pkl.load(open("models/random_forest_model.pkl", "rb"))
+        self.pca = pkl.load(open("utils/pca.pkl", "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
-        self.GP = GP(self.model, self.buffer_size)
+        self.GP = GP(self.model, self.buffer_size, is_tf = False, pca = self.pca)
         self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity)
         self.KF_x = KF()
         self.KF_y = KF()
@@ -74,7 +76,7 @@ class GestureDetetctionModel:
         self.on_load()
 
     def get_action(self, prediction):
-        return self.actions[self.mappings[prediction] - 1], self.mappings[prediction] - 1
+        return (self.actions[self.mappings[prediction] - 1]), (self.mappings[prediction] - 1)
 
     def predict(self, landmarks):
         return self.GP.predict(landmarks)

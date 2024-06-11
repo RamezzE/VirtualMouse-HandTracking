@@ -1,6 +1,8 @@
 import mediapipe as mp
 import cv2
 import math
+import warnings
+warnings.filterwarnings("ignore")
 class HandDetector:
     WRIST = 0
     THUMB = 4
