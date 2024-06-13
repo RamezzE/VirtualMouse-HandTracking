@@ -1,4 +1,6 @@
-model: "model/tfv3.keras"
+model: "models/d_tree.pkl"
+pca: "utils/pca.pkl"
+
 db:
   actions: "db/actions.db"
   schema: "db/schema.sql"
