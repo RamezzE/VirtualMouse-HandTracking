@@ -4,13 +4,13 @@ import time
 
 class MouseController:
     
-    def __init__(self, screen_size, relative_mouse_sensitivity = 0.75):
+    def __init__(self, screen_size, relative_mouse_sensitivity = 0.75, relative_mouse = False):
         self.screen_width, self.screen_height = screen_size
         self.mouse_held = False
         self.just_clicked_left = self.just_clicked_right = False
         self.prev_pos, self.prev_pos_time = None, None
         self.hand_speed = 0
-        self.relative_mouse = False
+        self.relative_mouse = relative_mouse
         self.relative_mouse_sensitivity = relative_mouse_sensitivity
         self.range_x, self.range_y = None, None
         

@@ -41,7 +41,7 @@ class Database:
     def _check_and_insert_defaults(self):
         conn = self._get_connection()
         c = conn.cursor()
-        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        c.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
         tables = c.fetchall()
         tables = tables[1:]
 
@@ -60,7 +60,7 @@ class Database:
         c = conn.cursor()
         c.execute(f"SELECT COUNT(*) FROM {table_name}")
         count = c.fetchone()[0]
-        return count == 0
+        return count ==  0
 
     def get_action_names(self):
         conn = self._get_connection()
@@ -83,7 +83,7 @@ class Database:
         c.execute(f"SELECT * FROM {table}")
         return c.fetchall()
 
-    def get(self, table, columns_to_select="*", **kwargs):
+    def get(self, table, columns_to_select = "*", **kwargs):
         conn = self._get_connection()
         c = conn.cursor()
 
@@ -136,7 +136,7 @@ class Database:
         print('Dropping all tables')
         conn = self._get_connection()
         c = conn.cursor()
-        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        c.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
         tables = c.fetchall()
         tables = tables[1:]
 
@@ -190,24 +190,24 @@ class Database:
 
         print('\nInserting actions:\n')
         for action in actions:
-            self.insert('Actions', name=action)
+            self.insert('Actions', name = action)
             print("Inserting: ", action)
 
         print('\nInserting mappings:\n')
         for key, value in dict.items():
-            print(f'Inserting: {key} -> {value} (id: {self.get("Actions", columns_to_select="id", name=value)[0]})')
-            self.insert('Mappings', gesture_id=key, action_id=self.get('Actions', columns_to_select='id', name=value)[0])
+            print(f'Inserting: {key} -> {value} (id: {self.get("Actions", columns_to_select = "id", name = value)[0]})')
+            self.insert('Mappings', gesture_id = key, action_id = self.get('Actions', columns_to_select = 'id', name = value)[0])
 
         print('\nInserting settings:\n')
 
-        self.insert("CameraSettings", name="Camera", value=0)
-        # self.insert("CameraSettings", name="Show FPS", value=1)
+        self.insert("CameraSettings", name = "Camera", value = 0)
 
-        self.insert("DetectionSettings", name="Detection Confidence", value=0.5)
-        self.insert("DetectionSettings", name="Tracking Confidence", value=0.5)
-        self.insert("DetectionSettings", name="Detection Responsiveness", value = 3)
+        self.insert("DetectionSettings", name = "Detection Confidence", value = 0.75)
+        self.insert("DetectionSettings", name = "Tracking Confidence", value = 0.5)
+        self.insert("DetectionSettings", name = "Detection Responsiveness", value = 3)
 
-        self.insert("MouseSettings", name="Relative Mouse Sensitivity", value=0.75)
+        self.insert("MouseSettings", name = "Relative Mouse", value = 0)
+        self.insert("MouseSettings", name = "Relative Mouse Sensitivity", value = 0.75)
         
         print('Inserted everything\n')
 
@@ -215,7 +215,7 @@ class Database:
         if hasattr(self.local, 'connection'):
             self.local.connection.close()
 
-if __name__ == '__main__':
+if __name__ ==  '__main__':
     db = Database('db/actions.db', 'db/schema.sql')
     db.reset()
     db.close()

@@ -20,6 +20,10 @@ class GestureDetetctionModel:
         self.tracking_confidence = float(self.db.get('DetectionSettings', columns_to_select=['value'], name='Tracking Confidence')[0])
         self.buffer_size = int(self.db.get('DetectionSettings', columns_to_select=['value'], name='Detection Responsiveness')[0])
         self.relative_mouse_sensitivity = float(self.db.get('MouseSettings', columns_to_select=['value'], name='Relative Mouse Sensitivity')[0])
+        self.relative_mouse = self.db.get('MouseSettings', columns_to_select=['value'], name='Relative Mouse')[0]
+        
+        self.relative_mouse = True if self.relative_mouse == 1 else False
+        
         self.last_action_index = None
         self.last_prediction = None
         
@@ -70,7 +74,7 @@ class GestureDetetctionModel:
         self.pca = pkl.load(open(paths['pca'], "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
         self.GP = GP(self.model, self.buffer_size, is_tf = False, pca = self.pca)
-        self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity)
+        self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity, self.relative_mouse)
         self.KF_x = KF()
         self.KF_y = KF()
         
@@ -173,7 +177,7 @@ class GestureDetetctionModel:
 
         return
     
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
 
         self.mappings = mappings
 
@@ -199,3 +203,10 @@ class GestureDetetctionModel:
                 self.MC.set_relative_mouse_sensitivity(relative_mouse_sensitivity)
         except:
             print('Error updating relative mouse sensitivity')
+            
+        try:
+            if self.relative_mouse != relative_mouse:
+                self.relative_mouse = relative_mouse
+                self.MC.toggle_relative_mouse()
+        except:
+            print('Error toggle relative mouse')

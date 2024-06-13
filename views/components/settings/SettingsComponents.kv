@@ -102,8 +102,10 @@
             font_name: app.fonts['poppins']['regular']
             size_hint: 0.5, 1
             background_normal: ''
-            background_color: 185/255, 185/255, 185/255, 1
+            background_color: root.color_on if root.on else root.color_off
             background_down: ''
+
+            on_release: root._on_off(True)
 
         Button:
             text: 'OFF'
@@ -111,8 +113,10 @@
             font_name: app.fonts['poppins']['regular']
             size_hint: 0.5, 1
             background_normal: ''
-            background_color: 110/255, 110/255, 110/255, 1
+            background_color: root.color_off if root.on else root.color_on
             background_down: ''
+
+            on_release: root._on_off(False)
 
 <SliderRow>:
     size_hint_y: None

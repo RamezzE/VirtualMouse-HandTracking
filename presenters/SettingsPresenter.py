@@ -22,6 +22,8 @@ class SettingsPresenter:
         self.tracking_confidence = self.model.get_tracking_confidence()
         self.detection_responsiveness = self.model.get_detection_responsiveness()
         self.relative_mouse_sensitivity = self.model.get_relative_mouse_sensitivity()
+        self.relative_mouse = self.model.get_relative_mouse()        
+        self.relative_mouse = True if self.relative_mouse == 1 else False
 
         self.mappings = self.model.get_mappings()
 
@@ -52,9 +54,6 @@ class SettingsPresenter:
     
     def get_mappings(self):
         return self.mappings
-
-    def get_relative_mouse_sensitivity(self):
-        return int(self.model.get_relative_mouse_sensitivity() * 100)
     
     def get_camera_options(self):
         
@@ -87,7 +86,7 @@ class SettingsPresenter:
         detection_confidence = float(self.view.get_detection_confidence_slider().value) / 100
         tracking_confidence = float(self.view.get_tracking_confidence_slider().value) / 100
         relative_mouse_sensitivity = float(self.view.get_relative_mouse_sensitivity_slider().value) / 100
-        
+        relative_mouse = self.view.is_relative_mouse()
         detection_responsiveness = self.view.get_detection_dropdowns()
         
         detection_responsiveness = detection_responsiveness[0].selected
@@ -112,6 +111,11 @@ class SettingsPresenter:
             self.model.update_detection_responsiveness(detection_responsiveness)
             self.detection_responsiveness = detection_responsiveness
             
+        if relative_mouse != self.relative_mouse:
+            num = 1 if relative_mouse == 1 else 0
+            self.model.update_relative_mouse(num)
+            self.relative_mouse = relative_mouse
+            
     def _update_gesture_mappings(self):
         indices_to_change, new_mappings = self._get_new_gesture_mappings()
         self.mappings = new_mappings
@@ -124,9 +128,18 @@ class SettingsPresenter:
         # Update gesture mappings first
         self._update_gesture_mappings()
         self._update_general_settings()
-        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity, self.mappings)
+        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity, self.mappings, self.relative_mouse)
         self.view.set_saving_settings(False)
+        
+    def is_relative_mouse(self):
+        return self.relative_mouse
+    
+    def toggle_relative_mouse(self):
+        self.relative_mouse = not self.relative_mouse
+        num = 1 if self.relative_mouse else 0
+        self.model.update_relative_mouse(num)
+        
 
     def switch_to_camera_screen(self):
-        self.view.switch_screen('camera', 'right')
+        self.view.switch_screen('camera', 'down')
         threading.Thread(target=self.update_settings).start()

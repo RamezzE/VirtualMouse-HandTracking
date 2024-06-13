@@ -79,9 +79,12 @@ class GestureDetectionPresenter:
         elif action_index == self.action_types['TOGGLE_RELATIVE_MOUSE']:
             return frame
         
+        if action_index == self.action_types['TOGGLE_RELATIVE_MOUSE']:
+            self.view.toggle_relative_mouse()
+        
         self.model.execute_action(action_index, frame)
             
         return frame
             
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
-        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
+        self.model.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse)

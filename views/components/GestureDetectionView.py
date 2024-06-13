@@ -38,8 +38,8 @@ class GestureDetectionView(FloatLayout):
     def update_fps(self, fps):
         self.current_fps = fps
         
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
-        self.presenter.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
+        self.presenter.update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse)    
         
     def start_camera(self):
         self.ids['camera'].start()
@@ -52,3 +52,6 @@ class GestureDetectionView(FloatLayout):
     
     def get_latest_frame(self):
         return self.ids['camera'].get_latest_frame()
+    
+    def toggle_relative_mouse(self):
+        self.parent.parent.manager.get_screen('settings').toggle_relative_mouse()

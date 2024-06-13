@@ -58,8 +58,10 @@ class SettingsScreen(Screen):
         self.ids['detection_settings'].add_widget(SliderRow(text='Tracking Confidence', settings=self, value = self.presenter.get_tracking_confidence()))
         
         self.ids['detection_settings'].add_widget(DropdownRow(text='Detection Responsiveness', settings=self, options=self.presenter.get_detection_responsiveness_options(), selected = self.presenter.get_detection_responsiveness(), alternate_background=True))
-
-        self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = self.presenter.get_relative_mouse_sensitivity(), alternate_background=True))
+                
+        self.ids['mouse_settings'].add_widget(OnOffRow(text='Toggle Relative Mouse', settings=self, on = self.presenter.is_relative_mouse(), alternate_background=True))
+        self.relative_mouse_toggle = self.ids['mouse_settings'].children[-1]
+        self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = self.presenter.get_relative_mouse_sensitivity()))
 
         self.sliders = []
         for child in self.ids['detection_settings'].children:
@@ -110,8 +112,15 @@ class SettingsScreen(Screen):
     def get_relative_mouse_sensitivity_slider(self):
         return self.sliders[2]
     
+    def toggle_relative_mouse(self):
+        self.relative_mouse_toggle.toggle()
+        self.presenter.toggle_relative_mouse()
+        
+    def is_relative_mouse(self):
+        return self.relative_mouse_toggle.is_on()
+    
     def set_saving_settings(self, saving):
         self.manager.get_screen('camera').ids['GCP'].set_saving_settings(saving)
 
-    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings):
-        self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings)
+    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
+        self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse)
