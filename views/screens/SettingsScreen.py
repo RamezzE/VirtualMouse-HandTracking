@@ -46,7 +46,7 @@ class SettingsScreen(Screen):
     def select_setting(self, button_id):
         self.selected_setting = button_id
 
-    def draw_settings(self):        
+    def draw_settings(self, dt = 0):        
         
         self.ids['settings_header'].add_widget(ChooseSettingButton(text='General', settings=self))
         self.ids['settings_header'].add_widget(ChooseSettingButton(text='Gestures', settings=self))

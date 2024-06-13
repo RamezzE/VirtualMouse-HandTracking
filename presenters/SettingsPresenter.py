@@ -1,5 +1,6 @@
 import threading
 from models.SettingsModel import SettingsModel
+from kivy.clock import Clock
 
 class SettingsPresenter:
     def __init__(self, view):
@@ -8,26 +9,34 @@ class SettingsPresenter:
         self.model = SettingsModel()
                 
         self._load_initial_settings()
-        self.view.draw_settings()
         self.view.select_setting('general')
+        self._start_loading_available_cameras()
+        
 
     def _load_initial_settings(self):
-        
         self.view.set_gesture_options(self.model.get_actions())
-        
+
         self.detection_responsiveness_options = ['Instant', 'Fast', 'Normal', 'Slow']
-        
+
         self.detection_confidence = self.model.get_detection_confidence()
         self.tracking_confidence = self.model.get_tracking_confidence()
         self.detection_responsiveness = self.model.get_detection_responsiveness()
         self.relative_mouse_sensitivity = self.model.get_relative_mouse_sensitivity()
-        
+
         self.mappings = self.model.get_mappings()
 
         self.selected_camera = self.model.get_last_used_camera()
-        self.available_camera_indices = self.model.get_available_cameras()
-                
         self.numeric_gesture_options = {v: k for k, v in enumerate(self.view.gesture_options)}
+
+    def _start_loading_available_cameras(self):
+        threading.Thread(target=self._load_available_cameras).start()
+
+    def _load_available_cameras(self):
+        self.available_camera_indices = self.model.get_available_cameras()
+        self._on_available_cameras_loaded()
+
+    def _on_available_cameras_loaded(self):
+        Clock.schedule_once(self.view.draw_settings, 0)
         
     def get_detection_confidence(self):
         return int(self.detection_confidence * 100)
