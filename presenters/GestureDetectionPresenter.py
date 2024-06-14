@@ -49,9 +49,9 @@ class GestureDetectionPresenter:
             return
         
         frame, landmarks = self.model.process_frame(frame, draw_connections=True)
-        
         if landmarks:
-            prediction = self.model.predict(landmarks)   
+            is_left_hand = self.model.get_hand_orientation() == "Left"
+            prediction = self.model.predict(landmarks, is_left_hand = is_left_hand)   
             frame = self.handle_input(prediction, frame)
 
         self.view.show_frame(frame)

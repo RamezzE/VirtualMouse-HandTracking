@@ -83,14 +83,17 @@ class GestureDetetctionModel:
     def get_action(self, prediction):
         return (self.actions[self.mappings[prediction] - 1]), (self.mappings[prediction] - 1)
 
-    def predict(self, landmarks):
-        return self.GP.predict(landmarks)
+    def predict(self, landmarks, is_left_hand = False):
+        return self.GP.predict(landmarks, is_left_hand)
 
     def process_frame(self, frame, draw_connections = False):
         frame = cv2.flip(frame, 1)
         frame = self.HD.find_hands(img=frame, draw_connections=draw_connections)
         landmarks = self.HD.get_landmarks()
         return frame, landmarks
+
+    def get_hand_orientation(self):
+        return self.HD.get_hand_orientation()
         
     def reset_kalman_filter(self):
         self.KF_x.reset()

@@ -27,6 +27,7 @@ class HandDetector:
         self.imgHeight, self.imgWidth, _ = img.shape
         self.results = self.mp_hands_detector.process(img_rgb)
         self.hands = self.results.multi_hand_landmarks
+        self.hand_label = self.results.multi_handedness[0].classification[0].label if self.results.multi_handedness else 'No Hand Detected'
         
         if draw_connections:
             if not self.hands:
@@ -138,3 +139,5 @@ class HandDetector:
         dist, _ = self.get_distance(f1, f2)
         return dist is not None and dist < distance
     
+    def get_hand_orientation(self, hand=0):
+        return self.hand_label

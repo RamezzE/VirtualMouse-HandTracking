@@ -9,9 +9,9 @@ class GesturePredictor:
         self.pca = pca
         self.prediction_buffer = []
         
-    def predict(self, landmarks):
-                
-        landmarks = self._prepare_landmarks(landmarks)
+    def predict(self, landmarks, is_left_hand = False):
+        
+        landmarks = self._prepare_landmarks(landmarks, is_left_hand)
         
         if self.pca is not None:
             landmarks = self.pca.transform(landmarks)
@@ -33,15 +33,18 @@ class GesturePredictor:
         except:
             return prediction
         
-    def _prepare_landmarks(self, landmarks):
+    def _prepare_landmarks(self, landmarks, is_left_hand = False):
         x_values = np.array([landmark.x for landmark in landmarks])
         y_values = np.array([landmark.y for landmark in landmarks])
         z_values = np.array([landmark.z for landmark in landmarks])
 
-        if x_values.size > 0 and y_values.size > 0:
+        if x_values.size > 0 and y_values.size > 0 and z_values.size > 0:
             x_values = (x_values - x_values.min()) / (x_values.max() - x_values.min())
             y_values = (y_values - y_values.min()) / (y_values.max() - y_values.min())
             z_values = (z_values - z_values.min()) / (z_values.max() - z_values.min())
+
+        if is_left_hand:
+            x_values = 1 - x_values
 
         arr = np.concatenate((x_values, y_values, z_values))
         return arr.reshape(1, -1)
