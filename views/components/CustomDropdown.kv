@@ -28,7 +28,7 @@
     color: root.dropdown.text_color
     font_name: root.dropdown.font_name
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-    background_color: root.dropdown.background_color if  not root.alternate_background else root.dropdown.alt_background_color
+    background_color: root.dropdown.option_background_color if  not root.alternate_background else root.dropdown.alt_background_color
     background_normal: ''
     background_down: ''
     on_release: root.dropdown.dropdown.select(self.text)

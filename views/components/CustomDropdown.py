@@ -18,6 +18,7 @@ class CustomDropdown(FloatLayout):
     options_height = NumericProperty()
     
     background_color = ColorProperty([0, 0, 0, 1])
+    option_background_color = ColorProperty([0, 0, 0, 1])
     alt_background_color = ColorProperty([0, 0, 0, 1])
     
     image_path = StringProperty()

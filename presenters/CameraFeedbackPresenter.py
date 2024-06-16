@@ -15,7 +15,3 @@ class CameraFeedbackPresenter:
     def switch_to_settings_screen(self):
         self.view.switch_screen('settings', 'up')
         self.view.on_stop()
-        
-    def switch_to_home_screen(self):
-        self.view.switch_screen('home', 'right')
-        self.view.on_stop() 

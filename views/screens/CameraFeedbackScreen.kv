@@ -25,9 +25,11 @@
                 id: logs_scroll
                 size_hint: 0.8, 0.8
                 pos_hint: {'center_x':0.5,'center_y': 0.425}
-                bar_width: 3
+                bar_width: 5
                 bar_color: 1, 1, 1, 0.87
                 bar_inactive_color: 1, 1, 1, 0.34
+
+                scroll_type: ['bars', 'content']
                 
                 canvas.before:
                     Color:
@@ -72,20 +74,7 @@
                 normal_image: app.icons['github']
                 pressed_image: app.icons['github']
 
-                # on_release: webbrowser.open('https://github.com/RamezzE/VirtualMouse-HandTracking')
-
-            CustomButton:
-                text: ''            
-                size_hint: None, None
-                size: root.height / 25, root.height / 25
-                x: 20
-
-                pos_hint: {'center_y': 0.5}
-                normal_image: app.icons['arrow']
-                pressed_image: app.icons['arrow']
-
-                on_release: root.presenter.switch_to_home_screen()
-
+                on_release: root.open_github()
 
 <LogsRow>:
     orientation: 'horizontal'
