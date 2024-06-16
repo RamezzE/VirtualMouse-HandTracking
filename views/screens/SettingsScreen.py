@@ -40,8 +40,8 @@ class SettingsScreen(Screen):
         self.ids['layout'].size = self.size
     
     def switch_screen(self, screen_name, direction):
-            self.manager.transition.direction = direction
-            self.manager.current = screen_name
+        self.manager.transition.direction = direction
+        self.manager.current = screen_name
     
     def select_setting(self, button_id):
         self.selected_setting = button_id
@@ -124,3 +124,6 @@ class SettingsScreen(Screen):
 
     def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
         self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse)
+        
+    def on_stop(self):
+        self.presenter.switch_to_camera_screen()
