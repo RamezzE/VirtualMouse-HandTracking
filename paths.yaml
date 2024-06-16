@@ -6,6 +6,7 @@ db:
   schema: "db/schema.sql"
 assets:
   icons: 
+    app: "assets/icons/app_logo.png"
     settings: "assets/icons/settings.png"
     github: "assets/icons/github.png"
     video: "assets/icons/video.png"
