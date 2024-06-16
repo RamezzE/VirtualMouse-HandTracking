@@ -50,5 +50,9 @@ class CameraFeedbackScreen(Screen):
     def stop_camera(self):
         self.ids['GCP'].stop_camera()
         
+    def open_github(self):
+        import webbrowser
+        webbrowser.open('https://github.com/RamezzE/VirtualMouse-HandTracking')
+        
     def on_stop(self):
         self.stop_camera()
