@@ -18,8 +18,6 @@ with open('paths.yaml', 'r') as f:
 icons = paths['assets']['icons']
 fonts = paths['assets']['fonts']
 
-Config.set('kivy','window_icon', icons['app'])
-
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 
@@ -39,9 +37,6 @@ class VirtualMouse(App):
         self.fonts = fonts
         self.icons = icons
         self.db = db
-        
-        self.height = Window.height
-        self.width = Window.width
                 
         Window.bind(on_resize=self.resize)
                 
@@ -58,6 +53,9 @@ class VirtualMouse(App):
         Window.size = (360, 500)
         Window.minimum_width = 360
         Window.minimum_height = 500
+        self.height = Window.height
+        self.width = Window.width
+        self.icon = icons['app']
         Window.show()
 
     def on_stop(self):

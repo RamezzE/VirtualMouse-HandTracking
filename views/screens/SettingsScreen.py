@@ -27,7 +27,7 @@ class SettingsScreen(Screen):
         self.size = Window.size
         self.pos = Window._pos
 
-        self.row_height = self.height * 0.09
+        self.row_height = self.height * 0.11
         self.gesture_row_height = self.row_height * 1.5
         
         self.bind(size=self.resize)

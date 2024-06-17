@@ -7,7 +7,7 @@ from kivy.lang import Builder
 class CustomDropdown(FloatLayout):
     selected = StringProperty()
     font_name = StringProperty()
-    font_size = NumericProperty(20)
+    font_size = NumericProperty(18)
     
     options = ListProperty([])
     text_color = ColorProperty([1, 1, 1, 1])
@@ -40,6 +40,8 @@ class CustomDropdown(FloatLayout):
             self.options_height = self.button_height
         
         self.bind(options=self._update_options)
+        self.bind(font_name=self._update_font)
+        self.bind(font_size=self._update_font)
         
         self.dropdown.bind(
             on_select=lambda instance, x: setattr(self, 'selected', x),
@@ -89,6 +91,11 @@ class CustomDropdown(FloatLayout):
         
     def _update_options(self, instance, value):
         self.define_options(value)
+        
+    def _update_font(self, instance, value):
+        for btn in self.optionButtons:
+            btn.font_name = self.font_name
+            btn.font_size = self.font_size
         
 class OptionButton(Button):
     dropdown = ObjectProperty()

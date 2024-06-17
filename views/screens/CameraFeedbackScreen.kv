@@ -80,7 +80,7 @@
     orientation: 'horizontal'
     size_hint: 1, None
     height: 30
-    spacing: 10
+    spacing: 7.5
 
     canvas.before:
         Color:
@@ -91,15 +91,15 @@
 
     Widget:
         size_hint: None, 1
-        width: 5
+        width: 0
         
     Label:
         id: time_label 
         text: root.current_time
         font_name: app.fonts['poppins']['regular']
         color: 1, 1, 1, 0.87
-        size_hint: None, 1
-        font_size: 16
+        size_hint: 0.35, 1
+        font_size: root.height / 2
         text_size: self.size[0], None
 
     Image:
@@ -107,11 +107,10 @@
         size_hint: None, None
         pos_hint: {'center_y': 0.5}
         size: root.height*0.75, root.height*0.75
-        
+    
     Label:
         text: root.action_name
         font_name: app.fonts['poppins']['regular']
         color: 1, 1, 1, 0.87
-        size_hint: 1, 1
-        font_size: 16
-        text_size: self.size[0], None
+        font_size: root.height / 2
+        text_size: self.size[0], None    
