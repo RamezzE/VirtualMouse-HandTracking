@@ -24,7 +24,7 @@ class SettingsPresenter:
         self.relative_mouse_sensitivity = self.model.get_relative_mouse_sensitivity()
         self.relative_mouse = self.model.get_relative_mouse()        
         self.relative_mouse = True if self.relative_mouse == 1 else False
-
+        self.scroll_sensitivity = self.model.get_scroll_sensitivity()
         self.mappings = self.model.get_mappings()
 
         self.selected_camera = self.model.get_last_used_camera()
@@ -51,6 +51,9 @@ class SettingsPresenter:
 
     def get_relative_mouse_sensitivity(self):
         return int(self.relative_mouse_sensitivity * 100)
+    
+    def get_scroll_sensitivity(self):
+        return int(self.scroll_sensitivity * 100)
     
     def get_mappings(self):
         return self.mappings
@@ -116,6 +119,10 @@ class SettingsPresenter:
             self.model.update_relative_mouse(num)
             self.relative_mouse = relative_mouse
             
+        if self.scroll_sensitivity != self.view.get_scroll_sensitivity_slider().value / 100:
+            self.scroll_sensitivity = self.view.get_scroll_sensitivity_slider().value / 100
+            self.model.update_scroll_sensitivity(self.scroll_sensitivity)
+            
     def _update_gesture_mappings(self):
         indices_to_change, new_mappings = self._get_new_gesture_mappings()
         self.mappings = new_mappings
@@ -128,7 +135,7 @@ class SettingsPresenter:
         # Update gesture mappings first
         self._update_gesture_mappings()
         self._update_general_settings()
-        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity, self.mappings, self.relative_mouse)
+        self.view.update_gcp_settings(self.detection_confidence, self.tracking_confidence, self.detection_responsiveness, self.relative_mouse_sensitivity, self.mappings, self.relative_mouse, self.scroll_sensitivity)
         self.view.set_saving_settings(False)
         
     def is_relative_mouse(self):

@@ -62,6 +62,7 @@ class SettingsScreen(Screen):
         self.ids['mouse_settings'].add_widget(OnOffRow(text='Toggle Relative Mouse', settings=self, on = self.presenter.is_relative_mouse(), alternate_background=True))
         self.relative_mouse_toggle = self.ids['mouse_settings'].children[-1]
         self.ids['mouse_settings'].add_widget(SliderRow(text='Relative Mouse Sensitivity', settings=self, value = self.presenter.get_relative_mouse_sensitivity()))
+        self.ids['mouse_settings'].add_widget(SliderRow(text='Scroll Sensitivity', settings=self, value = self.presenter.get_scroll_sensitivity(), alternate_background=True))
 
         self.sliders = []
         for child in self.ids['detection_settings'].children:
@@ -110,6 +111,9 @@ class SettingsScreen(Screen):
         return self.sliders[0]
     
     def get_relative_mouse_sensitivity_slider(self):
+        return self.sliders[3]
+    
+    def get_scroll_sensitivity_slider(self):
         return self.sliders[2]
     
     def toggle_relative_mouse(self):
@@ -122,8 +126,8 @@ class SettingsScreen(Screen):
     def set_saving_settings(self, saving):
         self.manager.get_screen('camera').ids['GCP'].set_saving_settings(saving)
 
-    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
-        self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse)
+    def update_gcp_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse, scroll_sensitivity):
+        self.manager.get_screen('camera').ids['GCP'].update_settings(detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse, scroll_sensitivity)
         
     def on_stop(self):
         self.presenter.switch_to_camera_screen()

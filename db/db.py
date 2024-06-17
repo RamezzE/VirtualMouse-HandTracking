@@ -208,6 +208,7 @@ class Database:
 
         self.insert("MouseSettings", name = "Relative Mouse", value = 0)
         self.insert("MouseSettings", name = "Relative Mouse Sensitivity", value = 0.75)
+        self.insert("MouseSettings", name = "Scroll Sensitivity", value = 0.5)
         
         print('Inserted everything\n')
 

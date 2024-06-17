@@ -24,6 +24,8 @@ class GestureDetetctionModel:
         
         self.relative_mouse = True if self.relative_mouse == 1 else False
         
+        self.scroll_sensitivity = float(self.db.get('MouseSettings', columns_to_select=['value'], name='Scroll Sensitivity')[0])
+        
         self.last_action_index = None
         self.last_prediction = None
         
@@ -74,7 +76,7 @@ class GestureDetetctionModel:
         self.pca = pkl.load(open(paths['pca'], "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
         self.GP = GP(self.model, self.buffer_size, is_tf = True, pca = self.pca)
-        self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity, self.relative_mouse)
+        self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity, self.relative_mouse, self.scroll_sensitivity)
         self.KF_x = KF()
         self.KF_y = KF()
         
@@ -150,6 +152,7 @@ class GestureDetetctionModel:
             return
         
         if action_index in (self.action_types['SCROLL_UP'], self.action_types['SCROLL_DOWN']):
+            self.MC.handle_scroll(action_index == self.action_types['SCROLL_UP'])
             self.MC.handle_mouse_press(False)
             self.MC.reset_click()
             self.MC.reset_mouse_pos()
@@ -180,7 +183,7 @@ class GestureDetetctionModel:
 
         return
     
-    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse):
+    def update_settings(self, detection_confidence, tracking_confidence, detection_responsiveness, relative_mouse_sensitivity, mappings, relative_mouse, scroll_sensitivity):
 
         self.mappings = mappings
 
@@ -213,3 +216,10 @@ class GestureDetetctionModel:
                 self.MC.toggle_relative_mouse()
         except:
             print('Error toggle relative mouse')
+            
+        try:
+            if self.scroll_sensitivity != scroll_sensitivity:
+                self.scroll_sensitivity = scroll_sensitivity
+                self.MC.set_scroll_sensitivity(scroll_sensitivity)
+        except:
+            print('Error updating scroll sensitivity')

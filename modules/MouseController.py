@@ -1,10 +1,11 @@
 import numpy as np
 import mouse
+import pyautogui
 import time
 
 class MouseController:
     
-    def __init__(self, screen_size, relative_mouse_sensitivity = 0.75, relative_mouse = False):
+    def __init__(self, screen_size, relative_mouse_sensitivity = 0.75, relative_mouse = False, scroll_sensitivity = 0.5):
         self.screen_width, self.screen_height = screen_size
         self.mouse_held = False
         self.just_clicked_left = self.just_clicked_right = False
@@ -13,6 +14,7 @@ class MouseController:
         self.relative_mouse = relative_mouse
         self.relative_mouse_sensitivity = relative_mouse_sensitivity
         self.range_x, self.range_y = None, None
+        self.scroll_sensitivity = scroll_sensitivity
         
     def toggle_relative_mouse(self):
         if self.relative_mouse:
@@ -22,6 +24,9 @@ class MouseController:
             
     def set_relative_mouse_sensitivity(self, sensitivity):
         self.relative_mouse_sensitivity = sensitivity
+        
+    def set_scroll_sensitivity(self, sensitivity):
+        self.scroll_sensitivity = sensitivity
         
     def move_mouse(self, pos, img_shape):
         if not pos:
@@ -98,13 +103,11 @@ class MouseController:
         
     def __press_mouse(self, button = 'left'):
         if not self.mouse_held:
-            # print('Mouse Held')
             mouse.press(button)
             self.mouse_held = True
         
     def __release_mouse(self, button = 'left'):
         if self.mouse_held:
-            # print('Mouse Released')
             mouse.release(button)
             self.mouse_held = False
             
@@ -151,7 +154,7 @@ class MouseController:
         else:
             self.just_clicked_left = self.just_clicked_right = False
             
-    def handle_scroll(self, condition = True):
-        if condition:
-            mouse.wheel(1)
-        else: mouse.wheel(-1)
+    def handle_scroll(self, scroll_up = True):
+        if scroll_up:
+            mouse.wheel(self.scroll_sensitivity)
+        else: mouse.wheel(-self.scroll_sensitivity)
