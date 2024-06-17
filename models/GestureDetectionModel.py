@@ -71,7 +71,6 @@ class GestureDetetctionModel:
         
         paths = App.get_running_app().paths
         
-        # self.model = pkl.load(open(paths['model'], "rb"))
         self.model = load_model(paths['model'])
         self.pca = pkl.load(open(paths['pca'], "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
