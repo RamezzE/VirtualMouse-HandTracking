@@ -1,4 +1,5 @@
-model: "models/d_tree.pkl"
+# model: "models/d_tree.pkl"
+model: "models/tfv4.keras"
 pca: "utils/pca.pkl"
 
 db:
