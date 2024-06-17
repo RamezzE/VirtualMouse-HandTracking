@@ -1,6 +1,7 @@
 import numpy as np
 import mouse
 import pyautogui
+pyautogui.FAILSAFE = False
 import time
 
 class MouseController:
@@ -38,8 +39,8 @@ class MouseController:
             return
         
         if self.range_x is None or self.range_y is None:
-            self.range_x = [img_shape[0]*0.2, img_shape[0]*1.1]   
-            self.range_y = [img_shape[1]*0.05, img_shape[1]*0.5]
+            self.range_x = [img_shape[0]*0.35, img_shape[0]*1.1]   
+            self.range_y = [img_shape[1]*0.2, img_shape[1]*0.575]
         
         if self.relative_mouse:
             self.__move_mouse_relative(pos)
