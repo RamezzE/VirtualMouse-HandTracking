@@ -11,7 +11,6 @@ class HandDetector:
     RING = 16
     PINKY = 20
     
-    # Constructor
     def __init__(self, detection_con = 0.5, track_con = 0.5):
         
         self.mp_hands = mp.solutions.hands
@@ -64,6 +63,12 @@ class HandDetector:
             
             return x, y
         return None, None
+    
+    def get_finger_z(self, fingerId, hand = 0):
+        landmarks = self.get_landmarks(hand)
+        if landmarks and fingerId < len(landmarks):
+            return landmarks[fingerId].z
+        return None
 
     
     def get_landmarks(self, hand = 0):
@@ -83,8 +88,6 @@ class HandDetector:
         
         fingers_up = []
                 
-        # Thumb
-        # if hand_type == "Right":
         if hand_type == "Left":
             if lm_list[self.THUMB].x > lm_list[self.THUMB - 1].x:
                 fingers_up.append(1)

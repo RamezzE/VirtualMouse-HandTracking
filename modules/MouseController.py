@@ -8,13 +8,14 @@ class MouseController:
     def __init__(self, screen_size, relative_mouse_sensitivity = 0.75, relative_mouse = False, scroll_sensitivity = 0.5):
         self.screen_width, self.screen_height = screen_size
         self.mouse_held = False
-        self.just_clicked_left = self.just_clicked_right = False
+        self.just_clicked_left = self.just_clicked_right = self.ctrl_pressed = False
         self.prev_pos, self.prev_pos_time = None, None
         self.hand_speed = 0
         self.relative_mouse = relative_mouse
         self.relative_mouse_sensitivity = relative_mouse_sensitivity
         self.range_x, self.range_y = None, None
         self.scroll_sensitivity = scroll_sensitivity
+        self.prev_z = None
         
     def toggle_relative_mouse(self):
         if self.relative_mouse:
@@ -154,7 +155,35 @@ class MouseController:
         else:
             self.just_clicked_left = self.just_clicked_right = False
             
+    def reset_zoom(self):
+        if self.ctrl_pressed:
+            pyautogui.keyUp('ctrl')
+            self.ctrl_pressed = False
+            self.prev_z = None
+            
     def handle_scroll(self, scroll_up = True):
         if scroll_up:
             mouse.wheel(self.scroll_sensitivity)
         else: mouse.wheel(-self.scroll_sensitivity)
+        
+    def __handle_zoom(self, zoom_in = True):
+        if not self.ctrl_pressed:
+            pyautogui.keyDown('ctrl')
+            self.ctrl_pressed = True
+        self.handle_scroll(zoom_in)
+            
+    def handle_zoom(self, current_z):
+        if self.prev_z is None:
+            self.prev_z = current_z
+            return
+        
+        z_percent_diff = (current_z - self.prev_z)/self.prev_z
+
+        change_threshold = 0.35
+        if z_percent_diff > change_threshold:
+            self.__handle_zoom(True)
+            self.prev_z = current_z
+        elif z_percent_diff < -change_threshold:
+            self.__handle_zoom(False) 
+            self.prev_z = current_z
+          

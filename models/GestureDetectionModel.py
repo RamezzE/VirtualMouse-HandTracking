@@ -127,52 +127,62 @@ class GestureDetetctionModel:
         return self.HD.highlight_fingers(frame, fingers)
         
     def execute_action(self, action_index, frame):
+        
+        condition = False
+        
         if action_index == self.action_types['IDLE'] or action_index is None:
             self.MC.handle_mouse_press(False)
             self.MC.reset_click()
-            self.MC.reset_mouse_pos()
-            return
+            condition = True
         
-        if action_index == self.action_types['LEFT_CLICK']:
+        elif action_index == self.action_types['LEFT_CLICK']:
             self.MC.click_mouse(button='left')
             self.MC.reset_click(button='right')
-            self.MC.reset_mouse_pos()
-            return
+            condition = True
         
-        if action_index == self.action_types['RIGHT_CLICK']:
+        elif action_index == self.action_types['RIGHT_CLICK']:
             self.MC.click_mouse(button='right')
             self.MC.reset_click(button='left')
-            self.MC.reset_mouse_pos()
-            return
+            condition = True
         
-        if action_index == self.action_types['DOUBLE_CLICK']:
+        elif action_index == self.action_types['DOUBLE_CLICK']:
             self.MC.double_click(button='left')
             self.MC.reset_click(button='right')
-            self.MC.reset_mouse_pos()
-            return
+            condition = True
         
-        if action_index in (self.action_types['SCROLL_UP'], self.action_types['SCROLL_DOWN']):
+        elif action_index in (self.action_types['SCROLL_UP'], self.action_types['SCROLL_DOWN']):
             self.MC.handle_scroll(action_index == self.action_types['SCROLL_UP'])
             self.MC.handle_mouse_press(False)
             self.MC.reset_click()
+            condition = True
+        
+        elif action_index == self.action_types['TOGGLE_RELATIVE_MOUSE']:
+            self.MC.toggle_relative_mouse()
+            self.MC.handle_mouse_press(False)
+            self.MC.reset_click()
+            condition = True
+
+        if condition:
             self.MC.reset_mouse_pos()
+            self.MC.reset_zoom()
             return
         
         if action_index == self.action_types['ZOOM']:
-            return
-        
-        if action_index == self.action_types['TOGGLE_RELATIVE_MOUSE']:
-            self.MC.toggle_relative_mouse()
+            self.MC.handle_zoom(self.HD.get_finger_z(self.HD.WRIST))
+            self.MC.handle_mouse_press(False)
+            self.MC.reset_click()
+            self.MC.reset_mouse_pos()
             return
         
         if action_index == self.action_types['MOVE_MOUSE']:
             self.MC.handle_mouse_press(False)
-            self.MC.reset_click()
 
         elif action_index == self.action_types['DRAG']:
             self.MC.handle_mouse_press(True)
-            self.MC.reset_click()
-
+             
+        self.MC.reset_click()
+        self.MC.reset_zoom() 
+        
         index_pos = self.HD.get_finger_position(self.HD.INDEX)
 
         if index_pos is not None:
