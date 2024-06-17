@@ -7,8 +7,10 @@ The Virtual Mouse project is an application developed using Kivy that allows use
 ## Table of Contents
 
 - [Folder Structure](#folder-structure)
-- [Project Methodology](#project-methodology)
+- [Methodology](#methodology)
+- [Prerequisites](#prerequisites)
 - [Building](#building)
+- [Acknowledgements](#acknowledgements)
 - [License](#license)
 
 ### Sample Images
@@ -68,9 +70,9 @@ VirtualMouse-HandTracking/
 └── README.md
 ```
 
-## Project Methodology
+## Methodology
 
-The Virtual Mouse Hand Tracking application follows a structured methodology to achieve accurate hand gesture recognition and mapping to mouse actions:
+The Virtual Mouse Hand follows a structured methodology to achieve accurate hand gesture recognition and mapping to mouse actions:
 
 1. **Hand Landmark Detection**: The application uses the MediaPipe library to detect hand landmarks from the webcam feed.
 2. **Preprocessing**: The detected landmarks are normalized and preprocessed for prediction.
@@ -80,38 +82,76 @@ The Virtual Mouse Hand Tracking application follows a structured methodology to 
 6. **Mouse Actions**: Various gestures are mapped to mouse actions such as moving, clicking, and dragging. The application includes logic to handle different gestures and perform corresponding mouse actions.
 7. **Visualization**: The application highlights detected gestures on the video feed for better visualization and debugging.
 
+## Prerequisites
+- Python
+- Pip
+
+### Linux
+- You can run these commands on linux to install python, pip, python-venv and other dependencies
+
+```
+sudo apt-get update
+sudo apt install python3
+sudo apt install python3-pip
+sudo apt install python3-venv
+sudo apt-get install python3-tk python3-dev
+```
+
+### Windows
+- Install python from the official website
+- Check if pip is already installed by running: `pip help`
+- If pip is not installed, please check this [guide](https://www.geeksforgeeks.org/download-and-install-pip-latest-version/#windows) for installing pip on Windows
+
 ## Building
 
-### Prerequisites
-Ensure you have Python installed.
+1. **Clone the repository**
 
-### Installation
+```
+git clone https://github.com/RamezzE/VirtualMouse-HandTracking.git
+```
 
-1. **Clone the repository**:
-   ```
-   git clone https://github.com/RamezzE/VirtualMouse-HandTracking.git
-   ```
+2. **Navigate to project folder**
 
-2. **Navigate to project folder**:
-   ```
-   cd VirtualMouse-HandTracking
-   ```
+```
+cd VirtualMouse-HandTracking
+```
 
-3. **Create & activate virtual environment** (Optional but recommended):
-   ```
-   python -m venv venv
-   venv\Scripts\activate
-   ```
+3. **Create and activate a python virtual environment**
 
-4. **Install required packages**:
-   ```
-   pip install -r requirements.txt
-   ```
+#### Linux
 
-5. **Run the main application**:
-   ```
-   python VirtualMouse.py
-   ```
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
+#### Windows
+
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+4. **Install necessary pip packages**
+
+```
+pip install -r requirements.txt
+``` 
+- If the above command does not work, run the below command
+
+```
+pip install numpy tensorflow mediapipe scikit-learn kivy[base] mouse pandas pyautogui pyaml opencv-python
+```
+
+5. **Run main application file**
+
+```
+python VirtualMouse.py
+```
+
+## Acknowledgements
+
+Most of the icons used are provided by [Icons8](https://icons8.com/)
 
 ## License
 
