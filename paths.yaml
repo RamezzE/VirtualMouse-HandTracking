@@ -30,27 +30,13 @@ assets:
       gesture10: "assets/icons/gestures/gesture10.png"
       gesture11: "assets/icons/gestures/gesture11.png"
 
-    
-  
   fonts:
     poppins:
-      black: "assets/fonts/Poppins/Poppins-Black.ttf"
-      black_italic: "assets/fonts/Poppins/Poppins-BlackItalic.ttf"
       bold: "assets/fonts/Poppins/Poppins-Bold.ttf"
-      bold_italic: "assets/fonts/Poppins/Poppins-BoldItalic.ttf"
-      extra_bold: "assets/fonts/Poppins/Poppins-ExtraBold.ttf"
-      extra_bold_italic: "assets/fonts/Poppins/Poppins-ExtraBoldItalic.ttf"
-      extra_light: "assets/fonts/Poppins/Poppins-ExtraLight.ttf"
-      extra_light_italic: "assets/fonts/Poppins/Poppins-ExtraLightItalic.ttf"
-      light: "assets/fonts/Poppins/Poppins-Light.ttf"
       light_italic: "assets/fonts/Poppins/Poppins-LightItalic.ttf"
       medium: "assets/fonts/Poppins/Poppins-Medium.ttf"
-      medium_italic: "assets/fonts/Poppins/Poppins-MediumItalic.ttf"
       regular: "assets/fonts/Poppins/Poppins-Regular.ttf"
       semi_bold: "assets/fonts/Poppins/Poppins-SemiBold.ttf"
-      semi_bold_italic: "assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf"
-      thin: "assets/fonts/Poppins/Poppins-Thin.ttf"
-      thin_italic: "assets/fonts/Poppins/Poppins-ThinItalic.ttf"
 
   buttons:
     normal: "assets/buttons/normal.png"
