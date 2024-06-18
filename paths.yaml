@@ -1,4 +1,4 @@
-model: "models/tfv4.keras"
+model: "models/tfv6.keras"
 pca: "utils/pca.pkl"
 
 db:

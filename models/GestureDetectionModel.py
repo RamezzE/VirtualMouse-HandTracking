@@ -183,12 +183,11 @@ class GestureDetetctionModel:
         self.MC.reset_zoom() 
         
         index_pos = self.HD.get_finger_position(self.HD.INDEX)
-        middle_pos = self.HD.get_finger_position(self.HD.MIDDLE)
         wrist_pos = self.HD.get_finger_position(self.HD.WRIST)
 
-        if index_pos is not None and middle_pos is not None and wrist_pos is not None:
-            x = (index_pos[0] + middle_pos[0] + wrist_pos[0])/3
-            y = (index_pos[1] + middle_pos[1] + wrist_pos[1])/3
+        if index_pos is not None and wrist_pos is not None:
+            x = (index_pos[0] + wrist_pos[0])/2
+            y = (index_pos[1] + wrist_pos[1])/2
             x = self.KF_x.update(x)
             y = self.KF_y.update(y)
             self.MC.move_mouse((x, y), frame.shape)
