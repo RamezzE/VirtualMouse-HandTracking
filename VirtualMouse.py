@@ -57,6 +57,13 @@ class VirtualMouse(App):
         Window.size = (360, 500)
         Window.minimum_width = 360
         Window.minimum_height = 500
+        
+        import pyautogui
+
+        screen_size = pyautogui.size()
+        Window.left = (screen_size[0] - Window.size[0]) / 2
+        Window.top = (screen_size[1] - Window.size[1]) / 2
+        
         self.height = Window.height
         self.width = Window.width
         self.icon = icons['app']
