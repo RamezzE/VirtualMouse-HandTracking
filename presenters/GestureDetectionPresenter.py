@@ -1,10 +1,10 @@
 from kivy.clock import Clock
-from models.GestureDetectionModel import GestureDetetctionModel
+from models.GestureDetectionModel import GestureDetectionModel
 
 class GestureDetectionPresenter:
     def __init__(self, view):
 
-        self.model = GestureDetetctionModel(self.on_dependencies_loaded)
+        self.model = GestureDetectionModel(self.on_dependencies_loaded)
         self.view = view
         
         self.action_types = self.model.action_types

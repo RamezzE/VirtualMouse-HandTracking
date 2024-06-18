@@ -1,18 +1,23 @@
-from kivy.app import App
-
 from modules.GesturePredictor import GesturePredictor as GP
 from modules.MouseController import MouseController as MC
 from modules.KalmanFilter import KalmanFilter1D as KF
+from db.db import Database
 
 import pyautogui
 import threading
 import numpy as np
 import cv2
+import yaml 
 
-class GestureDetetctionModel:
+with open('paths.yaml', 'r') as f:
+    paths = yaml.safe_load(f)
     
-    def __init__(self, on_load):
-        self.db = App.get_running_app().db
+
+class GestureDetectionModel:
+    
+    def __init__(self, on_load = None, use_thread = True):
+        
+        self.db = Database(paths['db']['actions'], paths['db']['schema'])
 
         self.actions = np.array(self.db.get('Actions', columns_to_select='name')).reshape(-1)
         self.mappings = np.array((self.db.get('Mappings', columns_to_select='action_id'))).reshape(-1)
@@ -30,9 +35,11 @@ class GestureDetetctionModel:
         self.last_prediction = None
         
         self.on_load = on_load
-        
-        threading.Thread(target=self._load_components).start()
-        
+        if use_thread:
+            threading.Thread(target=self._load_components).start()
+        else:
+            self._load_components()
+            
     @property
     def action_types(self):
         return {
@@ -68,9 +75,7 @@ class GestureDetetctionModel:
         from tensorflow.keras.models import load_model
         import pickle as pkl
         from modules.HandDetector import HandDetector as HD
-        
-        paths = App.get_running_app().paths
-        
+                
         self.model = load_model(paths['model'])
         self.pca = pkl.load(open(paths['pca'], "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
@@ -78,8 +83,9 @@ class GestureDetetctionModel:
         self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity, self.relative_mouse, self.scroll_sensitivity)
         self.KF_x = KF()
         self.KF_y = KF()
-        
-        self.on_load()
+                
+        if self.on_load is not None:
+            self.on_load()
 
     def get_action(self, prediction):
         return (self.actions[self.mappings[prediction] - 1]), (self.mappings[prediction] - 1)
@@ -89,8 +95,11 @@ class GestureDetetctionModel:
 
     def process_frame(self, frame, draw_connections = False):
         frame = cv2.flip(frame, 1)
-        frame = self.HD.find_hands(img=frame, draw_connections=draw_connections)
-        landmarks = self.HD.get_landmarks()
+        landmarks = None
+        
+        if self.HD:
+            frame = self.HD.find_hands(img=frame, draw_connections=draw_connections)
+            landmarks = self.HD.get_landmarks()
         return frame, landmarks
 
     def get_hand_orientation(self):

@@ -1,10 +1,13 @@
-from kivy.app import App
-import numpy as np
 from presenters import CameraPresenter as Camera
+from db.db import Database
+import numpy as np
+import yaml 
 
+with open('paths.yaml', 'r') as f:
+    paths = yaml.safe_load(f)
 class SettingsModel:
     def __init__(self):
-        self.db = App.get_running_app().db
+        self.db = Database(paths['db']['actions'], paths['db']['schema'])
 
     def get_actions(self):
         return (np.array(self.db.get('Actions', columns_to_select='name'))).reshape(-1)
