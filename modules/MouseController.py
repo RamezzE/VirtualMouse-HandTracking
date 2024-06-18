@@ -182,9 +182,9 @@ class MouseController:
 
         change_threshold = 0.05
         if z_percent_diff > change_threshold:
-            self.__handle_zoom(True)
+            self.__handle_zoom(zoom_in=False)
             self.prev_z = current_z
         elif z_percent_diff < -change_threshold:
-            self.__handle_zoom(False) 
+            self.__handle_zoom(zoom_in=True) 
             self.prev_z = current_z
           
