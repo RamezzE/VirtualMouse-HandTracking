@@ -1,24 +1,25 @@
 # Virtual Mouse
 
-## Project Overview
-
-The Virtual Mouse project is an application developed using Kivy that allows users to control the mouse using hand gestures. The application utilizes the MediaPipe library for detecting hand landmarks through a webcam and enhances the accuracy of hand gesture classification using a machine learning model. Various gestures are mapped to different mouse actions such as moving, clicking, and dragging, with the Kalman Filter being used to smoothen the hand movements. The user can configure the gestures mappings to the mouse function.
-
 ## Table of Contents
-
+- [Overview](#overview)
 - [Methodology](#methodology)
 - [Prerequisites](#prerequisites)
 - [Building](#building)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
+## Overview
+
+Built using OpenCV, MediaPipe, Tensorflow and Kivy for the user interface, Virtual Mouse allows mouse control using several hand gestures mapped to perform different mouse functions such as movement, dragging, clicking, scrolling, zooming etc. These mappings can be changed and configured along with additional settings in runtime through the Kivy application.
+
 ### Sample Images
 
 <p align="left">
-  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/b76efedd-cf1e-4100-bd72-6b639ade0e38" alt="Sample 1" height="200">
-  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/3c52bc8f-24af-43c6-9c3c-627f80620de4" alt="Sample 2" height="200">
-  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/04d02d5a-4357-46d8-94d9-fbf0de08adb6" alt="Sample 3" height="200">
-  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/15e4f54f-552d-4e8d-8662-62ca61ac7b02" alt="Sample 4" height="200">
+
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/d8aa8a15-9909-4fe9-a4cf-5f111e60f317" alt="Home Screen" height="200">
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/af41b857-a3d2-4b3d-b390-4ddb3d9aa6b7" alt="Camera Feedback Screen" height="200">
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/525fcf55-4758-4024-8715-3205220e4123" alt="Settings Screen 1" height="200">
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/0d81a47c-586b-440e-8f50-29a9a2ee7b35" alt="Settings Screen 2" height="200">
 </p>
 
 ## Methodology
@@ -82,16 +83,22 @@ venv\Scripts\activate
 ```
 pip install -r requirements.txt
 ``` 
-- If the above command does not work, run the below command
+- If the above command does not work or throws an error, run the below command instead
 
 ```
-pip install numpy tensorflow mediapipe scikit-learn kivy[base] mouse pandas pyautogui pyaml opencv-python
+pip install numpy tensorflow mediapipe scikit-learn kivy[base] kivyontop mouse pandas pyautogui pyaml opencv-python
 ```
 
 5. **Run main application file**
 
 ```
-python VirtualMouse.py
+python main.py
+```
+
+- Optionally, if you'd like to run the script directly without running the Kivy application, you can run the alternative main file
+
+```
+python main_no_gui.py
 ```
 
 ## Acknowledgements
