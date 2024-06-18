@@ -171,7 +171,7 @@ class MouseController:
         if not self.ctrl_pressed:
             pyautogui.keyDown('ctrl')
             self.ctrl_pressed = True
-        self.handle_scroll(zoom_in)
+        mouse.wheel(1 if zoom_in else -1)
             
     def handle_zoom(self, current_z):
         if self.prev_z is None:
@@ -180,7 +180,7 @@ class MouseController:
         
         z_percent_diff = (current_z - self.prev_z)/self.prev_z
 
-        change_threshold = 0.35
+        change_threshold = 0.05
         if z_percent_diff > change_threshold:
             self.__handle_zoom(True)
             self.prev_z = current_z

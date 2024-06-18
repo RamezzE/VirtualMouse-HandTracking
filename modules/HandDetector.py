@@ -2,6 +2,7 @@ import mediapipe as mp
 import cv2
 import math
 import warnings
+import pyautogui
 warnings.filterwarnings("ignore")
 class HandDetector:
     WRIST = 0
@@ -63,13 +64,6 @@ class HandDetector:
             
             return x, y
         return None, None
-    
-    def get_finger_z(self, fingerId, hand = 0):
-        landmarks = self.get_landmarks(hand)
-        if landmarks and fingerId < len(landmarks):
-            return landmarks[fingerId].z
-        return None
-
     
     def get_landmarks(self, hand = 0):
         try:
@@ -141,6 +135,19 @@ class HandDetector:
     def is_distance_within(self, f1, f2, distance = 25):
         dist, _ = self.get_distance(f1, f2)
         return dist is not None and dist < distance
+    
+    def get_distance_from_screen(self):
+        wrist_x, wrist_y = self.get_finger_position(self.WRIST)
+        
+        if wrist_x is None or wrist_y is None:
+            return None
+        
+        screen_size = pyautogui.size()
+        screen_x = screen_size[0] // 2
+        screen_y = screen_size[1] // 2
+        
+        distance = math.sqrt((wrist_x - screen_x)**2 + (wrist_y - screen_y)**2)
+        return distance
     
     def get_hand_orientation(self, hand=0):
         return self.hand_label

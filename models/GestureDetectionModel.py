@@ -167,7 +167,7 @@ class GestureDetetctionModel:
             return
         
         if action_index == self.action_types['ZOOM']:
-            self.MC.handle_zoom(self.HD.get_finger_z(self.HD.WRIST))
+            self.MC.handle_zoom(self.HD.get_distance_from_screen())
             self.MC.handle_mouse_press(False)
             self.MC.reset_click()
             self.MC.reset_mouse_pos()
