@@ -144,8 +144,7 @@ class SettingsPresenter:
     def toggle_relative_mouse(self):
         self.relative_mouse = not self.relative_mouse
         num = 1 if self.relative_mouse else 0
-        self.model.update_relative_mouse(num)
-        
+        threading.Thread(target=self.model.update_relative_mouse, args=(num,)).start()
 
     def switch_to_camera_screen(self):
         self.view.switch_screen('camera', 'down')
