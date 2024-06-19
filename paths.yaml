@@ -1,4 +1,5 @@
-model: "models/tfv6.keras"
+model: "models/gesture_detector_tf.keras"
+is_tf: "True"
 pca: "utils/pca.pkl"
 
 db:

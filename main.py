@@ -1,14 +1,14 @@
-from kivy.config import Config
+import os
+# os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
+from kivy.config import Config
+Config.set('kivy', 'log_level', 'info')
 Config.set('graphics', 'maxfps', '60')
 Config.set('graphics', 'width', '0')
 Config.set('graphics', 'height', '0')
 
 from kivy.core.window import Window
 Window.hide()
-
-import os 
-os.environ['KIVY_NO_CONSOLELOG'] = '1'
 
 import yaml
 
