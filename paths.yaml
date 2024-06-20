@@ -5,6 +5,7 @@ pca: "utils/pca.pkl"
 db:
   actions: "db/actions.db"
   schema: "db/schema.sql"
+  
 assets:
   icons: 
     app: "assets/icons/app_logo.png"

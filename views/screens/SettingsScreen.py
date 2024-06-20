@@ -10,7 +10,7 @@ from presenters import SettingsPresenter
 
 from kivy.lang import Builder
 
-Builder.load_file('views/components/settings/SettingsComponents.kv')
+Builder.load_file('kv/SettingsComponents.kv')
 
 class SettingsScreen(Screen):
     gesture_options = []
@@ -20,7 +20,7 @@ class SettingsScreen(Screen):
     row_height = NumericProperty()
     gesture_row_height = NumericProperty()
     
-    Builder.load_file('views/screens/SettingsScreen.kv')
+    Builder.load_file('kv/SettingsScreen.kv')
 
     def __init__(self, **kwargs):
         super(SettingsScreen, self).__init__(**kwargs)

@@ -11,7 +11,7 @@ class GestureDetectionView(FloatLayout):
     current_fps = NumericProperty()
     status = StringProperty()
     
-    Builder.load_file('views/components/GestureDetectionView.kv')
+    Builder.load_file('kv/GestureDetectionView.kv')
     
     def __init__(self, **kwargs):
         super(GestureDetectionView, self).__init__(**kwargs)

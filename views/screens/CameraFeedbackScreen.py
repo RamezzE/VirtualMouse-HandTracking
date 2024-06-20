@@ -9,7 +9,7 @@ from kivy.lang import Builder
 from presenters import CameraFeedbackPresenter
 class CameraFeedbackScreen(Screen):
         
-    Builder.load_file('views/screens/CameraFeedbackScreen.kv')
+    Builder.load_file('kv/CameraFeedbackScreen.kv')
 
     def __init__(self, **kwargs):
         super(CameraFeedbackScreen, self).__init__(**kwargs)

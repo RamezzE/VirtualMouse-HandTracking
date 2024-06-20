@@ -11,7 +11,7 @@ from kivy.uix.screenmanager import Screen
 
 class HomeScreen(Screen):
     
-    Builder.load_file('views/screens/HomeScreen.kv')
+    Builder.load_file('kv/HomeScreen.kv')
 
     def __init__(self, **kwargs):
         super(HomeScreen, self).__init__(**kwargs)

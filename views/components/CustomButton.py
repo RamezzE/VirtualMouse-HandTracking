@@ -5,7 +5,7 @@ from kivy.properties import StringProperty, ObjectProperty, ColorProperty
 from kivy.lang import Builder
 from kivy.core.image import Image as CoreImage
 
-Builder.load_file('views/components/CustomButton.kv')
+Builder.load_file('kv/CustomButton.kv')
 
 class CustomButton(ButtonBehavior, Label):
     normal_image = StringProperty()

@@ -29,7 +29,7 @@ class CustomDropdown(FloatLayout):
     
     _i = None
     
-    Builder.load_file('views/components/CustomDropdown.kv')
+    Builder.load_file('kv/CustomDropdown.kv')
     
     def __init__(self, **kwargs):
         super(CustomDropdown, self).__init__(**kwargs)
