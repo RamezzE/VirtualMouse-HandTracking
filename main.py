@@ -20,7 +20,6 @@ fonts = paths['assets']['fonts']
 
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
-from KivyOnTop import register_topmost
 
 from views.screens import SettingsScreen, CameraFeedbackScreen, HomeScreen
 
@@ -38,11 +37,6 @@ class VirtualMouse(App):
         self.fonts = fonts
         self.icons = icons
         self.db = db
-        
-        try:
-            register_topmost(Window, self.title)
-        except Exception as e:
-            print(e)
         
         Window.bind(on_resize=self.resize)
                 
