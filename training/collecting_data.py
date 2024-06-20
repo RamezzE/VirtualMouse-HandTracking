@@ -66,13 +66,14 @@ while True:
         
         # Augmentations
         H_flipped_landmarks = flip_landmarks(normalized_landmarks, axis='horizontal')
-        # V_flipped_landmarks = flip_landmarks(normalized_landmarks, axis='vertical')
-        # HV_flipped_landmarks = flip_landmarks(normalized_landmarks, axis='both')
+        V_flipped_landmarks = flip_landmarks(normalized_landmarks, axis='vertical')
+        HV_flipped_landmarks = flip_landmarks(normalized_landmarks, axis='both')
         noisy_landmarks = add_noise(normalized_landmarks)
         
-        # collected_landmarks.extend([normalized_landmarks, H_flipped_landmarks, V_flipped_landmarks, HV_flipped_landmarks, noisy_landmarks])
-        collected_landmarks.extend([normalized_landmarks, H_flipped_landmarks, noisy_landmarks])
-        labels.extend([label_name] * 3)
+        collected_landmarks.extend([normalized_landmarks, H_flipped_landmarks, V_flipped_landmarks, HV_flipped_landmarks, noisy_landmarks])
+        # collected_landmarks.extend([normalized_landmarks, H_flipped_landmarks, noisy_landmarks])
+        # labels.extend([label_name] * 3)
+        labels.extend([label_name] * 5)
         
     cv2.imshow('Collecting Data', frame)
     key = cv2.waitKey(1)
@@ -80,7 +81,16 @@ while True:
     if key == ord('q'):
         break
 
-X = pd.DataFrame(np.vstack(collected_landmarks))
+col_names = []
+
+for i in range(21):
+    col_names.append(f'x{i+1}')
+for i in range(21):    
+    col_names.append(f'y{i+1}')
+for i in range(21):
+    col_names.append(f'z{i+1}')
+    
+X = pd.DataFrame(np.vstack(collected_landmarks), columns=col_names)
 y = pd.DataFrame(labels, columns=['label'])
 
 df = pd.concat([X, y], axis=1)
