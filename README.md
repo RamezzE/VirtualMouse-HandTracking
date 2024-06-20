@@ -33,7 +33,7 @@ The dataset used for training the model was manually recorded and is available i
 
 ## Settings
 
-The settings in the Virtual Mouse application allow users to customize their experience. Here is an overview of each setting and how changing them affects the program:
+A simple guide to the available program's settings.
 
 ### Detection Settings
 
