@@ -1,4 +1,4 @@
-import os
+# import os
 # os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 from kivy.config import Config
@@ -39,7 +39,10 @@ class VirtualMouse(App):
         self.icons = icons
         self.db = db
         
-        register_topmost(Window, self.title)
+        try:
+            register_topmost(Window, self.title)
+        except Exception as e:
+            print(e)
         
         Window.bind(on_resize=self.resize)
                 
