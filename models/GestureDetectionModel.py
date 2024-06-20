@@ -72,14 +72,21 @@ class GestureDetectionModel:
         }
 
     def _load_components(self):
-        from tensorflow.keras.models import load_model
+        
         import pickle as pkl
+        if paths['is_tf'] == "True":
+            is_tf = True
+            from tensorflow.keras.models import load_model
+            self.model = load_model(paths['model'])
+        else:
+            is_tf = False
+            self.model = pkl.load(open(paths['model'], "rb"))
+            
         from modules.HandDetector import HandDetector as HD
                 
-        self.model = load_model(paths['model'])
         self.pca = pkl.load(open(paths['pca'], "rb"))
         self.HD = HD(detection_con=self.detection_confidence, track_con=self.tracking_confidence)
-        self.GP = GP(self.model, self.buffer_size, is_tf = True, pca = self.pca)
+        self.GP = GP(self.model, self.buffer_size, is_tf = is_tf, pca = self.pca)
         self.MC = MC(pyautogui.size(), self.relative_mouse_sensitivity, self.relative_mouse, self.scroll_sensitivity)
         self.KF_x = KF()
         self.KF_y = KF()

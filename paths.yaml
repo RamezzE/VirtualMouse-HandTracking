@@ -1,5 +1,5 @@
-model: "models/gesture_detector_tf.keras"
-is_tf: "True"
+model: "models/gesture_detector_sk.pkl"
+is_tf: "False"
 pca: "utils/pca.pkl"
 
 db:
