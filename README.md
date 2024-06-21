@@ -129,13 +129,13 @@ sudo apt-get install python3-tk python3-dev
     - If the above command does not work or throws an error, run the below command instead
     
         ```
-        pip install numpy tensorflow mediapipe scikit-learn kivy[base] mouse pyautogui pyaml opencv-python
+        pip install numpy mediapipe scikit-learn kivy[base] mouse pyautogui pyaml opencv-python
         ```
     
     - If you want to run training.ipynb, then install these extra packages as well
     
         ```
-        pip install ipykernel pandas xgboost
+        pip install ipykernel tensorflow pandas xgboost
         ```
 
 5. **Run main application file**
