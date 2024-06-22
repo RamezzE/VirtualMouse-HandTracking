@@ -2,6 +2,8 @@
 
 ## Table of Contents
 - [Overview](#overview)
+  - [App Preview](#app-preview)
+  - [Usage Preview](#usage-preview)
 - [Methodology](#methodology)
 - [Settings](#settings)
 - [Prerequisites](#prerequisites)
@@ -13,7 +15,7 @@
 
 Built using OpenCV, MediaPipe, Tensorflow and Kivy for the user interface, Virtual Mouse allows mouse control using several hand gestures mapped to perform different mouse functions such as movement, dragging, clicking, scrolling, zooming etc. These mappings can be changed and configured along with additional settings in runtime through the Kivy application.
 
-### Sample Images
+### App Preview
 
 <p align="left">
 
@@ -22,6 +24,49 @@ Built using OpenCV, MediaPipe, Tensorflow and Kivy for the user interface, Virtu
   <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/525fcf55-4758-4024-8715-3205220e4123" alt="Settings Screen 1" height="200">
   <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/0d81a47c-586b-440e-8f50-29a9a2ee7b35" alt="Settings Screen 2" height="200">
 </p>
+
+### Usage Preview
+
+<details>
+<summary>Mouse Movement</summary>
+  
+&nbsp;
+
+  - Absolute Mouse:
+
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/0ac1098a-0db6-45ee-b873-30e4e710522d" alt="Settings Screen 1" height="300">
+
+  - Relative Mouse:
+
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/305f2263-95d3-4e43-bb4f-eb68835ef1ae" alt="Settings Screen 1" height="300">
+
+</details>
+
+<details>
+  <summary>Dragging</summary>
+  
+  &nbsp;
+  
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/c4654c4d-cc0f-4c72-b2c4-842b509c9696" alt="Settings Screen 1" height="300">
+
+</details>
+
+<details>
+  <summary>Clicking</summary>
+  
+  &nbsp;
+  
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/bcecb601-78ff-4d8a-8528-7a65f930e392" alt="Settings Screen 1" height="300">
+</details>
+
+<details>
+  <summary>Scrolling and Zooming</summary>
+  
+  &nbsp;
+  
+  <img src="https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/60a7baac-52f6-4a28-8001-d4501033700b" alt="Settings Screen 1" height="300">
+
+</details>
 
 ## Methodology
 
