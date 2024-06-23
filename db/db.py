@@ -204,7 +204,7 @@ class Database:
 
         self.insert("DetectionSettings", name = "Detection Confidence", value = 0.75)
         self.insert("DetectionSettings", name = "Tracking Confidence", value = 0.5)
-        self.insert("DetectionSettings", name = "Detection Responsiveness", value = 3)
+        self.insert("DetectionSettings", name = "Detection Responsiveness", value = 5)
 
         self.insert("MouseSettings", name = "Relative Mouse", value = 0)
         self.insert("MouseSettings", name = "Relative Mouse Sensitivity", value = 0.75)
