@@ -70,7 +70,7 @@ Built using OpenCV, MediaPipe, Tensorflow and Kivy for the user interface, Virtu
 
 ## Methodology
 
-The Virtual Mouse Hand follows a structured methodology to achieve accurate hand gesture recognition and mapping to mouse actions for each frame.
+The Virtual Mouse app follows a structured methodology to achieve accurate hand gesture recognition and mapping to mouse actions for each frame.
 
 ![Methodology Flowchart](https://github.com/RamezzE/VirtualMouse-HandTracking/assets/117018553/7db9f201-7720-4c0c-9c5e-944f7876b4dc)
 
